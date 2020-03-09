@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item android:id="@+id/nav_home"
+            android:icon="@drawable/ic_apps_black_24dp"
+            android:title="Home"/>
+        <item android:id="@+id/nav_maps"
+            android:icon="@drawable/ic_apps_black_24dp"
+            android:title="Maps"/>
+        <item android:id="@+id/nav_graph"
+            android:icon="@drawable/ic_apps_black_24dp"
+            android:title="Graphs"/>
+        <item android:id="@+id/nav_stats"
+            android:icon="@drawable/ic_apps_black_24dp"
+            android:title="Stats"/>
+
+    </group>
+
+    <item android:title="App Properties">
+        <menu>
+            <item android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_apps_black_24dp"
+                android:title="Settings"/>
+            <item android:id="@+id/nav_about"
+                android:icon="@drawable/ic_apps_black_24dp"
+                android:title="About Us"/>
+        </menu> <!--TODO THESE WONT WORK USE THE ABOVE GROUP. TEST-->
+
+
+    </item>
+
+</menu>
