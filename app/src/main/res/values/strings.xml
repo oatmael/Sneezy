@@ -3,4 +3,9 @@
 
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
+    <string name="pollenCountTitle">Today\'s pollen forecast will be</string>
+    <string name="pollenLocationText">Adelaide, SA</string>
+    <string name="pollenCount">LOW</string>
+    <string name="pollenTip">Keep the antihistimines at home</string>
+    <string name="sneezeDetail">Youve sneezed 1 times today</string>
 </resources>

@@ -1,13 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@android:color/holo_red_light">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_red_light"
+    android:id="@+id/homeRelLayout">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Home Frag"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/pollenCountTitleTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30sp"
+            android:paddingTop="30sp"
+            android:text="@string/pollenCountTitle" />
+
+        <TextView
+            android:id="@+id/pollenCountLocationTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30sp"
+            android:paddingTop="10sp"
+            android:text="@string/pollenLocationText"/>
+
+        <TextView
+            android:id="@+id/pollenLevelTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pollenCount"
+            android:paddingLeft="30sp"
+            android:textSize="100sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dailyTip"
+            android:paddingLeft="30sp"
+            android:paddingTop="20sp"
+            android:text="@string/pollenTip"/>
+        <TextView
+            android:id="@+id/sneezeDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30sp"
+            android:paddingTop="30sp"
+            android:text="@string/sneezeDetail" />
+    </LinearLayout>
+
+
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:background="@color/colorPrimary"
+        android:text="SNEEZE"
+        android:id="@+id/sneezeButton"
+        android:layout_alignParentBottom="true"/>
+
+
+
+
+
 
 </RelativeLayout>
