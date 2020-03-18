@@ -2,6 +2,8 @@ package com.example.sneezyapplication;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -43,24 +45,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.nav_home);
         }
     }
-//TODO Put get supportFragmentManager, all into one method and reuse. (With animations)
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //getting support frag vars/ also setting custom animations/ actual fragment changes done in switch below
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        //set animations, animations can be changed in the res/anim folder
+        transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_right);
+        //back stack used so when the back button is pressed, the app wont close, instead will go back to prev page
+        transaction.addToBackStack(null);
+
+
         switch(item.getItemId()) {
             case R.id.nav_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                transaction.replace(R.id.fragment_container,
                         new HomeFragment()).commit();
                 break;
             case R.id.nav_maps:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                transaction.replace(R.id.fragment_container,
                         new MapsFragment()).commit();
                 break;
             case R.id.nav_graph:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                transaction.replace(R.id.fragment_container,
                         new GraphsFragment()).commit();
                 break;
             case R.id.nav_stats:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                transaction.replace(R.id.fragment_container,
                         new StatsFragment()).commit();
                 break;
             case R.id.nav_settings:

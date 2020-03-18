@@ -51,13 +51,17 @@
 
 
 
+
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="250dp"
         android:background="@color/colorPrimary"
         android:text="SNEEZE"
         android:id="@+id/sneezeButton"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true" />
+
+
 
 
 
