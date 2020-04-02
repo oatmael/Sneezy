@@ -15,4 +15,6 @@
 
     </style>
 
+    <style name="AppTheme.AppBarOverlay"/>
+
 </resources>
