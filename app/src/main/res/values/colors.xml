@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="textWhite">#ffffff</color>
+    <color name="darkPurp">#210B2C</color>
+    <color name="lavender">#BC96E6</color>
+    <color name="whitePink">#D8B4E2</color>
+    <color name="midPurpText">#55286F</color>
+
 </resources>
