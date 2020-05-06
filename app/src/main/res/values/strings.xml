@@ -9,6 +9,9 @@
     <string name="pollenTip">Keep the antihistimines at home</string>
     <string name="sneezeDetail">Youve sneezed 1 times today</string>
 
+    <!-- Stitch API ID: don't change! -->
+    <string name="stitch_client_app_id">sneezyapp-vfmmi</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

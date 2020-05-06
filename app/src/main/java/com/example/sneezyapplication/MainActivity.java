@@ -15,9 +15,26 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.sneezyapplication.data.SneezeItem;
+import com.mongodb.stitch.android.core.Stitch;
+import com.mongodb.stitch.android.core.StitchAppClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
+import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
+import com.mongodb.stitch.core.internal.common.BsonUtils;
+
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 //TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES
     private DrawerLayout drawer;
+
+    public static StitchAppClient client;
+    private RemoteMongoCollection<SneezeItem> items;
+
+    public RemoteMongoCollection<SneezeItem> getItems() {
+        return items;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +43,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 /*        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/arial.ttf");*/
 
+        // initiate the Stitch Client, depending on the app lifecycle might move this.
+        client = Stitch.getDefaultAppClient();
+        final RemoteMongoClient mongoClient = client.getServiceClient(
+                RemoteMongoClient.factory, "mongodb-atlas");
+
+        items = mongoClient
+                .getDatabase(SneezeItem.SNEEZE_DATABASE)
+                .getCollection(SneezeItem.SNEEZE_COLLECTION, SneezeItem.class)
+                .withCodecRegistry(CodecRegistries.fromRegistries(
+                        BsonUtils.DEFAULT_CODEC_REGISTRY,
+                        CodecRegistries.fromCodecs(SneezeItem.codec)));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
