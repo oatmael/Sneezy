@@ -18,8 +18,8 @@
             android:paddingLeft="30sp"
             android:paddingTop="30sp"
             android:text="@string/pollenCountTitle"
-            android:fontFamily="@font/arial"
             android:textColor="@color/midPurpText"/>
+        <!--android:fontFamily="@font/arial"-->
 
         <TextView
             android:id="@+id/pollenCountLocationTxt"
@@ -28,8 +28,8 @@
             android:paddingLeft="30sp"
             android:paddingTop="10sp"
             android:text="@string/pollenLocationText"
-            android:fontFamily="@font/arial"
             android:textColor="@color/midPurpText"/>
+        <!--android:fontFamily="@font/arial"-->
 
         <TextView
             android:id="@+id/pollenLevelTxt"
@@ -38,8 +38,8 @@
             android:text="@string/pollenCount"
             android:paddingLeft="30sp"
             android:textSize="100sp"
-            android:fontFamily="@font/arial"
             android:textColor="@color/midPurpText"/>
+        <!--android:fontFamily="@font/arial"-->
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,9 +48,8 @@
             android:paddingLeft="30sp"
             android:paddingTop="20sp"
             android:text="@string/pollenTip"
-            android:fontFamily="@font/arial"
             android:textColor="@color/midPurpText"/>
-
+            <!--android:fontFamily="@font/arial"-->
 
 
     </LinearLayout>
@@ -70,7 +69,6 @@
                 android:layout_height="wrap_content"
                 android:height="150px"
                 android:background="@color/whitePink"
-                android:fontFamily="@font/arial"
                 android:paddingTop="40px"
                 android:text="You've sneezed 27 times today"
                 android:textAlignment="center"
@@ -78,8 +76,8 @@
                 android:textIsSelectable="false"
                 android:textSize="50px"
                 android:textStyle="bold"
-                android:layout_gravity="center_horizontal|center"
-                />
+                android:layout_gravity="center_horizontal|center" />
+                <!--android:fontFamily="@font/arial"-->
 
 
             <Button
@@ -89,10 +87,9 @@
                 android:text="SNEEZE"
                 android:textColor="@color/lavender"
                 android:textSize="100dp"
-                android:fontFamily="@font/arial"
                 android:id="@+id/sneezeButton"
                 android:layout_alignParentBottom="true" />
-
+                <!--android:fontFamily="@font/arial"-->
 
 
         </LinearLayout>
