@@ -13,12 +13,18 @@ import android.widget.Toast;
 
 import com.example.sneezyapplication.data.SneezeData;
 import com.example.sneezyapplication.data.SneezeItem;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
+import com.mongodb.stitch.core.services.mongodb.remote.sync.SyncUpdateResult;
 
+import org.bson.BsonDocument;
+import org.bson.BsonString;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.text.DateFormat;
@@ -37,8 +43,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         final Button button = view.findViewById(R.id.sneezeButton);
 
-
-
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
                 handleSneeze();
@@ -47,16 +51,42 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    DateFormat dayFormat = new SimpleDateFormat("EEE MMM dd yyyy");
+
     private void handleSneeze(){
         MainActivity mainAct = (MainActivity)getActivity();
 
-        DateFormat dayFormat = new SimpleDateFormat("EEE MMM dd");
+        Date curTime = new Date();
+
+        BsonDocument searchForCurrentDateQuery = new BsonDocument()
+                .append(SneezeItem.Fields.DATE, new BsonString(dayFormat.format(curTime)))
+                .append(SneezeItem.Fields.OWNER_ID, new BsonString(mainAct.getUserID()));
+
+        mainAct.getItems().sync().count(searchForCurrentDateQuery).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Long numDocs = task.getResult();
+                if (numDocs != 0){
+                    updateCurrentSneeze(mainAct);
+                } else {
+                    createNewSneeze(mainAct);
+                }
+            } else {
+                Log.e("app", "Failed to count documents with exception: ", task.getException());
+            }
+        });
+
+
+
+    }
+
+    private void createNewSneeze(MainActivity mainAct){
+
         Date curTime = new Date();
 
         List<SneezeData> sd = new ArrayList<SneezeData>();
         sd.add(new SneezeData(curTime, ""));
 
-        mainAct.getItems().insertOne(new SneezeItem(new ObjectId(), mainAct.getUserID(), curTime, sd))
+        mainAct.getItems().sync().insertOne(new SneezeItem(new ObjectId(), mainAct.getUserID(), dayFormat.format(curTime), sd))
                 .addOnSuccessListener(new OnSuccessListener<RemoteInsertOneResult>() {
                     @Override
                     public void onSuccess(RemoteInsertOneResult remoteInsertOneResult) {
@@ -70,6 +100,35 @@ public class HomeFragment extends Fragment {
                         Log.e("MONGODB ERR", e.toString());
                     }
                 });
+    }
 
+    private void updateCurrentSneeze(MainActivity mainAct){
+        //Toast.makeText(getActivity(), "Sneeze Item found", Toast.LENGTH_LONG).show();
+        String location = "";
+        Date curTime = new Date();
+
+        BsonDocument filterDoc = new BsonDocument()
+                .append(SneezeItem.Fields.OWNER_ID, new BsonString(mainAct.getUserID()))
+                .append(SneezeItem.Fields.DATE, new BsonString(dayFormat.format(curTime)));
+
+        BsonDocument queryDoc = new BsonDocument()
+                //.append(SneezeItem.Fields.OWNER_ID, new BsonString(mainAct.getUserID()))
+                .append("$addToSet",
+                        new BsonDocument(SneezeItem.Fields.SNEEZES,
+                                new BsonDocument()
+                                        .append(SneezeItem.Fields.LOCATION, new BsonString(location))
+                                        .append(SneezeItem.Fields.DATE, new BsonString(curTime.toString()))));
+
+        mainAct.getItems().sync().updateOne(filterDoc, queryDoc)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        long numMatched = task.getResult().getMatchedCount();
+                        long numModified = task.getResult().getModifiedCount();
+                        Log.d("app", String.format("successfully matched %d and modified %d documents",
+                                numMatched, numModified));
+                    } else {
+                        Log.e("app", "failed to update document with: ", task.getException());
+                    }
+                });
     }
 }

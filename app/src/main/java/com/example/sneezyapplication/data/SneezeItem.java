@@ -29,10 +29,10 @@ public class SneezeItem {
 
     private final ObjectId _id;
     private final String owner_id;
-    private final Date date;
+    private final String date;
     private final List<SneezeData> sneezes;
 
-    public SneezeItem(ObjectId _id, String owner_id, Date date, List<SneezeData> sneezes) {
+    public SneezeItem(ObjectId _id, String owner_id, String date, List<SneezeData> sneezes) {
         this._id = _id;
         this.owner_id = owner_id;
         this.date = date;
@@ -47,7 +47,7 @@ public class SneezeItem {
         return owner_id;
     }
 
-    public Date getDate() { return date; }
+    public String getDate() { return date; }
 
     public List<SneezeData> getSneezes() { return sneezes; }
 
@@ -62,20 +62,15 @@ public class SneezeItem {
         }
         asDoc.put(Fields.ID, new BsonObjectId(item.get_id()));
         asDoc.put(Fields.OWNER_ID, new BsonString(item.getOwner_id()));
-        asDoc.put(Fields.DATE, new BsonString(item.getDate().toString()));
+        asDoc.put(Fields.DATE, new BsonString(item.getDate()));
         asDoc.put(Fields.SNEEZES, new BsonArray(sneezeDataArray));
         return asDoc;
     }
 
     static SneezeItem fromBsonDocument(final BsonDocument doc) {
-        DateFormat format = new SimpleDateFormat();
-        DateFormat dayFormat = new SimpleDateFormat("EEE MMM dd");
-        Date dayDate = null;
-        try {
-            dayDate = format.parse(doc.getString(Fields.DATE).getValue());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        DateFormat dayFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+        String dayDate = doc.getString(Fields.DATE).getValue();
+
 
         List<SneezeData> decodedSneezes = new ArrayList<>();
         List<BsonValue> encodedSneezes = doc.getArray(Fields.SNEEZES).getValues();
@@ -102,12 +97,12 @@ public class SneezeItem {
         );
     }
 
-    static final class Fields {
-        static final String ID = "_id";
-        static final String OWNER_ID = "owner_id";
-        static final String LOCATION = "location";
-        static final String DATE = "date";
-        static final String SNEEZES = "sneezes";
+    public static final class Fields {
+        public static final String ID = "_id";
+        public static final String OWNER_ID = "owner_id";
+        public static final String LOCATION = "location";
+        public static final String DATE = "date";
+        public static final String SNEEZES = "sneezes";
     }
 
     public static final Codec<SneezeItem> codec = new Codec<SneezeItem>() {

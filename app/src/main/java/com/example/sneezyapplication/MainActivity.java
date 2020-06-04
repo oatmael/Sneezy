@@ -12,21 +12,31 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.sneezyapplication.data.SneezeItem;
+import com.example.sneezyapplication.data.SneezeRepository;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.internal.common.BsonUtils;
+import com.mongodb.stitch.core.services.mongodb.remote.ChangeEvent;
+import com.mongodb.stitch.core.services.mongodb.remote.sync.ChangeEventListener;
+import com.mongodb.stitch.core.services.mongodb.remote.sync.DefaultSyncConflictResolvers;
+import com.mongodb.stitch.core.services.mongodb.remote.sync.ErrorListener;
 
+import org.bson.BsonValue;
+import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+
+import java.util.Set;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -42,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return items;
     }
 
+    public SneezeRepository repo;
+
     private String userID;
     public String getUserID() {
         return userID;
@@ -53,19 +65,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
 /*        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/arial.ttf");*/
-
-        // initiate the Stitch Client, depending on the app lifecycle might move this.
-        client = Stitch.getDefaultAppClient();
-        final RemoteMongoClient mongoClient = client.getServiceClient(
-                RemoteMongoClient.factory, "mongodb-atlas");
-
-        items = mongoClient
-                .getDatabase(SneezeItem.SNEEZE_DATABASE)
-                .getCollection(SneezeItem.SNEEZE_COLLECTION, SneezeItem.class)
-                .withCodecRegistry(CodecRegistries.fromRegistries(
-                        BsonUtils.DEFAULT_CODEC_REGISTRY,
-                        CodecRegistries.fromCodecs(SneezeItem.codec)));
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -89,12 +88,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.nav_home);
         }
 
+        repo = new SneezeRepository();
+
+        connectToDB();
         login();
+    }
+
+    private void connectToDB(){
+        // initiate the Stitch Client, depending on the app lifecycle might move this.
+
+        /*client = Stitch.getDefaultAppClient();
+        final RemoteMongoClient mongoClient = client.getServiceClient(
+                RemoteMongoClient.factory, "mongodb-atlas");
+
+        items = mongoClient
+                .getDatabase(SneezeItem.SNEEZE_DATABASE)
+                .getCollection(SneezeItem.SNEEZE_COLLECTION, SneezeItem.class)
+                .withCodecRegistry(CodecRegistries.fromRegistries(
+                        BsonUtils.DEFAULT_CODEC_REGISTRY,
+                        CodecRegistries.fromCodecs(SneezeItem.codec)));*/
+
+        String appID = getResources().getString(R.string.stitch_client_app_id);
+        client = Stitch.getDefaultAppClient();
+
     }
 
     private void login(){
         if (client.getAuth().getUser() != null && client.getAuth().getUser().isLoggedIn()) {
             userID = client.getAuth().getUser().getId();
+
+            setupLocalData();
+
             return;
         } else {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -102,6 +126,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void setupLocalData(){
+        final RemoteMongoClient mongoClient = client.getServiceClient(
+                RemoteMongoClient.factory, "mongodb-atlas");
+        items = mongoClient
+                .getDatabase(SneezeItem.SNEEZE_DATABASE)
+                .getCollection(SneezeItem.SNEEZE_COLLECTION, SneezeItem.class)
+                .withCodecRegistry(CodecRegistries.fromRegistries(
+                        BsonUtils.DEFAULT_CODEC_REGISTRY,
+                        CodecRegistries.fromCodecs(SneezeItem.codec)));
+
+        items.sync().configure(
+                DefaultSyncConflictResolvers.remoteWins(),
+                new CollectionUpdateListener(),
+                new CollectionErrorListener()
+        );
+    }
+
+
+    private class CollectionErrorListener implements ErrorListener {
+        @Override
+        public void onError(BsonValue documentId, Exception error) {
+            Log.e("Stitch", error.getLocalizedMessage());
+
+            Set<BsonValue> docsToBeFixed = items.sync().getPausedDocumentIds().getResult();
+            for (BsonValue doc_id : docsToBeFixed){
+                Toast.makeText(MainActivity.this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                // Other error resolve logic if necessary
+                items.sync().resumeSyncForDocument(doc_id);
+            }
+
+            // Refresh views here if necessary
+        }
+    }
+
+    private class CollectionUpdateListener implements ChangeEventListener<SneezeItem> {
+        @Override
+        public void onEvent(BsonValue documentId, ChangeEvent<SneezeItem> event) {
+            if (!event.hasUncommittedWrites()) {
+                // Do something on update
+
+                repo.updateRecords(MainActivity.this);
+            }
+
+            // Refresh views here if necessary
+        }
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -152,3 +222,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 }
+
