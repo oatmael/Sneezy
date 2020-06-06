@@ -1,7 +1,6 @@
-package com.example.sneezyapplication;
+package com.app.sneezyapplication;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -13,12 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.sneezyapplication.data.SneezeItem;
-import com.example.sneezyapplication.data.SneezeRepository;
+import com.app.sneezyapplication.data.SneezeItem;
+import com.app.sneezyapplication.data.SneezeRepository;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
@@ -30,11 +28,7 @@ import com.mongodb.stitch.core.services.mongodb.remote.sync.DefaultSyncConflictR
 import com.mongodb.stitch.core.services.mongodb.remote.sync.ErrorListener;
 
 import org.bson.BsonValue;
-import org.bson.Document;
-import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.util.Set;
 

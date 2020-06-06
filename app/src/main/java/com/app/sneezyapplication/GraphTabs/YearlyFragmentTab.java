@@ -1,4 +1,4 @@
-package com.example.sneezyapplication.GraphTabs;
+package com.app.sneezyapplication.GraphTabs;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.sneezyapplication.R;
+import com.app.sneezyapplication.R;
 
 public class YearlyFragmentTab extends Fragment {
 

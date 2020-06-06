@@ -1,4 +1,4 @@
-package com.example.sneezyapplication;
+package com.app.sneezyapplication;
 
 import org.junit.Test;
 

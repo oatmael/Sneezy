@@ -1,21 +1,19 @@
-package com.example.sneezyapplication;
+package com.app.sneezyapplication;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.sneezyapplication.GraphTabs.DailyFragmentTab;
-import com.example.sneezyapplication.GraphTabs.WeeklyFragmentTab;
-import com.example.sneezyapplication.GraphTabs.YearlyFragmentTab;
+import com.app.sneezyapplication.GraphTabs.DailyFragmentTab;
+import com.app.sneezyapplication.GraphTabs.WeeklyFragmentTab;
+import com.app.sneezyapplication.GraphTabs.YearlyFragmentTab;
 
 public class GraphsFragment extends Fragment {
 

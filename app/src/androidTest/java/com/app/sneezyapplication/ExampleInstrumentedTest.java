@@ -1,4 +1,4 @@
-package com.example.sneezyapplication;
+package com.app.sneezyapplication;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

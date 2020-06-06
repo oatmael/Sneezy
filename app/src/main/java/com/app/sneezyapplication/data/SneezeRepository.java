@@ -1,6 +1,6 @@
-package com.example.sneezyapplication.data;
+package com.app.sneezyapplication.data;
 
-import com.example.sneezyapplication.MainActivity;
+import com.app.sneezyapplication.MainActivity;
 import com.google.android.gms.tasks.Task;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 

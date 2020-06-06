@@ -1,7 +1,6 @@
-package com.example.sneezyapplication.data;
+package com.app.sneezyapplication.data;
 
 import org.bson.BsonArray;
-import org.bson.BsonDateTime;
 import org.bson.BsonDocument;
 import org.bson.BsonObjectId;
 import org.bson.BsonReader;
@@ -18,7 +17,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

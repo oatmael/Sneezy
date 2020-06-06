@@ -1,4 +1,4 @@
-package com.example.sneezyapplication;
+package com.app.sneezyapplication;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,26 +11,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.sneezyapplication.data.SneezeData;
-import com.example.sneezyapplication.data.SneezeItem;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.app.sneezyapplication.data.SneezeData;
+import com.app.sneezyapplication.data.SneezeItem;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
-import com.mongodb.stitch.core.services.mongodb.remote.sync.SyncUpdateResult;
 
 import org.bson.BsonDocument;
 import org.bson.BsonString;
-import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.sneezyapplication;
+package com.app.sneezyapplication;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -1,4 +1,4 @@
-package com.example.sneezyapplication.data;
+package com.app.sneezyapplication.data;
 
 import java.util.Date;
 
