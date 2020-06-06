@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1045273968584",
+    "firebase_url": "https://sneezy-279504.firebaseio.com",
+    "project_id": "sneezy-279504",
+    "storage_bucket": "sneezy-279504.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045273968584:android:de7cf322605c51f453cafd",
+        "android_client_info": {
+          "package_name": "com.app.sneezyapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1045273968584-dpvp9sbm06vm244bs0f9sukgvoa7tslq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.sneezyapplication",
+            "certificate_hash": "e1043a5bdad7b87f329e52bdc689253b8b1adc39"
+          }
+        },
+        {
+          "client_id": "1045273968584-ko38ka6og4qp6ithoo3fcnmbvg2aueph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2sd7VDUwn66-HuLcV5ej4LbSGHreTBMo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1045273968584-ko38ka6og4qp6ithoo3fcnmbvg2aueph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
