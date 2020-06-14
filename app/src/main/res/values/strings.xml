@@ -3,4 +3,17 @@
 
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
+    <string name="btn_location_desc">Location icon</string>
+
+    <!--    PopUp Strings   -->
+    <string name="popup_header">Select a city</string>
+    <string name="radio_adelaide">Adelaide</string>
+    <string name="radio_brisbane">Brisbane</string>
+    <string name="radio_canberra">Canberra</string>
+    <string name="radio_sydney">Sydney</string>
+    <string name="radio_melbourne">Melbourne</string>
+    <string name="radio_hobart">Hobart</string>
+    <string name="radio_perth">Perth</string>
+    <string name="btn_save">SAVE</string>
+
 </resources>
