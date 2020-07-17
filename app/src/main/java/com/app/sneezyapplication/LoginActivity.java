@@ -1,11 +1,13 @@
 package com.app.sneezyapplication;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -15,8 +17,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
-import com.mongodb.stitch.core.auth.providers.google.GoogleCredential;
-import com.mongodb.stitch.core.auth.providers.anonymous.AnonymousCredential;
+
+import io.realm.mongodb.Credentials;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -39,16 +41,16 @@ public class LoginActivity extends AppCompatActivity {
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestServerAuthCode(googleWebClientId, true).build();
 
-        _googleApiClient = new GoogleApiClient.Builder(LoginActivity.this)
+        /*_googleApiClient = new GoogleApiClient.Builder(LoginActivity.this)
                 .enableAutoManage(LoginActivity.this, connectionResult ->
                         Log.e("Stitch Auth", "Error connecting to google: " + connectionResult.getErrorMessage()))
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+                .build();*/
 
         findViewById(R.id.google_login_button).setOnClickListener(v -> {
-            if (!_googleApiClient.isConnected()) {
+            /*if (!_googleApiClient.isConnected()) {
                 _googleApiClient.connect();
-            }
+            }*/
             GoogleSignInClient mGoogleSignInClient =
                     GoogleSignIn.getClient(LoginActivity.this, gso);
 
@@ -72,19 +74,20 @@ public class LoginActivity extends AppCompatActivity {
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            String idToken = account.getServerAuthCode();
 
-            final GoogleCredential googleCredential =
-                    new GoogleCredential(account.getServerAuthCode());
+            Credentials googleCredentials = Credentials.google(idToken);
 
-            MainActivity.client.getAuth().loginWithCredential(googleCredential).addOnCompleteListener(
-                    task -> {
-                        if (task.isSuccessful()) {
-                            setResult(Activity.RESULT_OK);
-                            finish();
-                        } else {
-                            Log.e("Stitch Auth", "Error logging in with Google", task.getException());
-                        }
-                    });
+            MainActivity.app.loginAsync(googleCredentials, it -> {
+                if (it.isSuccess()) {
+                    Toast.makeText(LoginActivity.this,
+                            "Logged in with Google. ID: " +  MainActivity.user.getId(),
+                            Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    Toast.makeText(this, it.getError().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
 
         } catch (ApiException e) {
             Log.w("GOOGLE AUTH FAILURE", "signInResult:failed code=" + e.getStatusCode());
@@ -94,21 +97,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void enableAnonymousAuth() {
+        Credentials anonCredentials = Credentials.anonymous();
+
         findViewById(R.id.anon_login_button).setOnClickListener(ignored ->
-                MainActivity.client.getAuth().loginWithCredential(new AnonymousCredential())
-                        .addOnSuccessListener(user -> {
-                            Toast.makeText(LoginActivity.this,
-                                    "Logged in Anonymously. ID: " + user.getId(),
-                                    Toast.LENGTH_LONG).show();
-                            setResult(Activity.RESULT_OK);
-                            finish();
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.d("Stitch Auth", "error logging in", e);
-                            Toast.makeText(LoginActivity.this, "Failed to log in Anonymously. " +
-                                            "Did you enable Anonymous Auth in your Stitch backend and copy " +
-                                            "your Stitch App ID to strings.xml?",
-                                    Toast.LENGTH_LONG).show();
-                        }));
+                MainActivity.app.loginAsync(anonCredentials, it -> {
+                    if (it.isSuccess()){
+                        Toast.makeText(LoginActivity.this,
+                                "Logged in Anonymously. ID: " +  MainActivity.user.getId(),
+                                Toast.LENGTH_LONG).show();
+                        finish();
+                    } else {
+                        Toast.makeText(this, it.getError().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }));
     }
 }

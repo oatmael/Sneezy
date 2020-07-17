@@ -1,11 +1,6 @@
 package com.app.sneezyapplication.data;
 
 import com.app.sneezyapplication.MainActivity;
-import com.google.android.gms.tasks.Task;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteFindIterable;
-
-import org.bson.BsonDocument;
-import org.bson.BsonString;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,7 +37,7 @@ public class SneezeRepository {
     }
 
     private void updateAllSneezes(MainActivity activity){
-        BsonDocument allRecordsFilter = new BsonDocument()
+        /*BsonDocument allRecordsFilter = new BsonDocument()
                 .append(SneezeItem.Fields.OWNER_ID, new BsonDocument()
                         .append("$ne", new BsonString(activity.getUserID())));
 
@@ -62,10 +57,12 @@ public class SneezeRepository {
                 // Do something on update?
             }
         });
+*/
+
     }
 
     private void updateUserSneezes(MainActivity activity){
-        BsonDocument userRecordsFilter = new BsonDocument()
+        /*BsonDocument userRecordsFilter = new BsonDocument()
                 .append(SneezeItem.Fields.OWNER_ID, new BsonString(activity.getUserID()));
 
         RemoteFindIterable userRecordsResults = activity.getItems()
@@ -79,6 +76,8 @@ public class SneezeRepository {
                 // Do something on update?
             }
         });
+
+        activity.realm.where<SneezeItem>();*/
     }
 
     private void updateUserMonthlySneezes(){
@@ -95,6 +94,7 @@ public class SneezeRepository {
     private void updateUserWeeklySneezes(){
 
     }
+
 
 
 }
