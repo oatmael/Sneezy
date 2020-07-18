@@ -30,10 +30,21 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         final Button button = view.findViewById(R.id.sneezeButton);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v){
-                handleSneeze();
+        button.setOnClickListener(v -> {
+            MainActivity mainAct = (MainActivity)getActivity();
+            if (mainAct.checkLocationPermission()) {
+                mainAct.fusedLocationClient.getLastLocation()
+                        .addOnSuccessListener(location -> {
+                            if (location != null){
+                                //Log.e("app", String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()));
+                                MainActivity.location = location;
+                            }
+                        }).addOnFailureListener(e -> {
+                    Log.e("location", e.getLocalizedMessage());
+                });
             }
+
+            handleSneeze();
         });
         return view;
     }
@@ -56,7 +67,8 @@ public class HomeFragment extends Fragment {
     private void createNewSneeze(){
         MainActivity.realm.executeTransaction(r -> {
             SneezeData sd = new SneezeData(
-                    new Date().toString(), getLocation((MainActivity)getActivity()));
+                    new Date().toString(),
+                    getLocation());
             RealmList<SneezeData> sdl = new RealmList<>();
             sdl.add(sd);
 
@@ -77,35 +89,20 @@ public class HomeFragment extends Fragment {
             sneeze.getSneezes().add(
                     new SneezeData(
                             new Date().toString(),
-                            getLocation((MainActivity)getActivity())
+                            getLocation()
                     ));
         });
     }
 
-    private String getLocation(MainActivity mainAct){
-        final AtomicReference<String> latitude = new AtomicReference<>();
-        final AtomicReference<String> longitude = new AtomicReference<>();
+    private String getLocation(){
+        String lat = "";
+        String lng = "";
+        if (MainActivity.location != null) {
+            lat = String.valueOf(MainActivity.location.getLatitude());
+            lng = String.valueOf(MainActivity.location.getLongitude());
 
-        if (mainAct.checkLocationPermission()) {
-            mainAct.fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(location -> {
-                        if (location != null){
-                            //Log.e("app", String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()));
-                            latitude.set(String.valueOf(location.getLatitude()));
-                            longitude.set(String.valueOf(location.getLongitude()));
-                        }
-                    }).addOnFailureListener(e -> {
-                        Log.e("location", e.getLocalizedMessage());
-                        latitude.set("");
-                        longitude.set("");
-                    });
-        } else {
-            latitude.set("");
-            longitude.set("");
+            Log.e("app", String.valueOf(MainActivity.location.getLatitude()) + "," + String.valueOf(MainActivity.location.getLongitude()));
         }
-
-        Log.e("app", latitude.get() + "," + longitude.get());
-
-        return latitude.get() + "," + longitude.get();
+        return lat + "," + lng;
     }
 }

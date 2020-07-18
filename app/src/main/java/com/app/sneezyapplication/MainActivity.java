@@ -15,6 +15,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.location.Location;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static App app;
     public static User user;
     public static Realm realm;
+    public static Location location;
 
     public FusedLocationProviderClient fusedLocationClient;
 
@@ -89,6 +92,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         repo = new SneezeRepository();
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (checkLocationPermission()) {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(_location -> {
+                        if (_location != null){
+                            location = _location;
+                        }
+                    }).addOnFailureListener(e -> {
+                        Log.e("location", e.getLocalizedMessage());
+                    });
+        }
     }
 
     @Override
@@ -255,11 +268,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (locationResult == null) {
                         return;
                     }
-                    /*for (Location location : locationResult.getLocations()) {
-                        if (location != null) {
-                            //TODO: UI updates.
+                    for (Location _location : locationResult.getLocations()) {
+                        if (_location != null) {
+                            location = _location;
                         }
-                    }*/
+                    }
                 }
             };
             LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
