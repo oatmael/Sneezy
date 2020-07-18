@@ -29,16 +29,12 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
 import io.realm.mongodb.User;
 import io.realm.mongodb.sync.SyncConfiguration;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 //TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES
@@ -61,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        Realm.init(this);
+        realm = Realm.getDefaultInstance();
 
         setContentView(R.layout.activity_main);
 
@@ -91,16 +88,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         repo = new SneezeRepository();
 
-        Realm.init(this);
-        connectToDB();
-        login();
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        connectToDB();
+        login();
     }
 
     @Override
@@ -112,15 +107,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        user .logOutAsync(r -> {
+            Log.i("REALM", "Logged out");
+        });
         realm.close();
     }
 
     private void connectToDB(){
-        // initiate the Stitch Client, depending on the app lifecycle might move this.
-
         String appID = getResources().getString(R.string.stitch_client_app_id);
         app = new App(new AppConfiguration.Builder(appID).build());
-
     }
 
     private void login(){
@@ -143,18 +138,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setupLocalData(){
-        String partitionValue = "";
+        String partitionValue = "partition";
         SyncConfiguration config = new SyncConfiguration.Builder(user, partitionValue)
                 .waitForInitialRemoteData()
                 .build();
-
-        //RealmConfiguration config = new RealmConfiguration.Builder().build();
 
         Realm.getInstanceAsync(config, new Realm.Callback() {
             @Override
             @ParametersAreNonnullByDefault
             public void onSuccess(Realm _realm) {
                 realm = _realm;
+                repo.updateRecords();
                 Log.v("REALM", "Successfully instantiated realm!");
             }
 

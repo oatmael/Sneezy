@@ -2,10 +2,12 @@ package com.app.sneezyapplication.data;
 
 import android.location.Location;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.RealmClass;
 
-@RealmClass(embedded = true)
+@RealmClass(name = "Sneeze_sneezes", embedded = true)
 public class SneezeData extends RealmObject {
 
     private String date;
@@ -17,6 +19,16 @@ public class SneezeData extends RealmObject {
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
 
+    public SneezeData(String date, String location) {
+        this.date = date;
+        this.location = location;
+    }
+    public SneezeData(){
+        this.date = new Date().toString();
+        this.location = "null,null";
+    }
+
+    // TODO
     public Location locationAsAndroidLocation(){
         Location location = new Location("dummyprovider");
         //location.setLongitude();
