@@ -1,50 +1,53 @@
 package com.app.sneezyapplication;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import android.content.pm.PackageManager;
+
+import androidx.annotation.NonNull;
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeRepository;
-import com.mongodb.stitch.android.core.Stitch;
-import com.mongodb.stitch.android.core.StitchAppClient;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
-import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
-import com.mongodb.stitch.core.internal.common.BsonUtils;
-import com.mongodb.stitch.core.services.mongodb.remote.ChangeEvent;
-import com.mongodb.stitch.core.services.mongodb.remote.sync.ChangeEventListener;
-import com.mongodb.stitch.core.services.mongodb.remote.sync.DefaultSyncConflictResolvers;
-import com.mongodb.stitch.core.services.mongodb.remote.sync.ErrorListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
-import org.bson.BsonValue;
-import org.bson.codecs.configuration.CodecRegistries;
+import io.realm.Realm;
+import io.realm.mongodb.App;
+import io.realm.mongodb.AppConfiguration;
+import io.realm.mongodb.User;
+import io.realm.mongodb.sync.SyncConfiguration;
 
-import java.util.Set;
-
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 //TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES
     private DrawerLayout drawer;
 
-    public static StitchAppClient client;
+    public static App app;
+    public static User user;
+    public static Realm realm;
+    public static Location location;
 
-    private RemoteMongoCollection<SneezeItem> items;
-    public RemoteMongoCollection<SneezeItem> getItems() {
-        return items;
-    }
+    public FusedLocationProviderClient fusedLocationClient;
 
     public SneezeRepository repo;
 
@@ -56,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Realm.init(this);
+        realm = Realm.getDefaultInstance();
+
         setContentView(R.layout.activity_main);
 
 /*        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/arial.ttf");*/
@@ -84,32 +91,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         repo = new SneezeRepository();
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (checkLocationPermission()) {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(_location -> {
+                        if (_location != null){
+                            location = _location;
+                        }
+                    }).addOnFailureListener(e -> {
+                        Log.e("location", e.getLocalizedMessage());
+                    });
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         connectToDB();
         login();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        realm.close();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        user .logOutAsync(r -> {
+            Log.i("REALM", "Logged out");
+        });
+        realm.close();
+    }
+
     private void connectToDB(){
-        // initiate the Stitch Client, depending on the app lifecycle might move this.
-
-        /*client = Stitch.getDefaultAppClient();
-        final RemoteMongoClient mongoClient = client.getServiceClient(
-                RemoteMongoClient.factory, "mongodb-atlas");
-
-        items = mongoClient
-                .getDatabase(SneezeItem.SNEEZE_DATABASE)
-                .getCollection(SneezeItem.SNEEZE_COLLECTION, SneezeItem.class)
-                .withCodecRegistry(CodecRegistries.fromRegistries(
-                        BsonUtils.DEFAULT_CODEC_REGISTRY,
-                        CodecRegistries.fromCodecs(SneezeItem.codec)));*/
-
         String appID = getResources().getString(R.string.stitch_client_app_id);
-        client = Stitch.getDefaultAppClient();
-
+        app = new App(new AppConfiguration.Builder(appID).build());
     }
 
     private void login(){
-        if (client.getAuth().getUser() != null && client.getAuth().getUser().isLoggedIn()) {
-            userID = client.getAuth().getUser().getId();
+        try {
+            user = app.currentUser();
+        } catch (IllegalStateException e) {
+            Log.e("NoLogin", e.getMessage());
+        }
+
+        if (user != null) {
+            userID = user.getId();
 
             setupLocalData();
 
@@ -121,51 +151,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setupLocalData(){
-        final RemoteMongoClient mongoClient = client.getServiceClient(
-                RemoteMongoClient.factory, "mongodb-atlas");
-        items = mongoClient
-                .getDatabase(SneezeItem.SNEEZE_DATABASE)
-                .getCollection(SneezeItem.SNEEZE_COLLECTION, SneezeItem.class)
-                .withCodecRegistry(CodecRegistries.fromRegistries(
-                        BsonUtils.DEFAULT_CODEC_REGISTRY,
-                        CodecRegistries.fromCodecs(SneezeItem.codec)));
+        String partitionValue = "partition";
+        SyncConfiguration config = new SyncConfiguration.Builder(user, partitionValue)
+                .waitForInitialRemoteData()
+                .build();
 
-        items.sync().configure(
-                DefaultSyncConflictResolvers.remoteWins(),
-                new CollectionUpdateListener(),
-                new CollectionErrorListener()
-        );
-    }
-
-
-    private class CollectionErrorListener implements ErrorListener {
-        @Override
-        public void onError(BsonValue documentId, Exception error) {
-            Log.e("Stitch", error.getLocalizedMessage());
-
-            Set<BsonValue> docsToBeFixed = items.sync().getPausedDocumentIds().getResult();
-            for (BsonValue doc_id : docsToBeFixed){
-                Toast.makeText(MainActivity.this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                // Other error resolve logic if necessary
-                items.sync().resumeSyncForDocument(doc_id);
+        Realm.getInstanceAsync(config, new Realm.Callback() {
+            @Override
+            @ParametersAreNonnullByDefault
+            public void onSuccess(Realm _realm) {
+                realm = _realm;
+                repo.updateRecords();
+                Log.v("REALM", "Successfully instantiated realm!");
             }
 
-            // Refresh views here if necessary
-        }
-    }
-
-    private class CollectionUpdateListener implements ChangeEventListener<SneezeItem> {
-        @Override
-        public void onEvent(BsonValue documentId, ChangeEvent<SneezeItem> event) {
-            if (!event.hasUncommittedWrites()) {
-                // Do something on update
-
-                repo.updateRecords(MainActivity.this);
+            @Override
+            public void onError(Throwable exception) {
+                Log.e("REALM", exception.getMessage());
             }
+        });
 
-            // Refresh views here if necessary
-        }
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -214,6 +221,95 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.title_location_permission)
+                        .setMessage(R.string.text_location_permission)
+                        .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+                            //Prompt the user once explanation has been shown
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    MY_PERMISSIONS_REQUEST_LOCATION);
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            LocationRequest mLocationRequest = LocationRequest.create();
+            mLocationRequest.setInterval(60000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            LocationCallback mLocationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult == null) {
+                        return;
+                    }
+                    for (Location _location : locationResult.getLocations()) {
+                        if (_location != null) {
+                            location = _location;
+                        }
+                    }
+                }
+            };
+            LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+
         }
     }
 

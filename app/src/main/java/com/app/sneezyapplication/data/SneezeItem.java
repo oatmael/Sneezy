@@ -1,100 +1,51 @@
 package com.app.sneezyapplication.data;
 
-import org.bson.BsonArray;
-import org.bson.BsonDocument;
-import org.bson.BsonObjectId;
-import org.bson.BsonReader;
-import org.bson.BsonString;
-import org.bson.BsonValue;
-import org.bson.BsonWriter;
-import org.bson.codecs.BsonDocumentCodec;
-import org.bson.codecs.Codec;
-import org.bson.codecs.DecoderContext;
-import org.bson.codecs.EncoderContext;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
+
 import org.bson.types.ObjectId;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+@RealmClass(name = "Sneeze")
+public class SneezeItem extends RealmObject {
 
-public class SneezeItem {
+    @PrimaryKey
+    private ObjectId _id;
+    private String _partition = "partition";
+    private String date;
+    private String owner_id;
 
-    public static final String SNEEZE_DATABASE = "LogTable";
-    public static final String SNEEZE_COLLECTION = "Sneezes";
+    // RealmList extends AbstractList, and due to polymorphism debauchery can be treated as a List.
+    private RealmList<SneezeData> sneezes;
 
-    private final ObjectId _id;
-    private final String owner_id;
-    private final String date;
-    private final List<SneezeData> sneezes;
+    // Standard getters & setters
+    public ObjectId get_id() { return _id; }
+    public void set_id(ObjectId _id) { this._id = _id; }
+    public String get_partition() { return _partition; }
+    public void set_partition(String _partition) { this._partition = _partition; }
+    public String getDate() { return date; }
+    public void setDate(String date) { this.date = date; }
+    public String getOwner_id() { return owner_id; }
+    public void setOwner_id(String owner_id) { this.owner_id = owner_id; }
+    public RealmList<SneezeData> getSneezes() { return sneezes; }
+    public void setSneezes(RealmList<SneezeData> sneezes) { this.sneezes = sneezes; }
 
-    public SneezeItem(ObjectId _id, String owner_id, String date, List<SneezeData> sneezes) {
-        this._id = _id;
-        this.owner_id = owner_id;
+
+
+    public SneezeItem(String date, String owner_id, RealmList<SneezeData> sneezes) {
+        this._id = ObjectId.get();
         this.date = date;
+        this.owner_id = owner_id;
         this.sneezes = sneezes;
     }
 
-    public ObjectId get_id() {
-        return _id;
+    public SneezeItem() {
+        this._id = ObjectId.get();
     }
 
-    public String getOwner_id() {
-        return owner_id;
-    }
 
-    public String getDate() { return date; }
-
-    public List<SneezeData> getSneezes() { return sneezes; }
-
-    static BsonDocument toBsonDocument(final SneezeItem item) {
-        final BsonDocument asDoc = new BsonDocument();
-        ArrayList<BsonDocument> sneezeDataArray = new ArrayList<>();
-        for (SneezeData s : item.sneezes){
-            BsonDocument sd = new BsonDocument();
-            sd.put(Fields.LOCATION, new BsonString(s.getLocation()));
-            sd.put(Fields.DATE, new BsonString(s.getDate().toString()));
-            sneezeDataArray.add(sd);
-        }
-        asDoc.put(Fields.ID, new BsonObjectId(item.get_id()));
-        asDoc.put(Fields.OWNER_ID, new BsonString(item.getOwner_id()));
-        asDoc.put(Fields.DATE, new BsonString(item.getDate()));
-        asDoc.put(Fields.SNEEZES, new BsonArray(sneezeDataArray));
-        return asDoc;
-    }
-
-    static SneezeItem fromBsonDocument(final BsonDocument doc) {
-        DateFormat dayFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-        String dayDate = doc.getString(Fields.DATE).getValue();
-
-
-        List<SneezeData> decodedSneezes = new ArrayList<>();
-        List<BsonValue> encodedSneezes = doc.getArray(Fields.SNEEZES).getValues();
-        for (BsonValue v: encodedSneezes){
-            BsonDocument vdoc = (BsonDocument) v;
-
-            Date date = null;
-            try {
-                date = dayFormat.parse(vdoc.getString(Fields.DATE).getValue());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            SneezeData sd = new SneezeData(date, vdoc.getString(Fields.LOCATION).getValue());
-            decodedSneezes.add(sd);
-        }
-
-
-        return new SneezeItem(
-                doc.getObjectId(Fields.ID).getValue(),
-                doc.getString(Fields.OWNER_ID).getValue(),
-                dayDate,
-                decodedSneezes
-        );
-    }
-
+    // Database field constants
     public static final class Fields {
         public static final String ID = "_id";
         public static final String OWNER_ID = "owner_id";
@@ -102,25 +53,4 @@ public class SneezeItem {
         public static final String DATE = "date";
         public static final String SNEEZES = "sneezes";
     }
-
-    public static final Codec<SneezeItem> codec = new Codec<SneezeItem>() {
-
-        @Override
-        public void encode(
-                final BsonWriter writer, final SneezeItem value, final EncoderContext encoderContext) {
-            new BsonDocumentCodec().encode(writer, toBsonDocument(value), encoderContext);
-        }
-
-        @Override
-        public Class<SneezeItem> getEncoderClass() {
-            return SneezeItem.class;
-        }
-
-        @Override
-        public SneezeItem decode(
-                final BsonReader reader, final DecoderContext decoderContext) {
-            final BsonDocument document = (new BsonDocumentCodec()).decode(reader, decoderContext);
-            return fromBsonDocument(document);
-        }
-    };
 }
