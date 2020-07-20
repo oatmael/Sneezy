@@ -19,8 +19,7 @@
             android:title="Stats"/>
 
     </group>
-
-    <item android:title="App Properties">
+    <item android:title="Other">
         <menu>
             <item android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_apps_black_24dp"

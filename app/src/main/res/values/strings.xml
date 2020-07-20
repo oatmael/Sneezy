@@ -3,10 +3,24 @@
 
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
-    <string name="pollenCountTitle">Today\'s pollen forecast will be</string>
+    <string name="pollenCountTitle">Pollen forecast for</string>
     <string name="pollenLocationText">Adelaide, SA</string>
-    <string name="pollenCount">LOW</string>
-    <string name="pollenTip">Keep the antihistimines at home</string>
+    <string name="pollenLocationIncorrect">Not your Location?</string>
+    <string name="pollenChangeLocation">Change Location</string>
+    <string name="weekAhead">Your week ahead</string>
+    <string name="indexText">Index</string>
+    <string name="pollenCountLow">LOW</string>
+    <string name="pollenCountMed">MED</string>
+    <string name="pollenCountHigh">HIGH</string>
+
+    <string name="homeMonday">MON</string>
+    <string name="homeTuesday">TUES</string>
+    <string name="homeWednsday">WED</string>
+    <string name="homeThursday">THUR</string>
+    <string name="homeFriday">FRI</string>
+    <string name="homeSaturday">SAT</string>
+    <string name="homeSunday">SUN</string>
+
     <string name="sneezeDetail">Youve sneezed 1 times today</string>
 
     <!-- Stitch API ID: don't change! -->

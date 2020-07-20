@@ -196,10 +196,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new StatsFragment()).commit();
                 break;
             case R.id.nav_settings:
-                Toast.makeText(this, "Settingssss", Toast.LENGTH_SHORT).show();
+                transaction.replace(R.id.fragment_container,
+                        new SettingsFragment()).commit();
                 break;
             case R.id.nav_about:
-                Toast.makeText(this, "WHAT ABOUT IT", Toast.LENGTH_SHORT).show();
+                transaction.replace(R.id.fragment_container,
+                        new AboutFragment()).commit();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
