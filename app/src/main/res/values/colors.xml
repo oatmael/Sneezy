@@ -8,7 +8,6 @@
     <color name="lavender">#BC96E6</color>
     <color name="whitePink">#D8B4E2</color>
     <color name="midPurpText">#55286F</color>
-    <color name="black">#000000</color>
 
     <color name="whiteBacking">#FFFFFF</color>
     <color name="backGrey">#A0555555</color>
@@ -22,6 +21,4 @@
     <color name="changeLocButtBlue">#91C4F2</color>
     <color name="changeLocButtBorderGrey">#737373</color>
     <color name="indexBlocksTextColor">#412939</color>
-    <color name="buttonBlue">#8D89A6</color>
-    <color name="plusMinusGrey">#333333</color>
 </resources>
