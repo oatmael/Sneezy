@@ -12,6 +12,9 @@
     <string name="pollenCountLow">LOW</string>
     <string name="pollenCountMed">MED</string>
     <string name="pollenCountHigh">HIGH</string>
+    <string name="sneeze">SNEEZE</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
 
     <string name="homeMonday">MON</string>
     <string name="homeTuesday">TUES</string>
