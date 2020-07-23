@@ -81,7 +81,8 @@ public class LoginActivity extends AppCompatActivity {
             MainActivity.app.loginAsync(googleCredentials, it -> {
                 if (it.isSuccess()) {
                     Toast.makeText(LoginActivity.this,
-                            "Logged in with Google. ID: " +  MainActivity.user.getId(),
+                            "Logged in with Google. ID: ",
+                                    //+  MainActivity.user.getId(),
                             Toast.LENGTH_LONG).show();
                     finish();
                 } else {
@@ -103,7 +104,8 @@ public class LoginActivity extends AppCompatActivity {
                 MainActivity.app.loginAsync(anonCredentials, it -> {
                     if (it.isSuccess()){
                         Toast.makeText(LoginActivity.this,
-                                "Logged in Anonymously. ID: " +  MainActivity.user.getId(),
+                                "Logged in Anonymously. ID: ",
+                                        //+  MainActivity.user.getId(),
                                 Toast.LENGTH_LONG).show();
                         finish();
                     } else {

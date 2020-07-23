@@ -9,15 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicReference;
 
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 
@@ -65,7 +64,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void createNewSneeze(){
-        MainActivity.realm.executeTransaction(r -> {
+        Realm realmThread = Realm.getDefaultInstance();
+
+        realmThread.executeTransaction(r -> {
             SneezeData sd = new SneezeData(
                     new Date().toString(),
                     getLocation());
@@ -75,12 +76,16 @@ public class HomeFragment extends Fragment {
             SneezeItem sneeze = new SneezeItem(
                     dayFormat.format(new Date()), MainActivity.user.getId(), sdl);
 
-            MainActivity.realm.insert(sneeze);
+            realmThread.insert(sneeze);
         });
+
+        realmThread.close();
     }
 
     private void updateCurrentSneeze(){
-        MainActivity.realm.executeTransaction(r -> {
+        Realm realmThread = Realm.getDefaultInstance();
+
+        realmThread.executeTransaction(r -> {
             SneezeItem sneeze = MainActivity.realm.where(SneezeItem.class)
                     .equalTo(SneezeItem.Fields.DATE, dayFormat.format(new Date()))
                     .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
@@ -92,6 +97,8 @@ public class HomeFragment extends Fragment {
                             getLocation()
                     ));
         });
+
+        realmThread.close();
     }
 
     private String getLocation(){
