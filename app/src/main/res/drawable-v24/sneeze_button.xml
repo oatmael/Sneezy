@@ -6,7 +6,7 @@
         android:radius="31dp"/>
 
     <solid
-        android:color="?attr/buttonMain"/>
+        android:color="@color/buttonBlue"/>
 
     <size
         android:width="390dp"

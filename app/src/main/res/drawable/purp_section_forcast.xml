@@ -7,7 +7,7 @@
         android:radius="31dp"/>
 
     <solid
-        android:color="?attr/sectionColor"/>
+        android:color="@color/sectionPurp"/>
 
     <size
         android:width="390dp"

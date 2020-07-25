@@ -6,7 +6,7 @@
         android:radius="5dp"/>
 
     <solid
-        android:color="?attr/changeLocButton"/>
+        android:color="@color/changeLocButtBlue"/>
 
     <size
         android:width="136dp"

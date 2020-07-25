@@ -2,14 +2,11 @@ package com.app.sneezyapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
-
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -24,8 +21,6 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.app.sneezyapplication.data.SneezeRepository;
@@ -61,10 +56,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return userID;
     }
 
-    private Switch darkModeSwitch;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,38 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Realm.init(this);
         realm = Realm.getDefaultInstance();
 
-        /*TODO TEST*/
-        /*Dark Mode Code. Commented Out in case not working. Not able to test as of yet.////////////////////////////////////////////////////*/
-/*        if(AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES) {
-            setTheme(R.style.darkTheme);
-        }
-        else setTheme(R.style.AppTheme);
-        super.onCreate(savedInstanceState);*/
-
-        /*REQUIRED/Not Dark Mode Related \/*/
         setContentView(R.layout.activity_main);
-        /*REQUIRED^^^^^^^^^^*/
-
-/*        darkModeSwitch = (Switch)findViewById(R.id.darkModeSwitch);
-        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES) {
-            darkModeSwitch.setChecked(true);
-        }
-        darkModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    restartApp();
-                }
-                else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    restartApp();
-                }
-            }
-        });*/
-
-        /*End Dark Mode Code. THERE IS ANOTHER METHOD IN MainActivity CALLED restartApp!! Wont be used unless darkmode code is uncommented.////////////////////////////////*/
-
 
 /*        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/arial.ttf");*/
 
@@ -129,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setCheckedItem(R.id.nav_home);
         }
 
-
-
         repo = new SneezeRepository();
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -145,14 +103,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     });
         }
     }
-
-    /*TODO TEST*/
-    public void restartApp() {
-        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(i);
-        finish();
-    }
-
 
     @Override
     protected void onStart() {
@@ -260,42 +210,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.replace(R.id.fragment_container,
                         new AboutFragment()).commit();
                 break;
-                /*TODO TEST*/
-            case R.id.nav_logout:
-                logoutPopup();
-                break;
-                /*TODO TEST*/
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    /*TODO TEST*/
-    /*used for nav logout*/
-    public void logoutPopup() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-        builder.setCancelable(true);
-        builder.setTitle("Title");
-        builder.setMessage("Do you want to logout?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                /*logout code here*/
-            }
-            });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-
 
     @Override
     public void onBackPressed(){

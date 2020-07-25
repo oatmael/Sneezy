@@ -6,7 +6,7 @@
         android:radius="31dp" />
 
     <solid
-        android:color="?attr/timesBubble"/>
+        android:color="@color/sectionPurp"/>
 
     <size
         android:width="61dp"

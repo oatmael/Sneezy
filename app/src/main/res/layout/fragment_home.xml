@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/background">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/backGrey">
 
     <LinearLayout
-        android:id="@+id/homeLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/homeLinearLayout">
 
         <FrameLayout
             android:id="@+id/topSectionLayout"
@@ -21,7 +22,7 @@
                 android:id="@+id/topSectionImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/section_forcast" />
+                android:background="@drawable/purp_section_forcast"/>
 
             <!--TEXT LAYOUT START-->
             <LinearLayout
@@ -31,56 +32,56 @@
 
 
                 <TextView
-                    android:id="@+id/forecastFor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/forecastFor"
+                    android:text="@string/pollenCountTitle"
+                    android:textColor="@color/textPurp"
                     android:layout_gravity="top|start"
                     android:paddingStart="15dp"
                     android:paddingTop="15dp"
-                    android:text="@string/pollenCountTitle"
-                    android:textColor="?attr/mainText"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="18sp"/>
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/pollenCountLocationTxt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:text="@string/pollenLocationText"
+                    android:textColor="@color/textPurp"
                     android:layout_gravity="top|start"
                     android:paddingStart="15dp"
                     android:paddingTop="0dp"
-                    android:text="@string/pollenLocationText"
-                    android:textColor="?attr/mainText"
-                    android:textSize="32sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="32sp"/>
 
                 <TextView
-                    android:id="@+id/locationIncorrectText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/locationIncorrectText"
+                    android:text="@string/pollenLocationIncorrect"
+                    android:textColor="@color/textPurp"
                     android:layout_gravity="top|start"
                     android:paddingStart="15dp"
                     android:paddingTop="0dp"
-                    android:text="@string/pollenLocationIncorrect"
-                    android:textColor="?attr/mainText"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="17sp"/>
 
                 <Button
-                    android:id="@+id/changeLocation"
                     android:layout_width="136dp"
                     android:layout_height="25dp"
-                    android:layout_gravity="top|start"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="0dp"
                     android:background="@drawable/change_loc_button"
-                    android:fontFamily="@font/arial"
-                    android:minHeight="35dp"
+                    android:id="@+id/changeLocation"
                     android:text="@string/pollenChangeLocation"
-                    android:textAllCaps="false"
-                    android:textColor="?attr/mainText"
+                    android:textColor="@color/changeLocPurp"
+                    android:layout_gravity="top|start"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginStart="12dp"
+                    android:minHeight="35dp"
+                    android:textStyle="normal"
+                    android:fontFamily="@font/arial"
                     android:textSize="13sp"
-                    android:textStyle="normal" />
+                    android:textAllCaps="false" />
 
             </LinearLayout>
             <!--FORCAST TEXT END-->
@@ -91,20 +92,20 @@
                 android:id="@+id/indexLayout"
                 android:layout_width="58dp"
                 android:layout_height="115dp"
-                android:layout_gravity="top|end"
-                android:layout_marginTop="30dp"
                 android:layout_marginEnd="15dp"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="top|end"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/indexTextView"
                     android:layout_width="45dp"
                     android:layout_height="21dp"
-                    android:layout_gravity="top|center"
                     android:text="@string/indexText"
-                    android:textColor="?attr/mainText"
+                    android:textColor="@color/textPurp"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_gravity="top|center"/>
 
 
                 <RelativeLayout
@@ -121,14 +122,15 @@
                         android:id="@+id/indexHigh"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
                         android:text="@string/pollenCountHigh"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:textStyle="bold"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"/>
 
                 </RelativeLayout>
+
 
 
                 <RelativeLayout
@@ -139,18 +141,19 @@
                         android:id="@+id/indexImageOrange"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/index_block_orange" />
+                        android:background="@drawable/index_block_orange"/>
 
                     <TextView
-                        android:id="@+id/indexMed"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
+                        android:id="@+id/indexMed"
                         android:text="@string/pollenCountMed"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:textStyle="bold"
                         android:textColor="@color/indexBlocksTextColor"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
+                        />
 
                 </RelativeLayout>
 
@@ -162,42 +165,44 @@
                         android:id="@+id/indexImageGreen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/index_block_green" />
+                        android:background="@drawable/index_block_green"/>
 
                     <TextView
-                        android:id="@+id/indexLow"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
+                        android:id="@+id/indexLow"
                         android:text="@string/pollenCountLow"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:textStyle="bold"
                         android:textColor="@color/indexBlocksTextColor"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
+                        />
                 </RelativeLayout>
             </LinearLayout>
             <!--INDEX END-->
 
 
+
             <TextView
-                android:id="@+id/weekAheadText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/weekAheadText"
+                android:text="@string/weekAhead"
+                android:textColor="@color/textPurp"
                 android:layout_gravity="bottom|start"
                 android:paddingStart="15dp"
                 android:paddingBottom="150dp"
-                android:text="@string/weekAhead"
-                android:textColor="?attr/mainText"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textSize="18sp"/>
 
             <!--START FORCAST-->
             <LinearLayout
                 android:layout_width="360dp"
                 android:layout_height="57dp"
+                android:orientation="horizontal"
                 android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="90dp"
-                android:orientation="horizontal">
+                android:layout_marginBottom="90dp">
 
                 <RelativeLayout
                     android:layout_width="60dp"
@@ -213,12 +218,12 @@
                         android:id="@+id/forecastTextBlockOne"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
                         android:text="@string/homeMonday"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:textStyle="bold"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"/>
 
                 </RelativeLayout>
 
@@ -236,12 +241,12 @@
                         android:id="@+id/forecastTextBlockTwo"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
                         android:text="@string/homeTuesday"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:textStyle="bold"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"/>
 
                 </RelativeLayout>
 
@@ -259,12 +264,12 @@
                         android:id="@+id/forecastTextBlockThree"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
                         android:text="@string/homeWednsday"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:textStyle="bold"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"/>
 
                 </RelativeLayout>
 
@@ -282,12 +287,12 @@
                         android:id="@+id/forecastTextBlockFour"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
                         android:text="@string/homeThursday"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:textStyle="bold"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"/>
 
                 </RelativeLayout>
 
@@ -305,12 +310,12 @@
                         android:id="@+id/forecastTextBlockFive"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
                         android:text="@string/homeFriday"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:textStyle="bold"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"/>
 
                 </RelativeLayout>
 
@@ -328,12 +333,12 @@
                         android:id="@+id/forecastTextBlockSix"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
                         android:text="@string/homeSaturday"
+                        android:gravity="center"
+                        android:layout_centerInParent="true"
+                        android:textStyle="bold"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="18sp"/>
 
                 </RelativeLayout>
 
@@ -341,27 +346,29 @@
             <!--END FORCAST-->
 
 
+
+
         </FrameLayout>
 
         <!--START OF GRAPHS AREA-->
         <FrameLayout
-            android:id="@+id/bottomSection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/bottomSection"
             android:orientation="vertical"
             android:padding="10dp">
 
             <ImageView
-                android:id="@+id/bottomSectionImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/section_homegraph" />
+                android:id="@+id/bottomSectionImage"
+                android:background="@drawable/purp_section_homegraph"/>
 
             <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
             <LinearLayout
-                android:id="@+id/homeGraphs"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:id="@+id/homeGraphs"
                 android:orientation="vertical">
 
             </LinearLayout>
@@ -371,33 +378,34 @@
 
         <!--START OF BUTTONS-->
         <FrameLayout
-            android:id="@+id/buttonSection"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonSection">
+
 
 
             <ImageView
-                android:id="@+id/buttonBackingImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_backing" />
+                android:id="@+id/buttonBackingImage"
+                android:background="@drawable/button_backing"/>
 
             <!--Sneeze Button-->
             <Button
-                android:id="@+id/sneezeButton"
                 android:layout_width="390dp"
                 android:layout_height="80dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="0dp"
                 android:background="@drawable/sneeze_button"
-                android:fontFamily="@font/arial"
-                android:minHeight="35dp"
+                android:id="@+id/sneezeButton"
                 android:text=""
-                android:textAllCaps="true"
                 android:textColor="@color/black"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="10dp"
+                android:minHeight="35dp"
+                android:textStyle="normal"
+                android:fontFamily="@font/arial"
                 android:textSize="30sp"
-                android:textStyle="normal" />
+                android:textAllCaps="true"/>
 
             <TextView
                 android:id="@+id/sneezeButtonText"
@@ -407,27 +415,29 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/arial"
                 android:text="@string/sneeze"
-                android:textColor="?attr/sneezeAndTimesText"
+                android:textColor="@color/whiteBacking"
                 android:textSize="30sp"
-                android:translationZ="90dp" />
+                android:translationZ="90dp"/>
+
+
 
 
             <!--Plus Button-->
             <Button
-                android:id="@+id/plusButton"
                 android:layout_width="119dp"
                 android:layout_height="80dp"
+                android:background="@drawable/plus_button"
+                android:id="@+id/plusButton"
+                android:text=""
+                android:textColor="@color/plusMinusGrey"
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/plus_button"
-                android:fontFamily="@font/arial"
                 android:minHeight="35dp"
-                android:text=""
-                android:textAllCaps="true"
-                android:textColor="@color/plusMinusGrey"
+                android:textStyle="normal"
+                android:fontFamily="@font/arial"
                 android:textSize="80sp"
-                android:textStyle="normal" />
+                android:textAllCaps="true"/>
 
             <TextView
                 android:id="@+id/plusButtonText"
@@ -440,55 +450,66 @@
                 android:text="@string/plus"
                 android:textColor="@color/whiteBacking"
                 android:textSize="70sp"
-                android:translationZ="90dp" />
+                android:translationZ="90dp"/>
 
             <!--Minus Button-->
             <Button
-                android:id="@+id/minusButton"
                 android:layout_width="119dp"
                 android:layout_height="80dp"
-                android:layout_gravity="center_vertical|left"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="0dp"
                 android:background="@drawable/minus_button"
-                android:fontFamily="@font/arial"
-                android:minHeight="35dp"
+                android:id="@+id/minusButton"
                 android:text=""
-                android:textAllCaps="true"
                 android:textColor="@color/plusMinusGrey"
+                android:layout_gravity="center_vertical|left"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="10dp"
+                android:minHeight="35dp"
+                android:textStyle="normal"
+                android:fontFamily="@font/arial"
                 android:textSize="80sp"
-                android:textStyle="normal" />
+                android:textAllCaps="true"/>
 
             <TextView
                 android:id="@+id/minusButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
-                android:layout_marginStart="60dp"
                 android:layout_marginTop="0dp"
+                android:layout_marginStart="60dp"
                 android:fontFamily="@font/arial"
                 android:text="@string/minus"
                 android:textColor="@color/whiteBacking"
                 android:textSize="70sp"
-                android:translationZ="90dp" />
+                android:translationZ="90dp"/>
 
             <!--Change Sneeze Times Button-->
             <Button
-                android:id="@+id/timesButton"
                 android:layout_width="61dp"
                 android:layout_height="44dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="10dp"
                 android:background="@drawable/button_times"
-                android:fontFamily="@font/arial"
-                android:minHeight="35dp"
+                android:id="@+id/timesButton"
                 android:text="1X"
-                android:textAllCaps="true"
-                android:textColor="?attr/sneezeAndTimesText"
+                android:textColor="@color/whiteBacking"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginTop="0dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginBottom="10dp"
+                android:minHeight="35dp"
+                android:textStyle="normal"
+                android:fontFamily="@font/arial"
                 android:textSize="30sp"
-                android:textStyle="normal" />
+                android:textAllCaps="true"/>
+
+
+
+
+
+
+
+
+
+
+
 
 
         </FrameLayout>
