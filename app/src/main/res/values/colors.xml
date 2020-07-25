@@ -24,4 +24,28 @@
     <color name="indexBlocksTextColor">#412939</color>
     <color name="buttonBlue">#8D89A6</color>
     <color name="plusMinusGrey">#333333</color>
+
+
+    <!--Dark Theme Colour Set-->
+    <color name="darkBackground">#181818</color>
+    <color name="mainGreyText">#909090</color>
+    <color name="sectionDark">#202020</color>
+    <color name="darkButtonMain">#909090</color>
+    <color name="plusMinusButtonDark">#373737</color>
+    <color name="changeLocButtonDark">#909090</color>
+    <color name="sneezeAndTimesDark">#909090</color>
+    <color name="timesBubbleDark">#373737</color>
+
+
+    <!--Light Theme Colour Set-->
+    <color name="lightBackground">#DAE0E6</color>
+    <color name="lightMainText">#222222</color>
+    <color name="sectionWhite">#FFFFFF</color>
+    <color name="lightButtonMain">#1A1A1B</color>
+    <color name="lightPlusMinusButton">#818384</color>
+    <color name="lightChangeLocButton">#D7DADC</color>
+    <color name="sneezeAndTimesLight">#FFFFFF</color>
+    <color name="timesBubbleLight">#373737</color>
+
+
 </resources>

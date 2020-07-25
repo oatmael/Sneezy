@@ -6,28 +6,33 @@
     <group android:checkableBehavior="single">
 
         <item android:id="@+id/nav_home"
-            android:icon="@drawable/ic_apps_black_24dp"
-            android:title="Home"/>
+            android:icon="@drawable/ic_baseline_home_24"
+            android:title="@string/homeNavText"/>
         <item android:id="@+id/nav_maps"
-            android:icon="@drawable/ic_apps_black_24dp"
-            android:title="Maps"/>
+            android:icon="@drawable/ic_baseline_map_24"
+            android:title="@string/mapsNavText"/>
         <item android:id="@+id/nav_graph"
-            android:icon="@drawable/ic_apps_black_24dp"
-            android:title="Graphs"/>
+            android:icon="@drawable/ic_baseline_poll_24"
+            android:title="@string/graphNavText"/>
         <item android:id="@+id/nav_stats"
-            android:icon="@drawable/ic_apps_black_24dp"
-            android:title="Stats"/>
+            android:icon="@drawable/ic_baseline_dvr_24"
+            android:title="@string/statsNavText"/>
+        <item android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_baseline_settings_24"
+            android:title="@string/settingsNavText"/>
+        <item android:id="@+id/nav_about"
+            android:icon="@drawable/ic_baseline_search_24"
+            android:title="@string/aboutNavText"/>
 
     </group>
-    <item android:title="Other">
+    <item android:title="Other"><!--These are linking items, cannot be used to go to other pages etc.
+    just to perform actions.-->
         <menu>
-            <item android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_apps_black_24dp"
-                android:title="Settings"/>
-            <item android:id="@+id/nav_about"
-                android:icon="@drawable/ic_apps_black_24dp"
-                android:title="About Us"/>
-        </menu> <!--TODO THESE WONT WORK USE THE ABOVE GROUP. TEST-->
+            <item android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_baseline_exit_to_app_24"
+                android:title="@string/logoutNavText"/>
+
+        </menu>
 
 
     </item>

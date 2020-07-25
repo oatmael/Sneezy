@@ -8,14 +8,11 @@
         android:topLeftRadius="0dp"/>
 
     <solid
-        android:color="@color/sectionPurp"/>
+        android:color="?attr/plusMinusColor"/>
 
     <size
         android:width="119dp"
         android:height="80dp"/>
 
-    <stroke
-        android:width="2dp"
-        android:color="@color/buttonBlue"/>
 
 </shape>
