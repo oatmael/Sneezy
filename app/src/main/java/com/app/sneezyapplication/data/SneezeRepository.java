@@ -1,5 +1,7 @@
 package com.app.sneezyapplication.data;
 
+import android.util.Log;
+
 import com.app.sneezyapplication.MainActivity;
 
 import java.text.DateFormat;
@@ -36,6 +38,7 @@ public class SneezeRepository {
     }
 
     public void updateRecords() {
+        Log.i("update", "Updating records...");
         updateAllSneezes();
         updateUserSneezes();
         updateUserMonthlySneezes();
@@ -60,6 +63,7 @@ public class SneezeRepository {
 
     }
 
+    // TODO: Currently adds from months matching, ignoring years. This is bad.
     private void updateUserMonthlySneezes(){
         DateFormat monthFormat = new SimpleDateFormat("MMM");
         Date date = new Date();

@@ -36,10 +36,15 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 import io.realm.Realm;
+import io.realm.log.LogLevel;
+import io.realm.log.RealmLog;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
+import io.realm.mongodb.AppException;
+import io.realm.mongodb.ErrorCode;
 import io.realm.mongodb.User;
 import io.realm.mongodb.sync.SyncConfiguration;
+import io.realm.mongodb.sync.SyncSession;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -54,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public FusedLocationProviderClient fusedLocationClient;
 
-    public SneezeRepository repo;
+    public static SneezeRepository repo;
 
     private String userID;
     public String getUserID() {
@@ -71,6 +76,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Realm.init(this);
         realm = Realm.getDefaultInstance();
+        RealmLog.setLevel(LogLevel.TRACE);
+
+        String appID = getResources().getString(R.string.stitch_client_app_id);
+        app = new App(new AppConfiguration.Builder(appID).build());
 
         /*TODO TEST*/
         /*Dark Mode Code. Commented Out in case not working. Not able to test as of yet.////////////////////////////////////////////////////*/
@@ -157,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        connectToDB();
         login();
     }
 
@@ -176,11 +184,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         realm.close();
     }
 
-    private void connectToDB(){
-        String appID = getResources().getString(R.string.stitch_client_app_id);
-        app = new App(new AppConfiguration.Builder(appID).build());
-    }
-
     private void login(){
         try {
             user = app.currentUser();
@@ -192,8 +195,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             userID = user.getId();
 
             setupLocalData();
-
-            return;
         } else {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(intent, 111);
@@ -204,15 +205,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String partitionValue = "partition";
         SyncConfiguration config = new SyncConfiguration.Builder(user, partitionValue)
                 .waitForInitialRemoteData()
+                .errorHandler((session, error) -> {
+                    if (error.getErrorCode() == ErrorCode.FORBIDDEN){
+                        if (user != null){
+                            user .logOutAsync(r -> {
+                                Log.i("REALM", "Logged out");
+                            });
+                        }
+                        login();
+                    }
+                })
                 .build();
+
+        Realm.setDefaultConfiguration(config);
 
         Realm.getInstanceAsync(config, new Realm.Callback() {
             @Override
             @ParametersAreNonnullByDefault
             public void onSuccess(Realm _realm) {
                 realm = _realm;
-                repo.updateRecords();
                 Log.v("REALM", "Successfully instantiated realm!");
+                repo.updateRecords();
             }
 
             @Override
