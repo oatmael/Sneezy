@@ -16,6 +16,7 @@
     <string name="plus">+</string>
     <string name="minus">-</string>
 
+
     <string name="homeMonday">MON</string>
     <string name="homeTuesday">TUES</string>
     <string name="homeWednsday">WED</string>
@@ -46,4 +47,27 @@
     <string name="title_location_permission">Request Location Permissions</string>
     <string name="text_location_permission">Sneezy would like to use your location data to track locations of your sneezes. This feature is optional and can be disabled at any time.</string>
     <string name="ok">OK</string>
+
+    <!--Settings Page Strings-->
+    <string name="darkMode">Dark Mode</string>
+    <string name="settingsTitle">Settings</string>
+    <!--End of Settings Page Strings-->
+
+    <!--Drawer Menu Strings-->
+    <string name="homeNavText">Home</string>
+    <string name="mapsNavText">Maps</string>
+    <string name="graphNavText">Graph</string>
+    <string name="statsNavText">Statistics</string>
+    <string name="settingsNavText">Settings</string>
+    <string name="aboutNavText">About</string>
+    <string name="logoutNavText">Logout</string>
+    <!--End Drawer Menu Strings-->
+
+    <!--About us Strings-->
+    <string name="aboutUs">We are a group of students based in Adelaide, South Australia. Currently studying Software development and this is the project we decided to work on for around 6 months.
+        We are looking to continue working on this project by making a website which will display similar, more in depth data shown in this app.</string>
+    <string name="aboutUsTitle">About Us</string>
+    <!--End About Us Strings-->
+
+
 </resources>
