@@ -9,23 +9,61 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>-->
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!--LIGHT-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/lightBackground</item>
+        <item name="colorPrimaryDark">@color/sectionWhite</item>
+        <item name="colorAccent">@color/lightMainText</item>
+        <item name="backgroundMainColor">@color/lightBackground</item>
+        <item name="mainText">@color/lightMainText</item>
+        <item name="sectionColor">@color/sectionWhite</item>
+        <item name="buttonMain">@color/lightButtonMain</item>
+        <item name="plusMinusColor">@color/lightPlusMinusButton</item>
+        <item name="changeLocButton">@color/lightChangeLocButton</item>
+        <item name="sneezeAndTimesText">@color/sneezeAndTimesLight</item>
+        <item name="timesBubble">@color/timesBubbleLight</item>
+        <item name="toolbarColor">@color/black</item>
+        <item name="changeLocText">@color/lightMainText</item>
+    </style>
+
+
+    <!--DARK THEME-->
+    <style name="darkTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/darkBackground</item>
+        <item name="colorPrimaryDark">@color/sectionDark</item>
+        <item name="colorAccent">@color/mainGreyText</item>
+        <item name="backgroundMainColor">@color/darkBackground</item>
+        <item name="mainText">@color/mainGreyText</item>
+        <item name="sectionColor">@color/sectionDark</item>
+        <item name="buttonMain">@color/darkButtonMain</item>
+        <item name="plusMinusColor">@color/plusMinusButtonDark</item>
+        <item name="changeLocButton">@color/changeLocButtonDark</item>
+        <item name="sneezeAndTimesText">@color/sneezeAndTimesDark</item>
+        <item name="timesBubble">@color/timesBubbleDark</item>
+        <item name="toolbarColor">@color/sectionDark</item>
+        <item name="changeLocText">@color/changeLocTextDark</item>
+
+    </style>
+
+<!--    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/darkPurp</item>
         <item name="colorPrimaryDark">@color/midPurpText</item>
         <item name="colorAccent">@color/whitePink</item>
         <item name="colorButtonNormal">@color/lavender</item>
+    </style>-->
+
+    <style name="ToolbarColoredIcon" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColorSecondary">@color/mainGreyText</item>
     </style>
 
-    <style name="ToolbarColoredIcon" parent="AppTheme">
-        <item name="android:textColorSecondary">@color/lavender</item>
-    </style>
 
-    <style name="AppTheme.NoActionBar">
+
+<!--    <style name="AppTheme.NoActionBar">
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
-    </style>
+    </style>-->
 
     <style name="AppTheme.AppBarOverlay"/>
 
