@@ -1,6 +1,7 @@
 package com.app.sneezyapplication.data;
 
 import android.location.Location;
+import android.util.Log;
 
 import java.util.Date;
 
@@ -31,8 +32,20 @@ public class SneezeData extends RealmObject {
     // TODO
     public Location locationAsAndroidLocation(){
         Location location = new Location("dummyprovider");
-        //location.setLongitude();
+
+        //Dumb error checking, should rethink this later
+        String[] tokens = this.location.split(",");
+        if (!tokens[0].equals("") || !tokens[1].equals("")){
+            try {
+                location.setLongitude(Long.parseLong(tokens[0]));
+                location.setLatitude(Long.parseLong(tokens[1]));
+            } catch (Exception e) {
+                Log.e("location", e.getLocalizedMessage());
+            }
+        }
 
         return location;
     }
+
+    //TODO make helper date function
 }
