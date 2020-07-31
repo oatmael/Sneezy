@@ -3,14 +3,13 @@
     android:shape="rectangle">
 
     <corners
-        android:radius="31dp" />
+        android:radius="31dp"/>
 
     <solid
-        android:color="?attr/timesBubble"/>
+        android:color="@color/sectionPurp"/>
 
     <size
-        android:width="61dp"
-        android:height="44dp"/>
-
+        android:width="390dp"
+        android:height="222dp"/>
 
 </shape>

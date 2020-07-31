@@ -6,10 +6,10 @@
         android:radius="31dp"/>
 
     <solid
-        android:color="?attr/buttonMain"/>
+        android:color="@color/sectionPurp"/>
 
     <size
-        android:width="390dp"
-        android:height="80dp"/>
+        android:width="412dp"
+        android:height="96dp"/>
 
 </shape>

@@ -5,11 +5,12 @@
     <corners
         android:topLeftRadius="0dp"
         android:radius="31dp"/>
+
     <solid
-        android:color="?attr/sectionColor"/>
+        android:color="@color/sectionPurp"/>
 
     <size
         android:width="390dp"
-        android:height="690dp"/>
+        android:height="347dp"/>
 
 </shape>

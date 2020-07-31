@@ -2,14 +2,11 @@ package com.app.sneezyapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
-
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -24,8 +21,6 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.app.sneezyapplication.data.SneezeRepository;
@@ -43,7 +38,7 @@ import io.realm.mongodb.sync.SyncConfiguration;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SettingsFragment.RestartListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 //TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES
     private DrawerLayout drawer;
 
@@ -61,25 +56,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return userID;
     }
 
-    SharedPref sharedPref;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
-        sharedPref = new SharedPref(this);
-        if(sharedPref.loadNightModeState()==true) {
-            setTheme(R.style.darkTheme);
-        }
-        else setTheme(R.style.AppTheme);
-
-
         super.onCreate(savedInstanceState);
 
         Realm.init(this);
         realm = Realm.getDefaultInstance();
 
         setContentView(R.layout.activity_main);
+
+/*        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/arial.ttf");*/
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -117,19 +103,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     });
         }
     }
-
-/*    public Context getContext() {
-        Context context = getApplicationContext();
-        return context;
-    }*/
-
-    public void restartApp() {
-        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(i);
-        finish();
-    }
-
-
 
     @Override
     protected void onStart() {

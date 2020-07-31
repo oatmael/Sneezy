@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 
-
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
 
@@ -24,8 +23,6 @@ import io.realm.RealmQuery;
 
 
 public class HomeFragment extends Fragment {
-
-
 
     @Nullable
     @Override

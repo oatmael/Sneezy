@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="176dp"
-    android:background="?attr/sectionColor"
+    android:background="@color/lavender"
     android:gravity="bottom"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <!-- ImageView
         android:layout_width="74dp"
@@ -15,9 +16,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
-        android:text="Sneeze"
-        android:textSize="30sp"
-        android:textColor="?attr/mainText"/>
+        android:text="Sneezy"
+        android:textColor="@color/midPurpText"/>
 
 
 </LinearLayout>
