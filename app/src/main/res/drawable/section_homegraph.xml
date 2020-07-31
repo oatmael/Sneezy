@@ -3,14 +3,13 @@
     android:shape="rectangle">
 
     <corners
-        android:radius="31dp" />
+        android:radius="31dp"/>
 
     <solid
-        android:color="@color/sectionPurp"/>
+        android:color="?attr/sectionColor"/>
 
     <size
-        android:width="61dp"
-        android:height="44dp"/>
-
+        android:width="390dp"
+        android:height="200dp"/>
 
 </shape>

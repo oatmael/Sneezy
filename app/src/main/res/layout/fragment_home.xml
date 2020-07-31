@@ -1,87 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/backGrey">
 
-    <LinearLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/homeConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/homeLinearLayout">
+        android:background="?attr/backgroundMainColor"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
 
         <FrameLayout
             android:id="@+id/topSectionLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/topSectionImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/purp_section_forcast"/>
+                android:background="@drawable/section_forcast" />
 
             <!--TEXT LAYOUT START-->
             <LinearLayout
+                android:id="@+id/topTextViewLinear"
                 android:layout_width="270dp"
-                android:layout_height="250dp"
-                android:orientation="vertical">
+                android:layout_height="150dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
 
                 <TextView
+                    android:id="@+id/forecastFor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/forecastFor"
-                    android:text="@string/pollenCountTitle"
-                    android:textColor="@color/textPurp"
                     android:layout_gravity="top|start"
                     android:paddingStart="15dp"
                     android:paddingTop="15dp"
-                    android:textStyle="bold"
-                    android:textSize="18sp"/>
+                    android:text="@string/pollenCountTitle"
+                    android:textColor="?attr/mainText"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/pollenCountLocationTxt"
-                    android:text="@string/pollenLocationText"
-                    android:textColor="@color/textPurp"
-                    android:layout_gravity="top|start"
-                    android:paddingStart="15dp"
-                    android:paddingTop="0dp"
-                    android:textStyle="bold"
-                    android:textSize="32sp"/>
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/locationIncorrectText"
-                    android:text="@string/pollenLocationIncorrect"
-                    android:textColor="@color/textPurp"
                     android:layout_gravity="top|start"
                     android:paddingStart="15dp"
                     android:paddingTop="0dp"
-                    android:textStyle="bold"
-                    android:textSize="17sp"/>
+                    android:text="@string/pollenLocationText"
+                    android:textColor="?attr/mainText"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/locationIncorrectText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:paddingStart="15dp"
+                    android:paddingTop="0dp"
+                    android:text="@string/pollenLocationIncorrect"
+                    android:textColor="?attr/mainText"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <Button
+                    android:id="@+id/changeLocation"
                     android:layout_width="136dp"
                     android:layout_height="25dp"
-                    android:background="@drawable/change_loc_button"
-                    android:id="@+id/changeLocation"
-                    android:text="@string/pollenChangeLocation"
-                    android:textColor="@color/changeLocPurp"
                     android:layout_gravity="top|start"
-                    android:layout_marginTop="0dp"
                     android:layout_marginStart="12dp"
-                    android:minHeight="35dp"
-                    android:textStyle="normal"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/change_loc_button"
                     android:fontFamily="@font/arial"
+                    android:minHeight="35dp"
+                    android:text="@string/pollenChangeLocation"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/changeLocText"
                     android:textSize="13sp"
-                    android:textAllCaps="false" />
+                    android:textStyle="normal" />
 
             </LinearLayout>
             <!--FORCAST TEXT END-->
@@ -92,20 +102,23 @@
                 android:id="@+id/indexLayout"
                 android:layout_width="58dp"
                 android:layout_height="115dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginTop="30dp"
                 android:layout_gravity="top|end"
-                android:orientation="vertical">
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="15dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/indexTextView"
                     android:layout_width="45dp"
                     android:layout_height="21dp"
+                    android:layout_gravity="top|center"
                     android:text="@string/indexText"
-                    android:textColor="@color/textPurp"
+                    android:textColor="?attr/mainText"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_gravity="top|center"/>
+                    android:textStyle="bold" />
 
 
                 <RelativeLayout
@@ -122,15 +135,14 @@
                         android:id="@+id/indexHigh"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:text="@string/pollenCountHigh"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="@string/pollenCountHigh"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
-
 
 
                 <RelativeLayout
@@ -141,19 +153,18 @@
                         android:id="@+id/indexImageOrange"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/index_block_orange"/>
+                        android:background="@drawable/index_block_orange" />
 
                     <TextView
+                        android:id="@+id/indexMed"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:id="@+id/indexMed"
-                        android:text="@string/pollenCountMed"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="@string/pollenCountMed"
                         android:textColor="@color/indexBlocksTextColor"
                         android:textSize="18sp"
-                        />
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 
@@ -165,44 +176,45 @@
                         android:id="@+id/indexImageGreen"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/index_block_green"/>
+                        android:background="@drawable/index_block_green" />
 
                     <TextView
+                        android:id="@+id/indexLow"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:id="@+id/indexLow"
-                        android:text="@string/pollenCountLow"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="@string/pollenCountLow"
                         android:textColor="@color/indexBlocksTextColor"
                         android:textSize="18sp"
-                        />
+                        android:textStyle="bold" />
                 </RelativeLayout>
             </LinearLayout>
             <!--INDEX END-->
 
 
-
             <TextView
+                android:id="@+id/weekAheadText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/weekAheadText"
-                android:text="@string/weekAhead"
-                android:textColor="@color/textPurp"
                 android:layout_gravity="bottom|start"
                 android:paddingStart="15dp"
-                android:paddingBottom="150dp"
+                android:paddingBottom="100dp"
+                android:text="@string/weekAhead"
+                android:textColor="?attr/mainText"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:textSize="18sp"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/topTextViewLinear" />
 
             <!--START FORCAST-->
             <LinearLayout
                 android:layout_width="360dp"
                 android:layout_height="57dp"
-                android:orientation="horizontal"
                 android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="90dp">
+                android:layout_marginBottom="40dp"
+                android:orientation="horizontal">
 
                 <RelativeLayout
                     android:layout_width="60dp"
@@ -218,12 +230,12 @@
                         android:id="@+id/forecastTextBlockOne"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:text="@string/homeMonday"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="@string/homeMonday"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 
@@ -241,12 +253,12 @@
                         android:id="@+id/forecastTextBlockTwo"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:text="@string/homeTuesday"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="@string/homeTuesday"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 
@@ -264,12 +276,12 @@
                         android:id="@+id/forecastTextBlockThree"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:text="@string/homeWednsday"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="@string/homeWednsday"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 
@@ -287,12 +299,12 @@
                         android:id="@+id/forecastTextBlockFour"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:text="@string/homeThursday"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="@string/homeThursday"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 
@@ -310,12 +322,12 @@
                         android:id="@+id/forecastTextBlockFive"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:text="@string/homeFriday"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="@string/homeFriday"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 
@@ -333,79 +345,90 @@
                         android:id="@+id/forecastTextBlockSix"
                         android:layout_width="45dp"
                         android:layout_height="23dp"
-                        android:text="@string/homeSaturday"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="@string/homeSaturday"
                         android:textColor="@color/indexBlocksTextColor"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 
             </LinearLayout>
-            <!--END FORCAST-->
-
-
-
-
         </FrameLayout>
+        <!--END FORCAST-->
+
 
         <!--START OF GRAPHS AREA-->
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/bottomSection"
-            android:orientation="vertical"
-            android:padding="10dp">
 
-            <ImageView
+
+            <FrameLayout
+                android:id="@+id/bottomSection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/bottomSectionImage"
-                android:background="@drawable/purp_section_homegraph"/>
+                android:orientation="vertical"
+                android:padding="0dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topSectionLayout">
 
-            <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/homeGraphs"
-                android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/bottomSectionImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/section_homegraph" />
 
-            </LinearLayout>
+                <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
+                <LinearLayout
+                    android:id="@+id/homeGraphs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-        </FrameLayout>
+                </LinearLayout>
+
+            </FrameLayout>
+
         <!--END OF GRAPHS-->
 
         <!--START OF BUTTONS-->
+
+
         <FrameLayout
+            android:id="@+id/buttonSection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/buttonSection">
-
+            android:paddingTop="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bottomSection"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingBottom="5dp">
 
 
             <ImageView
+                android:id="@+id/buttonBackingImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/buttonBackingImage"
-                android:background="@drawable/button_backing"/>
+                android:background="@drawable/button_backing" />
 
             <!--Sneeze Button-->
             <Button
-                android:layout_width="390dp"
-                android:layout_height="80dp"
-                android:background="@drawable/sneeze_button"
                 android:id="@+id/sneezeButton"
-                android:text=""
-                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginTop="0dp"
                 android:layout_marginStart="10dp"
-                android:minHeight="35dp"
-                android:textStyle="normal"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/sneeze_button"
                 android:fontFamily="@font/arial"
+                android:minHeight="35dp"
+                android:text=""
+                android:textAllCaps="true"
+                android:textColor="@color/black"
                 android:textSize="30sp"
-                android:textAllCaps="true"/>
+                android:textStyle="normal"
+                android:stateListAnimator="@null"/>
 
             <TextView
                 android:id="@+id/sneezeButtonText"
@@ -415,29 +438,28 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/arial"
                 android:text="@string/sneeze"
-                android:textColor="@color/whiteBacking"
+                android:textColor="?attr/sneezeAndTimesText"
                 android:textSize="30sp"
-                android:translationZ="90dp"/>
-
-
+                android:translationZ="90dp" />
 
 
             <!--Plus Button-->
             <Button
+                android:id="@+id/plusButton"
                 android:layout_width="119dp"
                 android:layout_height="80dp"
-                android:background="@drawable/plus_button"
-                android:id="@+id/plusButton"
-                android:text=""
-                android:textColor="@color/plusMinusGrey"
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="10dp"
-                android:minHeight="35dp"
-                android:textStyle="normal"
+                android:background="@drawable/plus_button"
                 android:fontFamily="@font/arial"
+                android:minHeight="35dp"
+                android:text=""
+                android:textAllCaps="true"
+                android:textColor="@color/plusMinusGrey"
                 android:textSize="80sp"
-                android:textAllCaps="true"/>
+                android:textStyle="normal"
+                android:stateListAnimator="@null"/>
 
             <TextView
                 android:id="@+id/plusButtonText"
@@ -450,72 +472,66 @@
                 android:text="@string/plus"
                 android:textColor="@color/whiteBacking"
                 android:textSize="70sp"
-                android:translationZ="90dp"/>
+                android:translationZ="90dp" />
 
             <!--Minus Button-->
             <Button
+                android:id="@+id/minusButton"
                 android:layout_width="119dp"
                 android:layout_height="80dp"
-                android:background="@drawable/minus_button"
-                android:id="@+id/minusButton"
-                android:text=""
-                android:textColor="@color/plusMinusGrey"
                 android:layout_gravity="center_vertical|left"
-                android:layout_marginTop="0dp"
                 android:layout_marginStart="10dp"
-                android:minHeight="35dp"
-                android:textStyle="normal"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/minus_button"
                 android:fontFamily="@font/arial"
+                android:minHeight="35dp"
+                android:text=""
+                android:textAllCaps="true"
+                android:textColor="@color/plusMinusGrey"
                 android:textSize="80sp"
-                android:textAllCaps="true"/>
+                android:textStyle="normal"
+                android:stateListAnimator="@null"/>
 
             <TextView
                 android:id="@+id/minusButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
-                android:layout_marginTop="0dp"
                 android:layout_marginStart="60dp"
+                android:layout_marginTop="0dp"
                 android:fontFamily="@font/arial"
                 android:text="@string/minus"
                 android:textColor="@color/whiteBacking"
                 android:textSize="70sp"
-                android:translationZ="90dp"/>
+                android:translationZ="90dp" />
 
             <!--Change Sneeze Times Button-->
             <Button
+                android:id="@+id/timesButton"
                 android:layout_width="61dp"
                 android:layout_height="44dp"
-                android:background="@drawable/button_times"
-                android:id="@+id/timesButton"
-                android:text="1X"
-                android:textColor="@color/whiteBacking"
                 android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginTop="0dp"
                 android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginBottom="10dp"
-                android:minHeight="35dp"
-                android:textStyle="normal"
+                android:background="@drawable/button_times"
                 android:fontFamily="@font/arial"
+                android:minHeight="35dp"
+                android:text="1X"
+                android:textAllCaps="true"
+                android:textColor="?attr/sneezeAndTimesText"
                 android:textSize="30sp"
-                android:textAllCaps="true"/>
-
-
-
-
-
-
-
-
-
-
+                android:textStyle="normal"
+                android:stateListAnimator="@null"/>
 
 
 
         </FrameLayout>
+
+
         <!--END OF BUTTONS-->
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</RelativeLayout>
+
