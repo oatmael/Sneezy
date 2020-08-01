@@ -3,6 +3,8 @@ package com.app.sneezyapplication.data;
 import android.location.Location;
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -29,23 +31,33 @@ public class SneezeData extends RealmObject {
         this.location = "null,null";
     }
 
-    // TODO
     public Location locationAsAndroidLocation(){
         Location location = new Location("dummyprovider");
 
         //Dumb error checking, should rethink this later
         String[] tokens = this.location.split(",");
         if (!tokens[0].equals("") || !tokens[1].equals("")){
+            Long lat = 0L;
+            Long lng = 0L;
             try {
-                location.setLongitude(Long.parseLong(tokens[0]));
-                location.setLatitude(Long.parseLong(tokens[1]));
+                lat = Long.parseLong(tokens[0]);
+                lng = Long.parseLong(tokens[1]);
             } catch (Exception e) {
                 Log.e("location", e.getLocalizedMessage());
             }
+            location.setLongitude(lng);
+            location.setLatitude(lat);
         }
 
         return location;
     }
 
-    //TODO make helper date function
+    public Date dateAsAndroidDate(){
+        try {
+            return new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").parse(this.date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

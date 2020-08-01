@@ -147,15 +147,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        user .logOutAsync(r -> {
-            Log.i("REALM", "Logged out");
-        });
-        realm.close();
     }
 
     private void connectToDB(){
         String appID = getResources().getString(R.string.stitch_client_app_id);
-        app = new App(new AppConfiguration.Builder(appID).build());
+        if (app == null)
+            app = new App(new AppConfiguration.Builder(appID).build());
     }
 
     private void login(){
@@ -175,6 +172,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(intent, 111);
         }
+    }
+
+    private void logout(){
+        if (user != null) {
+            user.logOutAsync(r -> {
+                Log.i("REALM", "Logged out");
+            });
+        }
+        realm.close();
     }
 
     private void setupLocalData(){
@@ -236,6 +242,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_about:
                 transaction.replace(R.id.fragment_container,
                         new AboutFragment()).commit();
+                break;
+            case R.id.nav_logout:
+                logout();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivityForResult(intent, 111);
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);

@@ -80,9 +80,9 @@ public class LoginActivity extends AppCompatActivity {
 
             MainActivity.app.loginAsync(googleCredentials, it -> {
                 if (it.isSuccess()) {
-                    Toast.makeText(LoginActivity.this,
+                    /*Toast.makeText(LoginActivity.this,
                             "Logged in with Google. ID: " +  MainActivity.user.getId(),
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_LONG).show();*/
                     finish();
                 } else {
                     Toast.makeText(this, it.getError().getMessage(), Toast.LENGTH_LONG).show();
@@ -102,9 +102,9 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.anon_login_button).setOnClickListener(ignored ->
                 MainActivity.app.loginAsync(anonCredentials, it -> {
                     if (it.isSuccess()){
-                        Toast.makeText(LoginActivity.this,
+                        /*Toast.makeText(LoginActivity.this,
                                 "Logged in Anonymously. ID: " +  MainActivity.user.getId(),
-                                Toast.LENGTH_LONG).show();
+                                Toast.LENGTH_LONG).show();*/
                         finish();
                     } else {
                         Toast.makeText(this, it.getError().getMessage(), Toast.LENGTH_LONG).show();
