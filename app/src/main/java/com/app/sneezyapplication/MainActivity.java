@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public FusedLocationProviderClient fusedLocationClient;
 
-    public SneezeRepository repo;
+    public static SneezeRepository repo;
 
     private String userID;
     public String getUserID() {
