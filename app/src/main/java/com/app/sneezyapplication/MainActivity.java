@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
@@ -63,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     SharedPref sharedPref;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,10 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-/*    public Context getContext() {
-        Context context = getApplicationContext();
-        return context;
-    }*/
+
 
     public void restartApp() {
         Intent i = new Intent(getApplicationContext(), MainActivity.class);
@@ -137,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onStart();
         connectToDB();
         login();
+        AppRater.app_launched(this);
     }
 
     @Override
@@ -172,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(intent, 111);
+
         }
     }
 
@@ -247,13 +251,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
                 logoutPopup();
                 break;
+            case R.id.nav_rate_us:
+                /*rateUs();*/
+
+                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void logoutPopup() {
+    /*Simple rate us Method which will direct the user to the Google Market rating page I believe. Used with the sidebar button.*/ /*WILL NOT WORK ON THE A.S EMULATOR as the emulator doesent have the*/
+    /*market place. A real phone is required to test this properly*/
+    public void rateUs() {
+        String APP_RATE_NAME = "SneezyApplication"; /*TODO ADD ACTUAL GOOGLE MARKET PACKAGE NAME HERE WHEN ACQUIRED*/
+        this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_RATE_NAME)));
+    }
 
+
+
+    public void logoutPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Logout");

@@ -61,6 +61,7 @@
     <string name="settingsNavText">Settings</string>
     <string name="aboutNavText">About</string>
     <string name="logoutNavText">Logout</string>
+    <string name="rateUsNavText">Rate Us</string>
     <!--End Drawer Menu Strings-->
 
     <!--About us Strings-->
