@@ -17,6 +17,7 @@ public class SneezeRepository {
     private List<SneezeItem> allUserSneezeItems;
     private List<SneezeItem> monthlyUserSneezeItems;
     private List<SneezeItem> weeklyUserSneezeItems;
+    private SneezeItem todayUserSneezeItem;
 
     public List<SneezeItem> getAllSneezeItems() {
         updateAllSneezes();
@@ -33,6 +34,10 @@ public class SneezeRepository {
     public List<SneezeItem> getWeeklyUserSneezeItems() {
         updateUserWeeklySneezes();
         return monthlyUserSneezeItems;
+    }
+    public SneezeItem todayUserSneezeItems() {
+        updateUserTodaySneeze();
+        return todayUserSneezeItem;
     }
 
     public SneezeRepository(){
@@ -67,6 +72,25 @@ public class SneezeRepository {
 
     }
 
+    // TODO: CHANGE THIS TO REALMRESULTS QUERY. BAD.
+    private void updateUserTodaySneeze() {
+        Calendar current = Calendar.getInstance();
+        Calendar test = Calendar.getInstance();
+
+        current.setTime(new Date());
+
+        for (SneezeItem s : allUserSneezeItems){
+            test.setTime(s.dateAsAndroidDate());
+
+            if (test.get(Calendar.DAY_OF_MONTH) == current.get(Calendar.DAY_OF_MONTH)
+                    && test.get(Calendar.MONTH) == current.get(Calendar.MONTH)
+                    && test.get(Calendar.YEAR) == current.get(Calendar.YEAR)){
+                todayUserSneezeItem = s;
+                break;
+            }
+        }
+    }
+
     private void updateUserMonthlySneezes(){
         Calendar current = Calendar.getInstance();
         Calendar test = Calendar.getInstance();
@@ -98,5 +122,7 @@ public class SneezeRepository {
             }
         }
     }
+
+
 
 }
