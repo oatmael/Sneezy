@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
+import android.widget.TextView;
 
 
 import com.app.sneezyapplication.data.SneezeItem;
@@ -17,14 +17,20 @@ import com.app.sneezyapplication.data.SneezeData;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 
+import static com.app.sneezyapplication.MainActivity.repo;
+
 
 public class HomeFragment extends Fragment {
 
+
+    Integer todaysSneezes;
+    Integer todaysSneezesForText;
 
 
     @Nullable
@@ -32,6 +38,24 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         final Button button = view.findViewById(R.id.sneezeButton);
+        TextView todaysSneezesText = view.findViewById(R.id.sneezesTodayText);
+
+        todaysSneezesForText = getTodaysSneezes();
+        if (todaysSneezesForText == null) {
+            todaysSneezesText.setText("You haven't sneezed today");
+        }
+        else if (todaysSneezesForText == 1){
+            todaysSneezesText.setText("You've sneezed once today");
+        }
+        else if (todaysSneezesForText < 1) {
+            todaysSneezesText.setText("You haven't sneezed today");
+        }
+        else {
+            todaysSneezesText.setText("You've sneezed" + todaysSneezesForText + "times today");
+        }
+
+
+
 
         button.setOnClickListener(v -> {
             MainActivity mainAct = (MainActivity)getActivity();
@@ -49,6 +73,11 @@ public class HomeFragment extends Fragment {
 
             handleSneeze();
         });
+
+
+
+
+
         return view;
     }
 
@@ -108,4 +137,17 @@ public class HomeFragment extends Fragment {
         }
         return lat + "," + lng;
     }
+
+    private int getTodaysSneezes(){
+        if (repo.todayUserSneezeItems() == null) { //TODO REMOVE WHEN GOOGLE LOGIN IS WORKING CORRECTLY
+            todaysSneezes = 0;
+        }
+        else {
+            todaysSneezes = repo.todayUserSneezeItems().getSneezes().size();
+        }
+        return todaysSneezes;
+    }
+
+
+
 }

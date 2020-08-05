@@ -53,6 +53,7 @@ public class SneezeRepository {
         updateUserMonthlySneezes();
         updateUserWeeklySneezes();
         updateUserTodaySneeze();
+
     }
 
     private void updateAllSneezes(){

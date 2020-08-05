@@ -379,13 +379,30 @@
                     android:background="@drawable/section_homegraph" />
 
                 <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/homeGraphs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/sneezesTodayText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="You've sneezed x times today"
+                        android:textColor="?attr/mainText"
+                        android:textSize="20dp"
+                        android:textAlignment="center"
+                        app:layout_constraintTop_toTopOf="@id/homeGraphs"
+                        app:layout_constraintLeft_toLeftOf="@+id/homeGraphs"
+                        app:layout_constraintRight_toRightOf="@id/homeGraphs"
+                        android:layout_marginLeft="70dp"
+                        android:layout_marginTop="20dp"
+
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </FrameLayout>
 
