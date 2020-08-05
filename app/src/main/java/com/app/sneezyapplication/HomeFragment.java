@@ -54,9 +54,6 @@ public class HomeFragment extends Fragment {
             todaysSneezesText.setText("You've sneezed" + todaysSneezesForText + "times today");
         }
 
-
-
-
         button.setOnClickListener(v -> {
             MainActivity mainAct = (MainActivity)getActivity();
             if (mainAct.checkLocationPermission()) {
@@ -73,10 +70,6 @@ public class HomeFragment extends Fragment {
 
             handleSneeze();
         });
-
-
-
-
 
         return view;
     }
@@ -143,7 +136,9 @@ public class HomeFragment extends Fragment {
             todaysSneezes = 0;
         }
         else {
-            todaysSneezes = repo.todayUserSneezeItems().getSneezes().size();
+            todaysSneezes = repo.todayUserSneezeItems()
+                    .getSneezes()
+                    .size();
         }
         return todaysSneezes;
     }
