@@ -151,10 +151,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        realm.close();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        realm.close();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectToDB();
+        login();
     }
 
     private void connectToDB(){
         String appID = getResources().getString(R.string.stitch_client_app_id);
+        if (realm == null)
+            realm = Realm.getDefaultInstance();
+
         if (app == null)
             app = new App(new AppConfiguration.Builder(appID).build());
     }
