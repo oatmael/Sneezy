@@ -33,7 +33,7 @@ public class SneezeRepository {
     }
     public List<SneezeItem> getWeeklyUserSneezeItems() {
         updateUserWeeklySneezes();
-        return monthlyUserSneezeItems;
+        return weeklyUserSneezeItems;
     }
     public SneezeItem todayUserSneezeItems() {
         updateUserTodaySneeze();
