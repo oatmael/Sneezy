@@ -46,6 +46,9 @@ public class SneezeItem extends RealmObject {
 
     public SneezeItem() {
         this._id = ObjectId.get();
+        this.date = "";
+        this.owner_id = "";
+        this.sneezes = new RealmList<SneezeData>();
     }
 
 

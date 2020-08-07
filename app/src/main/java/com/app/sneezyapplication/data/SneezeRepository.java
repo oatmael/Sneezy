@@ -45,6 +45,7 @@ public class SneezeRepository {
         allUserSneezeItems = new ArrayList<>();
         monthlyUserSneezeItems = new ArrayList<>();
         weeklyUserSneezeItems = new ArrayList<>();
+        todayUserSneezeItem = new SneezeItem();
     }
 
     public void updateRecords() {
