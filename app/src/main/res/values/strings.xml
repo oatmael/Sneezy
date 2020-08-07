@@ -3,7 +3,6 @@
 
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
-<!--<<<<<<< Updated upstream-->
     <string name="pollenCountTitle">Pollen forecast for</string>
     <string name="pollenLocationText">Adelaide, SA</string>
     <string name="pollenLocationIncorrect">Not your Location?</string>
@@ -71,36 +70,5 @@
     <string name="aboutUsTitle">About Us</string>
     <!--End About Us Strings-->
 
-    <!--    Select Location Popup Strings   -->
-    <string name="popup_header">Select a city</string>
-    <string name="radio_adelaide">Adelaide</string>
-    <string name="radio_brisbane">Brisbane</string>
-    <string name="radio_canberra">Canberra</string>
-    <string name="radio_sydney">Sydney</string>
-    <string name="radio_melbourne">Melbourne</string>
-    <string name="radio_hobart">Hobart</string>
-    <string name="radio_perth">Perth</string>
-    <string name="btn_save">SAVE</string>
-    <!--    End Select Location PopUp Strings   -->
+
 </resources>
-<!--=======-->
-
-
-<!--    &lt;!&ndash;    SCRAPER STRINGS &ndash;&gt;-->
-<!--        &lt;!&ndash;    MainPage Strings    &ndash;&gt;-->
-<!--        <string name="btn_set_location">SET LOCATION</string>-->
-<!--        <string name="btn_get_forecast">GET FORECAST</string>-->
-<!--        <string name="btn_set_location_">Set Location</string>-->
-
-<!--        &lt;!&ndash;    PopUp Strings   &ndash;&gt;-->
-<!--        <string name="popup_header">Select a city</string>-->
-<!--        <string name="radio_adelaide">Adelaide</string>-->
-<!--        <string name="radio_brisbane">Brisbane</string>-->
-<!--        <string name="radio_canberra">Canberra</string>-->
-<!--        <string name="radio_sydney">Sydney</string>-->
-<!--        <string name="radio_melbourne">Melbourne</string>-->
-<!--        <string name="radio_hobart">Hobart</string>-->
-<!--        <string name="radio_perth">Perth</string>-->
-<!--        <string name="btn_save">SAVE</string>-->
-<!--</resources>-->
-<!--&gt;>>>>>> Stashed changes-->
