@@ -3,6 +3,7 @@
     package="com.app.sneezyapplication">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<!--    <uses-permission android:name="android.permission.INTERNET" />-->
 
     <supports-screens
         android:largeScreens="true"
@@ -10,6 +11,7 @@
         android:smallScreens="true"
         android:xlargeScreens="true"/>
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

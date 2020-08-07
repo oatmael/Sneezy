@@ -1,0 +1,228 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><a name="l1"><span class="ln">1    </span></a><span class="s0">package </span><span class="s1">com.example.sneezyapplication</span><span class="s0">;</span>
+<a name="l2"><span class="ln">2    </span></a>
+<a name="l3"><span class="ln">3    </span></a><span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<a name="l4"><span class="ln">4    </span></a><span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<a name="l5"><span class="ln">5    </span></a><span class="s0">import </span><span class="s1">android.os.AsyncTask</span><span class="s0">;</span>
+<a name="l6"><span class="ln">6    </span></a><span class="s0">import </span><span class="s1">android.support.annotation.NonNull</span><span class="s0">;</span>
+<a name="l7"><span class="ln">7    </span></a><span class="s0">import </span><span class="s1">android.support.design.widget.NavigationView</span><span class="s0">;</span>
+<a name="l8"><span class="ln">8    </span></a><span class="s0">import </span><span class="s1">android.support.v4.view.GravityCompat</span><span class="s0">;</span>
+<a name="l9"><span class="ln">9    </span></a><span class="s0">import </span><span class="s1">android.support.v4.widget.DrawerLayout</span><span class="s0">;</span>
+<a name="l10"><span class="ln">10   </span></a><span class="s0">import </span><span class="s1">android.support.v7.app.ActionBarDrawerToggle</span><span class="s0">;</span>
+<a name="l11"><span class="ln">11   </span></a><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity</span><span class="s0">;</span>
+<a name="l12"><span class="ln">12   </span></a><span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<a name="l13"><span class="ln">13   </span></a><span class="s0">import </span><span class="s1">android.support.v7.widget.Toolbar</span><span class="s0">;</span>
+<a name="l14"><span class="ln">14   </span></a><span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<a name="l15"><span class="ln">15   </span></a><span class="s0">import </span><span class="s1">android.view.Gravity</span><span class="s0">;</span>
+<a name="l16"><span class="ln">16   </span></a><span class="s0">import </span><span class="s1">android.view.MenuItem</span><span class="s0">;</span>
+<a name="l17"><span class="ln">17   </span></a><span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+<a name="l18"><span class="ln">18   </span></a>
+<a name="l19"><span class="ln">19   </span></a><span class="s0">import </span><span class="s1">org.jsoup.Jsoup</span><span class="s0">;</span>
+<a name="l20"><span class="ln">20   </span></a><span class="s0">import </span><span class="s1">org.jsoup.nodes.Document</span><span class="s0">;</span>
+<a name="l21"><span class="ln">21   </span></a><span class="s0">import </span><span class="s1">org.jsoup.select.Elements</span><span class="s0">;</span>
+<a name="l22"><span class="ln">22   </span></a>
+<a name="l23"><span class="ln">23   </span></a><span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<a name="l24"><span class="ln">24   </span></a><span class="s0">import </span><span class="s1">java.util.Collections</span><span class="s0">;</span>
+<a name="l25"><span class="ln">25   </span></a><span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+<a name="l26"><span class="ln">26   </span></a>
+<a name="l27"><span class="ln">27   </span></a><span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity </span><span class="s0">implements </span><span class="s1">NavigationView.OnNavigationItemSelectedListener {</span>
+<a name="l28"><span class="ln">28   </span></a>
+<a name="l29"><span class="ln">29   </span></a>    <span class="s2">//TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES</span>
+<a name="l30"><span class="ln">30   </span></a>    <span class="s0">private </span><span class="s1">DrawerLayout drawer</span><span class="s0">;</span>
+<a name="l31"><span class="ln">31   </span></a>
+<a name="l32"><span class="ln">32   </span></a>    <span class="s2">//Variables forecast functionality &amp; to save location preferences to local memory</span>
+<a name="l33"><span class="ln">33   </span></a>    <span class="s0">public static final </span><span class="s1">String SHARED_PREFS = </span><span class="s3">&quot;sharedPrefs&quot;</span><span class="s0">;</span>
+<a name="l34"><span class="ln">34   </span></a>    <span class="s0">public static final </span><span class="s1">String LOCATION_INDEX= </span><span class="s3">&quot;locationIndex&quot;</span><span class="s0">;</span>
+<a name="l35"><span class="ln">35   </span></a>    <span class="s0">static int </span><span class="s1">locationIndex = -</span><span class="s4">1</span><span class="s0">;</span><span class="s2">//stores value from shared preferences</span>
+<a name="l36"><span class="ln">36   </span></a>    <span class="s0">private static <a href="ForecastObj.java.html">ForecastObj</a> </span><span class="s1">forecastObj</span><span class="s0">;</span>
+<a name="l37"><span class="ln">37   </span></a>
+<a name="l38"><span class="ln">38   </span></a>    <span class="s1">@Override</span>
+<a name="l39"><span class="ln">39   </span></a>    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+<a name="l40"><span class="ln">40   </span></a>        <span class="s1">loadLocationPreference()</span><span class="s0">;</span>
+<a name="l41"><span class="ln">41   </span></a>        <span class="s1">forecastObj = getForecastObj()</span><span class="s0">;</span>
+<a name="l42"><span class="ln">42   </span></a>
+<a name="l43"><span class="ln">43   </span></a>        <span class="s0">new </span><span class="s1">getForecastAsync().execute(forecastObj.getUrl())</span><span class="s0">;</span>
+<a name="l44"><span class="ln">44   </span></a>        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+<a name="l45"><span class="ln">45   </span></a>        <span class="s1">setContentView(R.layout.activity_main)</span><span class="s0">;</span>
+<a name="l46"><span class="ln">46   </span></a>
+<a name="l47"><span class="ln">47   </span></a>        <span class="s1">Toolbar toolbar = findViewById(R.id.toolbar)</span><span class="s0">;</span>
+<a name="l48"><span class="ln">48   </span></a>        <span class="s1">setSupportActionBar(toolbar)</span><span class="s0">;</span>
+<a name="l49"><span class="ln">49   </span></a>
+<a name="l50"><span class="ln">50   </span></a>        <span class="s1">drawer = findViewById(R.id.drawer_layout)</span><span class="s0">;</span>
+<a name="l51"><span class="ln">51   </span></a>        <span class="s1">NavigationView navigationView = findViewById(R.id.nav_view)</span><span class="s0">;</span>
+<a name="l52"><span class="ln">52   </span></a>        <span class="s1">navigationView.setNavigationItemSelectedListener(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l53"><span class="ln">53   </span></a>
+<a name="l54"><span class="ln">54   </span></a>
+<a name="l55"><span class="ln">55   </span></a>        <span class="s1">ActionBarDrawerToggle toggle = </span><span class="s0">new </span><span class="s1">ActionBarDrawerToggle(</span><span class="s0">this, </span><span class="s1">drawer</span><span class="s0">, </span><span class="s1">toolbar</span><span class="s0">,</span>
+<a name="l56"><span class="ln">56   </span></a>                <span class="s1">R.string.navigation_drawer_open</span><span class="s0">, </span><span class="s1">R.string.navigation_drawer_close)</span><span class="s0">;</span>
+<a name="l57"><span class="ln">57   </span></a>
+<a name="l58"><span class="ln">58   </span></a>
+<a name="l59"><span class="ln">59   </span></a>        <span class="s1">drawer.addDrawerListener(toggle)</span><span class="s0">;</span>
+<a name="l60"><span class="ln">60   </span></a>        <span class="s1">toggle.syncState()</span><span class="s0">;</span>
+<a name="l61"><span class="ln">61   </span></a>
+<a name="l62"><span class="ln">62   </span></a>        <span class="s2">//Handles if the phone is flipped if the saved instance state is empty(when app first launches) it launches to the home fragment and not to an empty activity.</span>
+<a name="l63"><span class="ln">63   </span></a>        <span class="s0">if</span><span class="s1">(savedInstanceState == </span><span class="s0">null</span><span class="s1">) {</span>
+<a name="l64"><span class="ln">64   </span></a>            <span class="s1">getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container</span><span class="s0">,</span>
+<a name="l65"><span class="ln">65   </span></a>                    <span class="s0">new <a href="HomeFragment.java.html">HomeFragment</a></span><span class="s1">()).commit()</span><span class="s0">;</span>
+<a name="l66"><span class="ln">66   </span></a>            <span class="s1">navigationView.setCheckedItem(R.id.nav_home)</span><span class="s0">;</span>
+<a name="l67"><span class="ln">67   </span></a>        <span class="s1">}</span>
+<a name="l68"><span class="ln">68   </span></a>
+<a name="l69"><span class="ln">69   </span></a>
+<a name="l70"><span class="ln">70   </span></a>    <span class="s1">}</span>
+<a name="l71"><span class="ln">71   </span></a><span class="s2">//TODO Put get supportFragmentManager, all into one method and reuse. (With animations)</span>
+<a name="l72"><span class="ln">72   </span></a>    <span class="s1">@Override</span>
+<a name="l73"><span class="ln">73   </span></a>    <span class="s0">public boolean </span><span class="s1">onNavigationItemSelected(@NonNull MenuItem item) {</span>
+<a name="l74"><span class="ln">74   </span></a>
+<a name="l75"><span class="ln">75   </span></a>        <span class="s0">switch</span><span class="s1">(item.getItemId()) {</span>
+<a name="l76"><span class="ln">76   </span></a>            <span class="s0">case </span><span class="s1">R.id.nav_home:</span>
+<a name="l77"><span class="ln">77   </span></a>                <span class="s1">getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container</span><span class="s0">,</span>
+<a name="l78"><span class="ln">78   </span></a>                        <span class="s0">new <a href="HomeFragment.java.html">HomeFragment</a></span><span class="s1">()).commit()</span><span class="s0">;</span>
+<a name="l79"><span class="ln">79   </span></a>                <span class="s0">break;</span>
+<a name="l80"><span class="ln">80   </span></a>            <span class="s0">case </span><span class="s1">R.id.nav_maps:</span>
+<a name="l81"><span class="ln">81   </span></a>                <span class="s1">getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container</span><span class="s0">,</span>
+<a name="l82"><span class="ln">82   </span></a>                        <span class="s0">new <a href="MapsFragment.java.html">MapsFragment</a></span><span class="s1">()).commit()</span><span class="s0">;</span>
+<a name="l83"><span class="ln">83   </span></a>                <span class="s0">break;</span>
+<a name="l84"><span class="ln">84   </span></a>            <span class="s0">case </span><span class="s1">R.id.nav_graph:</span>
+<a name="l85"><span class="ln">85   </span></a>                <span class="s1">getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container</span><span class="s0">,</span>
+<a name="l86"><span class="ln">86   </span></a>                        <span class="s0">new <a href="GraphsFragment.java.html">GraphsFragment</a></span><span class="s1">()).commit()</span><span class="s0">;</span>
+<a name="l87"><span class="ln">87   </span></a>                <span class="s0">break;</span>
+<a name="l88"><span class="ln">88   </span></a>            <span class="s0">case </span><span class="s1">R.id.nav_stats:</span>
+<a name="l89"><span class="ln">89   </span></a>                <span class="s1">getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container</span><span class="s0">,</span>
+<a name="l90"><span class="ln">90   </span></a>                        <span class="s0">new <a href="StatsFragment.java.html">StatsFragment</a></span><span class="s1">()).commit()</span><span class="s0">;</span>
+<a name="l91"><span class="ln">91   </span></a>                <span class="s0">break;</span>
+<a name="l92"><span class="ln">92   </span></a>            <span class="s0">case </span><span class="s1">R.id.nav_settings:</span>
+<a name="l93"><span class="ln">93   </span></a>                <span class="s1">Toast.makeText(</span><span class="s0">this, </span><span class="s3">&quot;Settingssss&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+<a name="l94"><span class="ln">94   </span></a>                <span class="s0">break;</span>
+<a name="l95"><span class="ln">95   </span></a>            <span class="s0">case </span><span class="s1">R.id.nav_about:</span>
+<a name="l96"><span class="ln">96   </span></a>                <span class="s1">Toast.makeText(</span><span class="s0">this, </span><span class="s3">&quot;WHAT ABOUT IT&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+<a name="l97"><span class="ln">97   </span></a>                <span class="s0">break;</span>
+<a name="l98"><span class="ln">98   </span></a>        <span class="s1">}</span>
+<a name="l99"><span class="ln">99   </span></a>        <span class="s1">drawer.closeDrawer(GravityCompat.START)</span><span class="s0">;</span>
+<a name="l100"><span class="ln">100  </span></a>        <span class="s0">return true;</span>
+<a name="l101"><span class="ln">101  </span></a>    <span class="s1">}</span>
+<a name="l102"><span class="ln">102  </span></a>
+<a name="l103"><span class="ln">103  </span></a>    <span class="s1">@Override</span>
+<a name="l104"><span class="ln">104  </span></a>    <span class="s0">public void </span><span class="s1">onBackPressed(){</span>
+<a name="l105"><span class="ln">105  </span></a>        <span class="s0">if </span><span class="s1">(drawer.isDrawerOpen(GravityCompat.START)){</span>
+<a name="l106"><span class="ln">106  </span></a>            <span class="s1">drawer.closeDrawer(GravityCompat.START)</span><span class="s0">;</span>
+<a name="l107"><span class="ln">107  </span></a>        <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+<a name="l108"><span class="ln">108  </span></a>            <span class="s0">super</span><span class="s1">.onBackPressed()</span><span class="s0">;</span>
+<a name="l109"><span class="ln">109  </span></a>        <span class="s1">}</span>
+<a name="l110"><span class="ln">110  </span></a>
+<a name="l111"><span class="ln">111  </span></a>    <span class="s1">}</span>
+<a name="l112"><span class="ln">112  </span></a>
+<a name="l113"><span class="ln">113  </span></a>
+<a name="l114"><span class="ln">114  </span></a>
+<a name="l115"><span class="ln">115  </span></a>    <span class="s2">//METHODS</span>
+<a name="l116"><span class="ln">116  </span></a>    <span class="s2">//TODO call this method when the hamburger menu is clicked</span>
+<a name="l117"><span class="ln">117  </span></a>    <span class="s0">public void </span><span class="s1">saveLocationPreference(){</span>
+<a name="l118"><span class="ln">118  </span></a>        <span class="s2">//TODO check if locationIndex == forecastObj.getSelectedCityNo()</span>
+<a name="l119"><span class="ln">119  </span></a>        <span class="s2">//not true update locationIndex</span>
+<a name="l120"><span class="ln">120  </span></a>
+<a name="l121"><span class="ln">121  </span></a>        <span class="s1">Log.d(</span><span class="s3">&quot;ForecastObj&quot;</span><span class="s0">, </span><span class="s3">&quot;saveLocationPreference Called&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l122"><span class="ln">122  </span></a>        <span class="s1">SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS</span><span class="s0">, </span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+<a name="l123"><span class="ln">123  </span></a>        <span class="s1">SharedPreferences.Editor editor = sharedPreferences.edit()</span><span class="s0">;</span>
+<a name="l124"><span class="ln">124  </span></a>        <span class="s1">editor.putInt(LOCATION_INDEX</span><span class="s0">, </span><span class="s1">locationIndex)</span><span class="s0">;</span>
+<a name="l125"><span class="ln">125  </span></a>    <span class="s1">}</span>
+<a name="l126"><span class="ln">126  </span></a>    <span class="s0">private void </span><span class="s1">loadLocationPreference(){</span>
+<a name="l127"><span class="ln">127  </span></a>        <span class="s1">SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS</span><span class="s0">, </span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+<a name="l128"><span class="ln">128  </span></a>        <span class="s1">locationIndex = sharedPreferences.getInt(LOCATION_INDEX</span><span class="s0">, </span><span class="s1">-</span><span class="s4">1</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l129"><span class="ln">129  </span></a>    <span class="s1">}</span>
+<a name="l130"><span class="ln">130  </span></a>
+<a name="l131"><span class="ln">131  </span></a>
+<a name="l132"><span class="ln">132  </span></a>    <span class="s2">//called by home fragment to retrieve and edit the forecast object</span>
+<a name="l133"><span class="ln">133  </span></a>    <span class="s0">public static <a href="ForecastObj.java.html">ForecastObj</a> </span><span class="s1">getForecastObj(){</span>
+<a name="l134"><span class="ln">134  </span></a>        <span class="s2">//check if a forecastObj Has been created</span>
+<a name="l135"><span class="ln">135  </span></a>        <span class="s0">if </span><span class="s1">(forecastObj==</span><span class="s0">null</span><span class="s1">){</span>
+<a name="l136"><span class="ln">136  </span></a>            <span class="s2">//check if a locationIndex has been saved to preferences</span>
+<a name="l137"><span class="ln">137  </span></a>            <span class="s0">if</span><span class="s1">(locationIndex!=-</span><span class="s4">1</span><span class="s1">){</span>
+<a name="l138"><span class="ln">138  </span></a>                <span class="s2">//create a forecastObj with the stored location preferences</span>
+<a name="l139"><span class="ln">139  </span></a>                <span class="s1">forecastObj = </span><span class="s0">new <a href="ForecastObj.java.html">ForecastObj</a></span><span class="s1">(locationIndex)</span><span class="s0">;</span>
+<a name="l140"><span class="ln">140  </span></a>            <span class="s1">}</span>
+<a name="l141"><span class="ln">141  </span></a>            <span class="s0">else</span><span class="s1">{</span>
+<a name="l142"><span class="ln">142  </span></a>                <span class="s1">forecastObj = </span><span class="s0">new <a href="ForecastObj.java.html">ForecastObj</a></span><span class="s1">()</span><span class="s0">;</span>
+<a name="l143"><span class="ln">143  </span></a>            <span class="s1">}</span>
+<a name="l144"><span class="ln">144  </span></a>        <span class="s1">}</span>
+<a name="l145"><span class="ln">145  </span></a>        <span class="s0">return </span><span class="s1">forecastObj</span><span class="s0">;</span>
+<a name="l146"><span class="ln">146  </span></a>    <span class="s1">}</span><span class="s2">//end of getForecastObj</span>
+<a name="l147"><span class="ln">147  </span></a>
+<a name="l148"><span class="ln">148  </span></a>
+<a name="l149"><span class="ln">149  </span></a>    <span class="s0">public static void </span><span class="s1">setForecastObj(<a href="ForecastObj.java.html">ForecastObj</a> forecastObj){</span>
+<a name="l150"><span class="ln">150  </span></a>        <span class="s1">MainActivity.forecastObj = forecastObj</span><span class="s0">;</span>
+<a name="l151"><span class="ln">151  </span></a>        <span class="s2">//also updates the location index</span>
+<a name="l152"><span class="ln">152  </span></a><span class="s2">//        locationIndex = forecastObj.getSelectedCityNo();</span>
+<a name="l153"><span class="ln">153  </span></a>    <span class="s1">}</span>
+<a name="l154"><span class="ln">154  </span></a>
+<a name="l155"><span class="ln">155  </span></a>    <span class="s2">//Retrieves the forecast from the page url passed to it</span>
+<a name="l156"><span class="ln">156  </span></a>    <span class="s0">class </span><span class="s1">getForecastAsync </span><span class="s0">extends </span><span class="s1">AsyncTask&lt;String</span><span class="s0">,</span><span class="s1">String</span><span class="s0">,</span><span class="s1">String&gt; {</span>
+<a name="l157"><span class="ln">157  </span></a>        <span class="s1">@Override</span>
+<a name="l158"><span class="ln">158  </span></a>        <span class="s0">protected void </span><span class="s1">onPreExecute() {</span>
+<a name="l159"><span class="ln">159  </span></a>            <span class="s0">super</span><span class="s1">.onPreExecute()</span><span class="s0">;</span>
+<a name="l160"><span class="ln">160  </span></a>            <span class="s1">Toast.makeText(MainActivity.</span><span class="s0">this, </span><span class="s3">&quot;Retrieving forecast&quot;</span><span class="s0">,</span><span class="s1">Toast.LENGTH_LONG).show()</span><span class="s0">;</span>
+<a name="l161"><span class="ln">161  </span></a>            <span class="s1">Log.d(</span><span class="s3">&quot;ForecastObj&quot;</span><span class="s0">,</span><span class="s3">&quot;Retrieving forecast&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l162"><span class="ln">162  </span></a>        <span class="s1">}</span>
+<a name="l163"><span class="ln">163  </span></a>
+<a name="l164"><span class="ln">164  </span></a>        <span class="s1">@Override</span>
+<a name="l165"><span class="ln">165  </span></a>        <span class="s0">protected void </span><span class="s1">onPostExecute(String result) {</span>
+<a name="l166"><span class="ln">166  </span></a>            <span class="s0">super</span><span class="s1">.onPostExecute(result)</span><span class="s0">;</span>
+<a name="l167"><span class="ln">167  </span></a>            <span class="s1">Toast.makeText(MainActivity.</span><span class="s0">this, </span><span class="s3">&quot;The connection result: &quot; </span><span class="s1">+ result</span><span class="s0">, </span><span class="s1">Toast.LENGTH_LONG).show()</span><span class="s0">;</span>
+<a name="l168"><span class="ln">168  </span></a>            <span class="s1">Log.d(</span><span class="s3">&quot;ForecastObj&quot;</span><span class="s0">,</span><span class="s3">&quot;The connection result: &quot; </span><span class="s1">+ result)</span><span class="s0">;</span>
+<a name="l169"><span class="ln">169  </span></a>        <span class="s1">}</span>
+<a name="l170"><span class="ln">170  </span></a>
+<a name="l171"><span class="ln">171  </span></a>        <span class="s1">@Override</span>
+<a name="l172"><span class="ln">172  </span></a>        <span class="s0">protected </span><span class="s1">String doInBackground(String... strings) {</span>
+<a name="l173"><span class="ln">173  </span></a>            <span class="s1">String result</span><span class="s0">;</span>
+<a name="l174"><span class="ln">174  </span></a>            <span class="s0">final </span><span class="s1">String TAG = </span><span class="s3">&quot;doInBackground&quot;</span><span class="s0">;</span>
+<a name="l175"><span class="ln">175  </span></a>
+<a name="l176"><span class="ln">176  </span></a>            <span class="s0">try </span><span class="s1">{</span>
+<a name="l177"><span class="ln">177  </span></a>                <span class="s1">String url =strings[</span><span class="s4">0</span><span class="s1">]</span><span class="s0">;</span>
+<a name="l178"><span class="ln">178  </span></a>                <span class="s2">//parse the page html to the document</span>
+<a name="l179"><span class="ln">179  </span></a>                <span class="s1">Document pageHtml = Jsoup.connect(url).get()</span><span class="s0">;</span>
+<a name="l180"><span class="ln">180  </span></a>                <span class="s2">//Check document is not empty</span>
+<a name="l181"><span class="ln">181  </span></a>                <span class="s0">if </span><span class="s1">(pageHtml != </span><span class="s0">null</span><span class="s1">) {</span>
+<a name="l182"><span class="ln">182  </span></a>                    <span class="s1">Elements listElement = pageHtml.select(</span><span class="s3">&quot;ul.pollen_graph&quot;</span><span class="s1">)</span><span class="s0">;</span>
+<a name="l183"><span class="ln">183  </span></a>                    <span class="s0">final </span><span class="s1">String forecasts = </span><span class="s3">&quot;&quot;</span><span class="s1">+ listElement.select(</span><span class="s3">&quot;li&quot;</span><span class="s1">).text()</span><span class="s0">;</span>
+<a name="l184"><span class="ln">184  </span></a>                    <span class="s1">result = </span><span class="s3">&quot;successful</span><span class="s0">\n </span><span class="s3">Values:&quot;</span><span class="s1">+forecasts</span><span class="s0">;</span><span class="s2">//**</span>
+<a name="l185"><span class="ln">185  </span></a>                    <span class="s2">//split the pollen forecast values into array (potential values: Low, Moderate, High, Very High, Extreme)</span>
+<a name="l186"><span class="ln">186  </span></a>                    <span class="s1">String delim = </span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">W+&quot;</span><span class="s0">;</span>
+<a name="l187"><span class="ln">187  </span></a>                    <span class="s1">String[] days = forecasts.split(delim)</span><span class="s0">;</span>
+<a name="l188"><span class="ln">188  </span></a>                    <span class="s1">ArrayList&lt;String&gt; daysList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+<a name="l189"><span class="ln">189  </span></a>                    <span class="s1">Collections.addAll(daysList</span><span class="s0">, </span><span class="s1">days)</span><span class="s0">;</span>
+<a name="l190"><span class="ln">190  </span></a>                    <span class="s1">forecastObj.setDaysList(daysList)</span><span class="s0">;</span><span class="s2">//update daysList in forecastObj</span>
+<a name="l191"><span class="ln">191  </span></a>                <span class="s1">}</span>
+<a name="l192"><span class="ln">192  </span></a>                <span class="s0">else </span><span class="s1">{</span>
+<a name="l193"><span class="ln">193  </span></a>                    <span class="s1">result = </span><span class="s3">&quot;could not retrieve page from site</span><span class="s0">\n</span><span class="s3">Url: &quot;</span><span class="s1">+url</span><span class="s0">;</span>
+<a name="l194"><span class="ln">194  </span></a>                <span class="s1">}</span>
+<a name="l195"><span class="ln">195  </span></a>            <span class="s1">}</span><span class="s2">//end of try</span>
+<a name="l196"><span class="ln">196  </span></a>            <span class="s0">catch </span><span class="s1">(Exception ex) {</span>
+<a name="l197"><span class="ln">197  </span></a>                <span class="s1">ex.printStackTrace()</span><span class="s0">;</span>
+<a name="l198"><span class="ln">198  </span></a><span class="s2">//                Log.e(TAG,&quot;An Exception was thrown\n&quot; +ex);</span>
+<a name="l199"><span class="ln">199  </span></a>                <span class="s1">Log.e(</span><span class="s3">&quot;ForecastObj&quot;</span><span class="s0">,</span><span class="s3">&quot;An Exception was thrown</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ex)</span><span class="s0">;</span>
+<a name="l200"><span class="ln">200  </span></a>                <span class="s1">result = </span><span class="s3">&quot;An Exception was thrown</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s1">+ex</span><span class="s0">;</span>
+<a name="l201"><span class="ln">201  </span></a>            <span class="s1">}</span><span class="s2">//end of catch</span>
+<a name="l202"><span class="ln">202  </span></a>            <span class="s0">return </span><span class="s1">result</span><span class="s0">;</span><span class="s2">//returns result to onPostExecute</span>
+<a name="l203"><span class="ln">203  </span></a>        <span class="s1">}</span><span class="s2">//end of doInBackground</span>
+<a name="l204"><span class="ln">204  </span></a>    <span class="s1">}</span><span class="s2">//end of getForecastAsync</span>
+<a name="l205"><span class="ln">205  </span></a>
+<a name="l206"><span class="ln">206  </span></a><span class="s1">}</span><span class="s2">//END OF MAIN ACTIVITY</span>
+<a name="l207"><span class="ln">207  </span></a></pre>
+</body>
+</html>
