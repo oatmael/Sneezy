@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
@@ -46,6 +47,13 @@ import io.realm.mongodb.sync.SyncConfiguration;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SettingsFragment.RestartListener {
 //TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES
     private DrawerLayout drawer;
@@ -66,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     SharedPref sharedPref;
 
-
+    public static ForecastObj forecastObj;
 
 
     @Override
@@ -79,6 +87,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else setTheme(R.style.AppTheme);
 
+        //set up forecastObj
+        int locationPref = sharedPref.loadLocationPreference();
+        if(locationPref != -1){
+            forecastObj = new ForecastObj(locationPref);
+        }
+        else{forecastObj = new ForecastObj();
+        }
+        new getForecastAsync().execute(forecastObj.getUrl());
 
         super.onCreate(savedInstanceState);
 
@@ -144,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onStop() {
+        sharedPref.saveLocationPreference(forecastObj.getSelectedCityNo());
         super.onStop();
         realm.close();
     }
@@ -365,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -391,7 +408,65 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
         }
-    }
+    }//onRequestPermission End
 
-}
+    public static ForecastObj getForecastObj(){
+        return forecastObj;
+    }// getForecastObj End
+
+    public static void setForecastObj(ForecastObj forecastObj){
+        MainActivity.forecastObj = forecastObj;
+    }// setForecastObj End
+
+    static class getForecastAsync extends AsyncTask<String,String,String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            Toast.makeText(MainActivity.this, "Retrieving forecast",Toast.LENGTH_LONG).show();
+            Log.d("ForecastObj","Retrieving forecast");
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+//            Toast.makeText(MainActivity(), "The connection result: " + result, Toast.LENGTH_LONG).show();
+            Log.d("ForecastObj","The connection result: " + result);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String result;
+            final String TAG = "doInBackground";
+
+            try {
+                String url =strings[0];
+                //parse the page html to the document
+                Document pageHtml = Jsoup.connect(url).get();
+                //Check document is not empty
+                if (pageHtml != null) {
+                    Elements listElement = pageHtml.select("ul.pollen_graph");
+                    final String forecasts = ""+ listElement.select("li").text();
+                    result = "successful\n Values:"+forecasts;//**
+                    //split the pollen forecast values into array (potential values: Low, Moderate, High, Very High, Extreme)
+                    String delim = "\\W+";
+                    String[] days = forecasts.split(delim);
+                    ArrayList<String> daysList = new ArrayList<>();
+                    Collections.addAll(daysList, days);
+                    forecastObj.setDaysList(daysList);//update daysList in forecastObj
+                }
+                else {
+                    result = "could not retrieve page from site\nUrl: "+url;
+                }
+            }//end of try
+            catch (Exception ex) {
+                ex.printStackTrace();
+//                Log.e(TAG,"An Exception was thrown\n" +ex);
+                Log.e("ForecastObj","An Exception was thrown\n" +ex);
+                result = "An Exception was thrown\n"+ex;
+            }//end of catch
+            return result;//returns result to onPostExecute
+        }//end of doInBackground
+    }// getForecastAsync End
+
+}//MainActivity End
 
