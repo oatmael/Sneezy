@@ -5,10 +5,11 @@
 
 
     <solid
-        android:color="@color/extremeColour"/>
+        android:color="@color/moderatedColour"/>
 
     <size
-        android:width="60dp"
-        android:height="57dp"/>
+        android:width="58dp"
+        android:height="31dp"/>
+
 
 </shape>

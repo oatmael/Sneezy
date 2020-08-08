@@ -15,15 +15,22 @@
     <color name="appBarBlack">#000000</color>
     <color name="sectionPurp">#F7210A2B</color>
     <color name="textPurp">#7A4A68</color>
-    <color name="mediumColour">#F7CF8336</color>
-    <color name="highColour">#F7CF363B</color>
-    <color name="lowColour">#F73ACC35</color>
+<!--    <color name="mediumColour">#F7CF8336</color>-->
+<!--    <color name="highColour">#F7CF363B</color>-->
+<!--    <color name="lowColour">#F73ACC35</color>-->
     <color name="changeLocPurp">#210B2C</color>
     <color name="changeLocButtBlue">#91C4F2</color>
     <color name="changeLocButtBorderGrey">#737373</color>
     <color name="indexBlocksTextColor">#412939</color>
     <color name="buttonBlue">#8D89A6</color>
     <color name="plusMinusGrey">#333333</color>
+
+    <!--Pollen Forecast Index Colours-->
+    <color name="extremeColour">#CA0D26</color>
+    <color name="vHighColour">#DD4B09</color>
+    <color name="highColour">#EC8D3B</color>
+    <color name="moderatedColour">#EAD844</color>
+    <color name="lowColour">#99CC33</color>
 
     <!--Dark Theme Colour Set-->
     <color name="darkBackground">#181818</color>

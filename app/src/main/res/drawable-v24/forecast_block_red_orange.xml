@@ -5,7 +5,7 @@
 
 
     <solid
-        android:color="@color/extremeColour"/>
+        android:color="@color/vHighColour"/>
 
     <size
         android:width="60dp"
