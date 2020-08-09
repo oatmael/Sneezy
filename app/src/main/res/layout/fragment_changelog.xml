@@ -27,19 +27,42 @@
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:text="@string/aboutUsTitle"
+            android:text="@string/changeLogTitle"
             android:textColor="?attr/mainText"
             android:textSize="40sp"
             android:textStyle="bold" />
 
-        <TextView
+        <ScrollView
             android:layout_width="370dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginTop="60dp"
+            android:paddingBottom="10dp">
 
-            android:text="@string/aboutUs"
-            android:textColor="?attr/mainText" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+                <!--Copy and paste these two textviews below for
+                new changelog updates and change the strings-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ver.xxx"
+                    android:textColor="?attr/mainText"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ver.xxxText"
+                    android:textColor="?attr/mainText"/>
+
+            </LinearLayout>
+        </ScrollView>
+
+
 
     </FrameLayout>
 

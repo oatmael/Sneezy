@@ -17,6 +17,7 @@
     <string name="minus">-</string>
 
 
+
     <string name="homeMonday">MON</string>
     <string name="homeTuesday">TUES</string>
     <string name="homeWednsday">WED</string>
@@ -62,6 +63,9 @@
     <string name="aboutNavText">About</string>
     <string name="logoutNavText">Logout</string>
     <string name="rateUsNavText">Rate Us</string>
+    <string name="sneezyNavHeader">Sneezy</string>
+    <string name="changlogNavText">Change Log</string>
+    <string name="reportNavText">Report Bugs</string>
     <!--End Drawer Menu Strings-->
 
     <!--About us Strings-->
@@ -69,6 +73,12 @@
         We are looking to continue working on this project by making a website which will display similar, more in depth data shown in this app.</string>
     <string name="aboutUsTitle">About Us</string>
     <!--End About Us Strings-->
+
+    <!--ChangeLog Strings-->
+    <string name="changeLogTitle">Change Log</string>
+    <string name="ver.xxx">Ver xxx:</string>
+    <string name="ver.xxxText">Addition this addition that.</string>
+    <!--End Changelog Strings-->
 
 
 </resources>

@@ -23,6 +23,9 @@
         <item android:id="@+id/nav_about"
             android:icon="@drawable/ic_baseline_search_24"
             android:title="@string/aboutNavText"/>
+        <item android:id="@+id/nav_changelog"
+            android:icon="@drawable/ic_baseline_bug_report_24"
+            android:title="@string/changlogNavText"/>
 
     </group>
     <item android:title="Other"><!--These are linking items, cannot be used to go to other pages etc.
@@ -35,6 +38,9 @@
             <item android:id="@+id/nav_rate_us"
                 android:icon="@drawable/ic_baseline_star_border_24"
                 android:title="@string/rateUsNavText"/>
+            <item android:id="@+id/nav_report_bug"
+                android:icon="@drawable/ic_baseline_bug_report_24"
+                android:title="@string/reportNavText"/>
 
         </menu>
 

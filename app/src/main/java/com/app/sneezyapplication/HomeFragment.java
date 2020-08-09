@@ -2,6 +2,7 @@ package com.app.sneezyapplication;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
+import com.app.sneezyapplication.databinding.FragmentHomeBinding;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,31 +32,29 @@ public class HomeFragment extends Fragment {
 
 
     Integer todaysSneezes;
-    Integer todaysSneezesForText;
+/*    Integer todaysSneezesForText = getTodaysSneezes();*/
+    int multiSneezes;
+
+
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        final Button button = view.findViewById(R.id.sneezeButton);
+        //Using binding the DataBindingUtil needs to be used with inflation. The Views(view.) will remain the same and you can use as per usual.
+        FragmentHomeBinding mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
+        View view = mBinding.getRoot();
+
+        final Button sneezeButton = view.findViewById(R.id.sneezeButton);
+        final Button minusButton = view.findViewById(R.id.minusButton);
+        final Button plusButton = view.findViewById(R.id.plusButton);
         TextView todaysSneezesText = view.findViewById(R.id.sneezesTodayText);
+        TextView multiText = view.findViewById(R.id.timesText);
 
-        todaysSneezesForText = getTodaysSneezes();
-        if (todaysSneezesForText == null) {
-            todaysSneezesText.setText("You haven't sneezed today");
-        }
-        else if (todaysSneezesForText == 1){
-            todaysSneezesText.setText("You've sneezed once today");
-        }
-        else if (todaysSneezesForText < 1) {
-            todaysSneezesText.setText("You haven't sneezed today");
-        }
-        else {
-            todaysSneezesText.setText("You've sneezed" + todaysSneezesForText + "times today");
-        }
 
-        button.setOnClickListener(v -> {
+
+        sneezeButton.setOnClickListener(v -> {
+            /*START LOCATION CODE*/
             MainActivity mainAct = (MainActivity)getActivity();
             if (mainAct.checkLocationPermission()) {
                 mainAct.fusedLocationClient.getLastLocation()
@@ -68,7 +68,6 @@ public class HomeFragment extends Fragment {
                 });
             }
 
-            handleSneeze();
         });
 
         return view;
@@ -86,7 +85,6 @@ public class HomeFragment extends Fragment {
         } else {
             createNewSneeze();
         }
-
     }
 
     private void createNewSneeze(){
