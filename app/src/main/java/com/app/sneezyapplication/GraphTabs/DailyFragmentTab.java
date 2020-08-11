@@ -22,6 +22,11 @@ import com.app.sneezyapplication.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+
+import static com.app.sneezyapplication.MainActivity.repo;
+import com.app.sneezyapplication.data.SneezeItem;
+import com.app.sneezyapplication.data.SneezeData;
 
 public class DailyFragmentTab extends Fragment {
 
@@ -38,16 +43,30 @@ public class DailyFragmentTab extends Fragment {
 
         Cartesian cartesian = AnyChart.column();
 
-
-
+        //Will clean once working unable to test in current state
         List<DataEntry> data = new ArrayList<>();
-        data.add(new ValueDataEntry("Sat", 8));
-        data.add(new ValueDataEntry("Sun", 9));
-        data.add(new ValueDataEntry("Mon", 10));
-        data.add(new ValueDataEntry("Tue", 11));
-        data.add(new ValueDataEntry("Wed", 12));
-        data.add(new ValueDataEntry("Thu", 14));
-        data.add(new ValueDataEntry("Fri", 17));
+
+        String date;
+        int sneezes;
+        for (SneezeItem s : repo.getWeeklyUserSneezeItems()){
+
+            sneezes = 0;
+
+            date = s.getDate();
+            for (SneezeData d : s.getSneezes()){
+                sneezes++;
+            }
+
+            data.add(new ValueDataEntry(date, sneezes));
+        }
+
+//        data.add(new ValueDataEntry("Sat", 8));
+//        data.add(new ValueDataEntry("Sun", 9));
+//        data.add(new ValueDataEntry("Mon", 10));
+//        data.add(new ValueDataEntry("Tue", 11));
+//        data.add(new ValueDataEntry("Wed", 12));
+//        data.add(new ValueDataEntry("Thu", 14));
+//        data.add(new ValueDataEntry("Fri", 17));
 
         Column column = cartesian.column(data);
 
@@ -75,7 +94,7 @@ public class DailyFragmentTab extends Fragment {
         anyChartView.setChart(cartesian);
 
         //Appearance Options
-        //cartesian.background().fill("GET COLOR FROM STYLE);
+        //cartesian.background().fill("GET COLOR FROM STYLE");
         column.color("red");
 
         return view;
