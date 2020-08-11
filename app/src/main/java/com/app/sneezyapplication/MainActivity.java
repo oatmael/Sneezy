@@ -440,10 +440,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //Check document is not empty
                 if (pageHtml != null) {
                     Elements listElement = pageHtml.select("ul.pollen_graph");
-                    final String forecasts = ""+ (listElement.select("li").text()).toUpperCase();
+                    String forecasts = ""+ (listElement.select("li").text()).toUpperCase();
                     result = "successful\n Values:"+forecasts;//**
                     //split the pollen forecast values into array (potential values: Low, Moderate, High, Very High, Extreme)
-                    forecasts.replace("VERY ","VERY_");
+                    forecasts = forecasts.replace("VERY HIGH","VERY_HIGH");
                     String delim = "\\W+";
                     String[] days = forecasts.split(delim);
                     ArrayList<String> daysList = new ArrayList<>();
