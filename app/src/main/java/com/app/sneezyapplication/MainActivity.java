@@ -2,16 +2,13 @@ package com.app.sneezyapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -28,9 +25,6 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.Toast;
 
 import com.app.sneezyapplication.data.SneezeRepository;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -225,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.e("REALM", exception.getMessage());
             }
         });
-
     }
 
 
@@ -431,6 +424,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onPostExecute(result);
 //            Toast.makeText(MainActivity(), "The connection result: " + result, Toast.LENGTH_LONG).show();
             Log.d("ForecastObj","The connection result: " + result);
+            HomeFragment.upDatePollenForecastViewOnPostExecute(forecastObj);
+
         }
 
         @Override
@@ -445,14 +440,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //Check document is not empty
                 if (pageHtml != null) {
                     Elements listElement = pageHtml.select("ul.pollen_graph");
-                    final String forecasts = ""+ listElement.select("li").text();
+                    final String forecasts = ""+ (listElement.select("li").text()).toUpperCase();
                     result = "successful\n Values:"+forecasts;//**
                     //split the pollen forecast values into array (potential values: Low, Moderate, High, Very High, Extreme)
+                    forecasts.replace("VERY ","VERY_");
                     String delim = "\\W+";
                     String[] days = forecasts.split(delim);
                     ArrayList<String> daysList = new ArrayList<>();
                     Collections.addAll(daysList, days);
-                    forecastObj.setDaysList(daysList);//update daysList in forecastObj
+                    forecastObj.setForecastList(daysList);//update daysList in forecastObj
                 }
                 else {
                     result = "could not retrieve page from site\nUrl: "+url;

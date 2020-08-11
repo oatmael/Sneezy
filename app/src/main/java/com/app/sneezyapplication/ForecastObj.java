@@ -15,9 +15,13 @@ public class ForecastObj {
             "https://www.weatherzone.com.au/pollen-index/nsw/sydney/sydney"));
     //stores Names of cities
     private static final ArrayList<String> CITY_NAMES = new ArrayList<>(Arrays.asList("Adelaide", "Brisbane", "Canberra", "Hobart", "Melbourne", "Perth", "Sydney"));
+    //sores Names of States
+    private static final ArrayList<String> CITY_STATES = new ArrayList<>(Arrays.asList("SA", "QLD", "ACT", "TAS", "VIC", "WA", "NSW"));
+    private static final ArrayList<String> POLLEN_INDEX_VALUES = new ArrayList<>(Arrays.asList("LOW", "MODERATE", "HIGH", "VERY_HIGH", "EXTREME"));
     private static final int DEFAULT_SELECTED_CITY_NO = 0;//default selected location number
     //VARIABLES
-    private ArrayList<String> daysList = new ArrayList<>();//stores the forecast result for each day
+    private ArrayList<String> forecastList = new ArrayList<>();//stores the forecast result for each day
+    private ArrayList<Integer> forecastValueNums;//stores the forecast value index for each day (e.g. low = 0, extreme = 4)
     private int selectedCityNo;//stores index number of the location to be used
     //TODO maybe
     //make datetime variable to store when the forecast was last updated
@@ -47,17 +51,30 @@ public class ForecastObj {
         return CITY_NAMES.indexOf(selectedCity);
     }
 
-    public String getCity(int i){
+    public String getCityName(int i){
         return CITY_NAMES.get(i);
     }
+    public String getStateName(int i){return CITY_STATES.get(i); }
 
-    public ArrayList<String> getDaysList(){
-        return daysList;
+//    public ArrayList<String> getForecastList(){
+//        return forecastList;
+//    }
+
+    public void setForecastList(ArrayList<String> forecastList){
+        this.forecastList = forecastList;
     }
 
-    public void setDaysList(ArrayList<String> daysList){
-        this.daysList = daysList;
-    }
+    public ArrayList<Integer> getIndexValues(){
+        forecastValueNums = new ArrayList<>();
+        int valueIndex;
+        String dayValue = "";
+        for (int i =0; i <forecastList.size();i++) {
+            dayValue = forecastList.get(i).toUpperCase();
+            valueIndex = POLLEN_INDEX_VALUES.indexOf(dayValue);
+            forecastValueNums.add(valueIndex);
+        }
+        return forecastValueNums;
+    }//getIndexValues END
 
     public String getUrl() {
         return LOCATION_URLS.get(selectedCityNo);
