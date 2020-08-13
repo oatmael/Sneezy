@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -54,7 +55,7 @@ public class AppRater {
 
     public static void showRatePopup(Context mContext, final SharedPreferences.Editor editor) {
         sharedPref = new SharedPref(mContext);
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext); /*Replace mcontext if not working.*/
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.AlertDialogCustom)); /*Replace mcontext if not working.*/
         builder.setCancelable(true);
         builder.setTitle("Rate " + APP_TITLE);
 
@@ -71,10 +72,13 @@ public class AppRater {
         builder.setNeutralButton("Maybe Later.", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (editor != null) {
+                    Long date_firstLaunch;
+                    date_firstLaunch = System.currentTimeMillis();
+                    editor.putLong("date_firstlaunch", date_firstLaunch);
+                    editor.commit();
+                }
                 dialog.dismiss();
-                Long date_firstLaunch;
-                date_firstLaunch = System.currentTimeMillis();
-                editor.putLong("date_firstlaunch", date_firstLaunch);
             }
         });
 

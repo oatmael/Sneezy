@@ -26,7 +26,6 @@
         <item name="changeLocText">@color/lightMainText</item>
     </style>
 
-
     <!--DARK THEME-->
     <style name="darkTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/darkBackground</item>
@@ -42,8 +41,19 @@
         <item name="timesBubble">@color/timesBubbleDark</item>
         <item name="toolbarColor">@color/sectionDark</item>
         <item name="changeLocText">@color/changeLocTextDark</item>
-
     </style>
+
+    <!--Alert Dialog theme-->
+    <style name="AlertDialogCustom" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="android:textColorPrimary">?attr/mainText</item>
+        <item name="android:textColorSecondary">?attr/mainText</item>
+        <item name="android:headerDividersEnabled">true</item>
+        <item name="android:typeface">normal</item>
+        <item name="android:background">?attr/backgroundMainColor</item>
+    </style>
+
+
+
 
 <!--    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/darkPurp</item>

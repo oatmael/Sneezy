@@ -4,8 +4,6 @@ public class MultiBind {
 
     public String multiText = "1X";
     public Integer multiNum;
-    public boolean indicator;
-
 
         public String getMulti(int indicator) {
         //Reset Indicator
