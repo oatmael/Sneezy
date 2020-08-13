@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/backgroundMainColor"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:textColor="?attr/mainText"
+        >
+
+        <TextView
+            android:id="@+id/setLocationHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/popup_header"
+            android:textSize="20sp"
+            android:textColor="?attr/mainText"
+            />
+
+        <RadioGroup
+            android:id="@+id/radioGCities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/radioAdelaide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_adelaide"
+                android:textColor="?attr/mainText"
+                />
+            <RadioButton
+                android:id="@+id/radioBrisbane"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_brisbane"
+                android:textColor="?attr/mainText"/>
+            <RadioButton
+                android:id="@+id/radioCanberra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_canberra"
+                android:textColor="?attr/mainText"/>
+            <RadioButton
+                android:id="@+id/radioHobart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_hobart"
+                android:textColor="?attr/mainText"/>
+            <RadioButton
+                android:id="@+id/radioMelbourne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_melbourne"
+                android:textColor="?attr/mainText"/>
+            <RadioButton
+                android:id="@+id/radioPerth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_perth"
+                android:textColor="?attr/mainText"/>
+            <RadioButton
+                android:id="@+id/radioSydney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_sydney"
+                android:textColor="?attr/mainText"/>
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/locationSaveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_save"
+            android:background="?attr/colorButtonNormal"
+            />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

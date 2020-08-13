@@ -13,6 +13,8 @@ import java.util.Random;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
+import static com.app.sneezyapplication.MainActivity.repo;
+
 public class SneezeRepository {
 
     private List<SneezeItem> allSneezeItems;
@@ -20,6 +22,8 @@ public class SneezeRepository {
     private List<SneezeItem> monthlyUserSneezeItems;
     private List<SneezeItem> weeklyUserSneezeItems;
     private SneezeItem todayUserSneezeItem;
+
+    private Integer todaysSneeze;
 
     public List<SneezeItem> getAllSneezeItems() {
         updateAllSneezes();
@@ -73,6 +77,7 @@ public class SneezeRepository {
         monthlyUserSneezeItems = new ArrayList<>();
         weeklyUserSneezeItems = new ArrayList<>();
         todayUserSneezeItem = new SneezeItem();
+
     }
 
     public void updateRecords() {
@@ -81,25 +86,20 @@ public class SneezeRepository {
         updateUserMonthlySneezes();
         updateUserWeeklySneezes();
         updateUserTodaySneeze();
-
     }
 
     private void updateAllSneezes(){
         RealmResults<SneezeItem> allSneezes = MainActivity.realm.where(SneezeItem.class)
                 .notEqualTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
                 .findAll();
-
         allSneezeItems = allSneezes;
-
     }
 
     private void updateUserSneezes(){
         RealmResults<SneezeItem> userSneezes = MainActivity.realm.where(SneezeItem.class)
                 .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
                 .findAll();
-
         allUserSneezeItems = userSneezes;
-
     }
 
     // TODO: CHANGE THIS TO REALMRESULTS QUERY. BAD.
@@ -115,8 +115,8 @@ public class SneezeRepository {
             if (test.get(Calendar.DAY_OF_MONTH) == current.get(Calendar.DAY_OF_MONTH)
                     && test.get(Calendar.MONTH) == current.get(Calendar.MONTH)
                     && test.get(Calendar.YEAR) == current.get(Calendar.YEAR)){
-                todayUserSneezeItem = s;
-                break;
+                    todayUserSneezeItem = s;
+                    break;
             }
         }
     }
@@ -152,6 +152,8 @@ public class SneezeRepository {
             }
         }
     }
+
+
 
 
 

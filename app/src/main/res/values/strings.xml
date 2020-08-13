@@ -9,9 +9,12 @@
     <string name="pollenChangeLocation">Change Location</string>
     <string name="weekAhead">Your week ahead</string>
     <string name="indexText">Index</string>
-    <string name="pollenCountLow">LOW</string>
-    <string name="pollenCountMed">MED</string>
+
+    <string name="pollenCountExtreme">EXTREME</string>
+    <string name="pollenCountVHigh">VHIGH</string>
     <string name="pollenCountHigh">HIGH</string>
+    <string name="pollenCountModerate">MED</string>
+    <string name="pollenCountLow">LOW</string>
     <string name="sneeze">SNEEZE</string>
     <string name="plus">+</string>
     <string name="minus">-</string>
@@ -20,7 +23,7 @@
 
     <string name="homeMonday">MON</string>
     <string name="homeTuesday">TUES</string>
-    <string name="homeWednsday">WED</string>
+    <string name="homeWednesday">WED</string>
     <string name="homeThursday">THUR</string>
     <string name="homeFriday">FRI</string>
     <string name="homeSaturday">SAT</string>
@@ -80,5 +83,17 @@
     <string name="ver.xxxText">Addition this addition that.</string>
     <!--End Changelog Strings-->
 
+
+    <!--    Select Location Popup Strings   -->
+    <string name="popup_header">Select a city</string>
+    <string name="radio_adelaide">Adelaide</string>
+    <string name="radio_brisbane">Brisbane</string>
+    <string name="radio_canberra">Canberra</string>
+    <string name="radio_sydney">Sydney</string>
+    <string name="radio_melbourne">Melbourne</string>
+    <string name="radio_hobart">Hobart</string>
+    <string name="radio_perth">Perth</string>
+    <string name="btn_save">SAVE</string>
+    <!--    End Select Location PopUp Strings   -->
 
 </resources>

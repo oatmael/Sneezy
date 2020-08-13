@@ -23,6 +23,8 @@ public class AppRater {
     private final static int DAYS_UNTIL_PROMPT = 3;
     private final static int LAUNCHES_UNTIL_PROMPT = 3;
 
+    private static SharedPref sharedPref;
+
     public static void app_launched(Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("apprater", 0);
         if (prefs.getBoolean("dontshowagain", false)) { return ; }
@@ -51,6 +53,7 @@ public class AppRater {
     }
 
     public static void showRatePopup(Context mContext, final SharedPreferences.Editor editor) {
+        sharedPref = new SharedPref(mContext);
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext); /*Replace mcontext if not working.*/
         builder.setCancelable(true);
         builder.setTitle("Rate " + APP_TITLE);
@@ -69,6 +72,9 @@ public class AppRater {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                Long date_firstLaunch;
+                date_firstLaunch = System.currentTimeMillis();
+                editor.putLong("date_firstlaunch", date_firstLaunch);
             }
         });
 
@@ -84,8 +90,15 @@ public class AppRater {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+        if (sharedPref.loadNightModeState()==true) {
+            dialog.getWindow().setBackgroundDrawableResource(R.color.darkBackground);
+        }
+        else {
+            dialog.getWindow().setBackgroundDrawableResource(R.color.lightBackground);
+        }
+    }
     }
 
 
 
-}
+

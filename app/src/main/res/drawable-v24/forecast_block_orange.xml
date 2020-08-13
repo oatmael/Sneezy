@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+android:shape="rectangle">
 
 
 
-    <solid
-        android:color="@color/mediumColour"/>
+<solid
+    android:color="@color/highColour"/>
 
-    <size
-        android:width="60dp"
-        android:height="57dp"/>
+<size
+    android:width="60dp"
+    android:height="57dp"/>
 
 </shape>
