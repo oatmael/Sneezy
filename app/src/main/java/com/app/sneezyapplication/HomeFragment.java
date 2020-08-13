@@ -7,7 +7,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.databinding.DataBindingUtil;
+
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -21,35 +24,58 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
+import com.app.sneezyapplication.databinding.FragmentHomeBinding;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 
+
 import java.util.Calendar;
+import static com.app.sneezyapplication.MainActivity.repo;
 
 public class HomeFragment extends Fragment {
 
     private ForecastObj forecastObj;
 
+
+    Integer todaysSneezes;
+    /*    Integer todaysSneezesForText = getTodaysSneezes();*/
+    int multiSneezes;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-        final Button button = view.findViewById(R.id.sneezeButton);
+        //Using binding the DataBindingUtil needs to be used with inflation. The Views(view.) will remain the same and you can use as per usual.
+        FragmentHomeBinding mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
+        View view = mBinding.getRoot();
 
-        button.setOnClickListener(v -> {
-            MainActivity mainAct = (MainActivity)getActivity();
+        final Button sneezeButton = view.findViewById(R.id.sneezeButton);
+        final Button minusButton = view.findViewById(R.id.minusButton);
+        final Button plusButton = view.findViewById(R.id.plusButton);
+        TextView todaysSneezesText = view.findViewById(R.id.sneezesTodayText);
+        TextView multiText = view.findViewById(R.id.timesText);
+
+
+        sneezeButton.setOnClickListener(v -> {
+            /*START LOCATION CODE*/
+            MainActivity mainAct = (MainActivity) getActivity();
             if (mainAct.checkLocationPermission()) {
                 mainAct.fusedLocationClient.getLastLocation()
                         .addOnSuccessListener(location -> {
-                            if (location != null){
+                            if (location != null) {
                                 //Log.e("app", String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()));
                                 MainActivity.location = location;
                             }
@@ -58,8 +84,8 @@ public class HomeFragment extends Fragment {
                 });
             }
 
-            handleSneeze();
         });
+
         return view;
     }
 
@@ -70,7 +96,7 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         //initialise static variables for updating view
-        packageName =getActivity().getBaseContext().getPackageName();
+        packageName = getActivity().getBaseContext().getPackageName();
         viewForUpdateView = getView();
         resources = getResources();
         //update forecast location text field
@@ -87,20 +113,19 @@ public class HomeFragment extends Fragment {
         });
     }//onViewCreated
 
-    private void handleSneeze(){
+    private void handleSneeze() {
         RealmQuery<SneezeItem> searchForCurrentDateQuery = MainActivity.realm.where(SneezeItem.class)
                 .equalTo(SneezeItem.Fields.DATE, dayFormat.format(new Date()))
                 .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId());
 
-        if (searchForCurrentDateQuery.count() != 0){
+        if (searchForCurrentDateQuery.count() != 0) {
             updateCurrentSneeze();
         } else {
             createNewSneeze();
         }
-
     }
 
-    private void createNewSneeze(){
+    private void createNewSneeze() {
         MainActivity.realm.executeTransaction(r -> {
             SneezeData sd = new SneezeData(
                     new Date().toString(),
@@ -115,7 +140,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void updateCurrentSneeze(){
+    private void updateCurrentSneeze() {
         MainActivity.realm.executeTransaction(r -> {
             SneezeItem sneeze = MainActivity.realm.where(SneezeItem.class)
                     .equalTo(SneezeItem.Fields.DATE, dayFormat.format(new Date()))
@@ -130,7 +155,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private String getLocation(){
+    private String getLocation() {
         String lat = "";
         String lng = "";
         if (MainActivity.location != null) {
@@ -142,7 +167,7 @@ public class HomeFragment extends Fragment {
         return lat + "," + lng;
     }
 
-    private void setLocationPopup(){
+    private void setLocationPopup() {
 //        Toast.makeText(getActivity(),"Location popup called",Toast.LENGTH_SHORT).show();
 
         final String TAG = "setLocationPopup";
@@ -155,7 +180,7 @@ public class HomeFragment extends Fragment {
 
         //check the radiobutton which corresponds to the city that has been set in forecastObj.selectedCity
         final RadioGroup radioGroupCities = (RadioGroup) popupView.findViewById(R.id.radioGCities);
-        ((RadioButton)radioGroupCities.getChildAt(cityNo)).setChecked(true);
+        ((RadioButton) radioGroupCities.getChildAt(cityNo)).setChecked(true);
 //        Toast.makeText(getActivity(),"selectedNo:" +cityNo,Toast.LENGTH_LONG);
 
         //show the dialog
@@ -171,15 +196,15 @@ public class HomeFragment extends Fragment {
                 //get the selected radio button to save it to the selectedLocationNo
                 int selectedCityId = radioGroupCities.getCheckedRadioButtonId();
                 RadioButton selectedCityRadio = (RadioButton) popupView.findViewById(selectedCityId);
-                String selectedCity = selectedCityRadio.getText().toString().replace("_radio","");
+                String selectedCity = selectedCityRadio.getText().toString().replace("_radio", "");
 //                Toast.makeText(getActivity(),"Save Clicked Selected City: "+forecastObj.getCityIndex(selectedCity),Toast.LENGTH_LONG).show();
                 //get the index of the city that was selected and save it to the forecastObj
-                if(forecastObj.getCityIndex(selectedCity)!=-1){
+                if (forecastObj.getCityIndex(selectedCity) != -1) {
                     forecastObj.setSelectedCityNo(forecastObj.getCityIndex(selectedCity));
                     MainActivity.setForecastObj(forecastObj);// *NON-STATIC CONTEXT
-                    Log.i("ForecastObj","Location successfully set to "+forecastObj.getCityName(forecastObj.getSelectedCityNo()));
+                    Log.i("ForecastObj", "Location successfully set to " + forecastObj.getCityName(forecastObj.getSelectedCityNo()));
                     //update forecastObj in MainActivity
-                    Log.i("ForecastObj","Location "+selectedCity+"successfully saved to shared prefs");
+                    Log.i("ForecastObj", "Location " + selectedCity + "successfully saved to shared prefs");
 
 
                     //update pollen forecast
@@ -187,28 +212,37 @@ public class HomeFragment extends Fragment {
                     //update home frag values
                     updatePollenCountLocationTxt();
 //                    upDatePollenForecastView(getView(), getResources(), getActivity().getBaseContext().getPackageName(), forecastObj);
-                }
-                else {
-                    Toast.makeText(getActivity(),"Developer Error: selectedCity value does not exist",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Developer Error: selectedCity value does not exist", Toast.LENGTH_LONG).show();
                 }
                 dialog.dismiss();
             }//end of onclick
         });//onClickListener END
     }// setLocationPopup END
 
-    public void updatePollenCountLocationTxt(){
+    public void updatePollenCountLocationTxt() {
         TextView pollenLocationTxt = getView().findViewById(R.id.pollenCountLocationTxt);
-        pollenLocationTxt.setText(forecastObj.getCityName(forecastObj.getSelectedCityNo())+", "+forecastObj.getStateName(forecastObj.getSelectedCityNo()));
+        pollenLocationTxt.setText(forecastObj.getCityName(forecastObj.getSelectedCityNo()) + ", " + forecastObj.getStateName(forecastObj.getSelectedCityNo()));
+    }
+
+    private int getTodaysSneezes() {
+        if (repo.todayUserSneezeItems() == null) { //TODO REMOVE WHEN GOOGLE LOGIN IS WORKING CORRECTLY
+            todaysSneezes = 0;
+        } else {
+            todaysSneezes = repo.todayUserSneezeItems()
+                    .getSneezes()
+                    .size();
+        }
+        return todaysSneezes;
+
     }
 
 
-
-
-    public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj){
+    public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj) {
         final int numDays = 4;
-        final String[] weekDays = new String[] { "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" };
+        final String[] weekDays = new String[]{"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
         //get views to edit and reference resources
-        ConstraintLayout constraintLayout =view.findViewById(R.id.homeConstraintLayout);
+        ConstraintLayout constraintLayout = view.findViewById(R.id.homeConstraintLayout);
 //        ArrayList<String> forecastDays =new ArrayList<String>(forecastObj.getDaysList());
 //        ImageView backgroundImg;
 
@@ -224,7 +258,7 @@ public class HomeFragment extends Fragment {
         int dayForecastValue;
 //        forecast_block_
 
-        final String[] drawableColours = new String[]{"green","yellow","orange","red_orange","red"};
+        final String[] drawableColours = new String[]{"green", "yellow", "orange", "red_orange", "red"};
         final ArrayList<Integer> IndexValueNums = forecastObj.getIndexValues();
 
         int drawableID;
@@ -233,20 +267,19 @@ public class HomeFragment extends Fragment {
         //day variables
         int counter = 0;
         Calendar calendar = Calendar.getInstance();
-        int currentDayNo = calendar.get(Calendar.DAY_OF_WEEK)-1;
+        int currentDayNo = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         String dayOfWeek;
 
-        for(int i =0; i < numDays;i++) {
+        for (int i = 0; i < numDays; i++) {
             //get background colour for forecast
             try {
                 drawableName = ("forecast_block_" + drawableColours[IndexValueNums.get(i)]);
                 drawableID = resources.getIdentifier(drawableName, "drawable", packageName);
                 background = resources.getDrawable(drawableID);
 //            background = resources.getDrawable(R.drawable.forecast_block_red_orange);
-            }
-            catch (Exception ex){
+            } catch (Exception ex) {
                 background = resources.getDrawable(R.drawable.forecast_block_green);
-                Log.e("ForecastObj","An Exception was thrown\nDrawable Not found\n" +ex);
+                Log.e("ForecastObj", "An Exception was thrown\nDrawable Not found\n" + ex);
 
             }
             //get and edit background
@@ -255,19 +288,18 @@ public class HomeFragment extends Fragment {
                 imgID = resources.getIdentifier(imgName, "id", packageName);
                 dayImgView = constraintLayout.findViewById(imgID);
                 dayImgView.setBackground(background);
-            }
-            catch (Exception ex){
-                Log.e("ForecastObj","An Exception was thrown\nDay Img cant be found\n" +ex);
+            } catch (Exception ex) {
+                Log.e("ForecastObj", "An Exception was thrown\nDay Img cant be found\n" + ex);
             }
             //get Current day from weekDays array
-            if(currentDayNo+counter>6){
+            if (currentDayNo + counter > 6) {
                 currentDayNo = 0;
                 counter = 0;
             }
-            dayOfWeek = weekDays[currentDayNo +counter];
+            dayOfWeek = weekDays[currentDayNo + counter];
             //get and edit text View
-            txtName = "forecastTextBlock"+(i+1);
-            txtID = resources.getIdentifier(txtName,"id", packageName) ;
+            txtName = "forecastTextBlock" + (i + 1);
+            txtID = resources.getIdentifier(txtName, "id", packageName);
             dayNameTxt = constraintLayout.findViewById(txtID);
             dayNameTxt.setText(dayOfWeek);
 
@@ -278,10 +310,13 @@ public class HomeFragment extends Fragment {
     static String packageName;
     static Resources resources;
     static View viewForUpdateView;
+
     //called by main activity to update forecast values for
-    public static void upDatePollenForecastViewOnPostExecute(ForecastObj forecastObj){
+    public static void upDatePollenForecastViewOnPostExecute(ForecastObj forecastObj) {
         upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastObj);
-    }
-}
+    }//upDatePollenForecastViewOnPostExecute END
+}//HomeFragment END
+
+
 
 

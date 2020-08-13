@@ -162,10 +162,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        realm.close();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        realm.close();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectToDB();
+        login();
     }
 
     private void connectToDB(){
         String appID = getResources().getString(R.string.stitch_client_app_id);
+        if (realm == null)
+            realm = Realm.getDefaultInstance();
+
         if (app == null)
             app = new App(new AppConfiguration.Builder(appID).build());
     }
@@ -258,16 +275,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.replace(R.id.fragment_container,
                         new AboutFragment()).commit();
                 break;
+            case R.id.nav_changelog:
+                transaction.replace(R.id.fragment_container,
+                        new ChangelogFragment()).commit();
+                break;
             case R.id.nav_logout:
                 logoutPopup();
                 break;
             case R.id.nav_rate_us:
                 /*rateUs();*/
-
+                break;
+            case R.id.nav_report_bug:
+                sendEmail();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    protected void sendEmail() {
+        Log.i("Send email", "");
+        String[] TO = {"tommy_b55@hotmail.com"};
+/*        String[] CC = {"xyz@gmail.com"};*/
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+
+
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+/*        emailIntent.putExtra(Intent.EXTRA_CC, CC);*/
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report: ");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Bug Report: Write your description of the bug, as well as the steps to make the bug occur. Screenshots help alot. Thanksyou.");
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            finish();
+            Log.i("Finished sending email...", "");
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(MainActivity.this,
+                    "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /*Simple rate us Method which will direct the user to the Google Market rating page I believe. Used with the sidebar button.*/ /*WILL NOT WORK ON THE A.S EMULATOR as the emulator doesent have the*/

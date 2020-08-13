@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import io.realm.annotations.Ignore;
+
 
 /**
  * A simple {@link Fragment} subclass.

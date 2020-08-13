@@ -5,6 +5,7 @@ import com.app.sneezyapplication.MainActivity;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,8 @@ public class SneezeRepository {
     private List<SneezeItem> allSneezeItems;
     private List<SneezeItem> allUserSneezeItems;
     private List<SneezeItem> monthlyUserSneezeItems;
+    private List<SneezeItem> weeklyUserSneezeItems;
+    private SneezeItem todayUserSneezeItem;
 
     public List<SneezeItem> getAllSneezeItems() {
         updateAllSneezes();
@@ -28,17 +31,29 @@ public class SneezeRepository {
         updateUserMonthlySneezes();
         return monthlyUserSneezeItems;
     }
+    public List<SneezeItem> getWeeklyUserSneezeItems() {
+        updateUserWeeklySneezes();
+        return weeklyUserSneezeItems;
+    }
+    public SneezeItem todayUserSneezeItems() {
+        updateUserTodaySneeze();
+        return todayUserSneezeItem;
+    }
 
     public SneezeRepository(){
         allSneezeItems = new ArrayList<>();
         allUserSneezeItems = new ArrayList<>();
         monthlyUserSneezeItems = new ArrayList<>();
+        weeklyUserSneezeItems = new ArrayList<>();
+        todayUserSneezeItem = new SneezeItem();
     }
 
     public void updateRecords() {
         updateAllSneezes();
         updateUserSneezes();
         updateUserMonthlySneezes();
+        updateUserWeeklySneezes();
+        updateUserTodaySneeze();
 
     }
 
@@ -60,19 +75,57 @@ public class SneezeRepository {
 
     }
 
-    private void updateUserMonthlySneezes(){
-        DateFormat monthFormat = new SimpleDateFormat("MMM");
-        Date date = new Date();
-        String month = monthFormat.format(date);
+    // TODO: CHANGE THIS TO REALMRESULTS QUERY. BAD.
+    private void updateUserTodaySneeze() {
+        Calendar current = Calendar.getInstance();
+        Calendar test = Calendar.getInstance();
+
+        current.setTime(new Date());
 
         for (SneezeItem s : allUserSneezeItems){
-            if (s.getDate().contains(month)){
+            test.setTime(s.dateAsAndroidDate());
+
+            if (test.get(Calendar.DAY_OF_MONTH) == current.get(Calendar.DAY_OF_MONTH)
+                    && test.get(Calendar.MONTH) == current.get(Calendar.MONTH)
+                    && test.get(Calendar.YEAR) == current.get(Calendar.YEAR)){
+                todayUserSneezeItem = s;
+                break;
+            }
+        }
+    }
+
+    private void updateUserMonthlySneezes(){
+        Calendar current = Calendar.getInstance();
+        Calendar test = Calendar.getInstance();
+
+        current.setTime(new Date());
+
+        for (SneezeItem s : allUserSneezeItems){
+            test.setTime(s.dateAsAndroidDate());
+
+            if (test.get(Calendar.MONTH) == current.get(Calendar.MONTH)
+                    && test.get(Calendar.YEAR) == current.get(Calendar.YEAR)){
                 monthlyUserSneezeItems.add(s);
             }
         }
     }
-    private void updateUserWeeklySneezes(){
 
+    private void updateUserWeeklySneezes(){
+        Calendar current = Calendar.getInstance();
+        Calendar test = Calendar.getInstance();
+
+        current.setTime(new Date());
+
+        for (SneezeItem s : allUserSneezeItems){
+            test.setTime(s.dateAsAndroidDate());
+
+            if (test.get(Calendar.WEEK_OF_YEAR) == current.get(Calendar.WEEK_OF_YEAR)
+                    && test.get(Calendar.YEAR) == current.get(Calendar.YEAR)){
+                weeklyUserSneezeItems.add(s);
+            }
+        }
     }
+
+
 
 }

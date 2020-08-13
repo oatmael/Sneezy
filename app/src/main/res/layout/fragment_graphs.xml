@@ -19,7 +19,8 @@
             android:id="@+id/tabs"
             app:tabMode="fixed"
             app:tabGravity="fill"
-            app:tabTextColor="@color/textWhite"
+            app:tabTextColor="?attr/mainText"
+            app:tabBackground="?attr/backgroundMainColor"
             />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -27,8 +28,9 @@
     <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/viewPager"
-        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"/>
+        android:id="@+id/viewPager"/>
+<!-- TODO: The Appbar scrolling for the graphs fragments stopped working with the update to API 29 -->
+    <!--  app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"-->
 
 <!--    <TextView
         android:layout_width="wrap_content"

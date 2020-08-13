@@ -7,6 +7,10 @@ import io.realm.annotations.RealmClass;
 
 import org.bson.types.ObjectId;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @RealmClass(name = "Sneeze")
 public class SneezeItem extends RealmObject {
 
@@ -42,6 +46,9 @@ public class SneezeItem extends RealmObject {
 
     public SneezeItem() {
         this._id = ObjectId.get();
+        this.date = "";
+        this.owner_id = "";
+        this.sneezes = new RealmList<SneezeData>();
     }
 
 
@@ -52,5 +59,14 @@ public class SneezeItem extends RealmObject {
         public static final String LOCATION = "location";
         public static final String DATE = "date";
         public static final String SNEEZES = "sneezes";
+    }
+
+    public Date dateAsAndroidDate(){
+        try {
+            return new SimpleDateFormat("EEE MMM dd yyyy").parse(this.date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
