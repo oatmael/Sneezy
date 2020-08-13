@@ -24,9 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
+import com.app.sneezyapplication.binding.MultiBind;
+import com.app.sneezyapplication.binding.SneezeBind;
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
+import com.app.sneezyapplication.data.SneezeRepository;
 import com.app.sneezyapplication.databinding.FragmentHomeBinding;
 
 import java.text.DateFormat;
@@ -49,11 +51,10 @@ public class HomeFragment extends Fragment {
 
     private ForecastObj forecastObj;
 
-
     Integer todaysSneezes;
-    /*    Integer todaysSneezesForText = getTodaysSneezes();*/
-    int multiSneezes;
 
+    private SneezeBind mSneeze;
+    private MultiBind mMulti;
 
     @Nullable
     @Override
@@ -65,11 +66,19 @@ public class HomeFragment extends Fragment {
         final Button sneezeButton = view.findViewById(R.id.sneezeButton);
         final Button minusButton = view.findViewById(R.id.minusButton);
         final Button plusButton = view.findViewById(R.id.plusButton);
-        TextView todaysSneezesText = view.findViewById(R.id.sneezesTodayText);
-        TextView multiText = view.findViewById(R.id.timesText);
 
+        //BINDING
+        //SneezeBind
+        SneezeBind sneezer = new SneezeBind();
+        mSneeze = sneezer;
+        mBinding.setSneeze(mSneeze);
+        //Multi Bind
+        MultiBind multiMaker = new MultiBind();
+        mMulti = multiMaker;
+        mMulti.getMulti(1);
+        mBinding.setMulti(mMulti);
 
-        sneezeButton.setOnClickListener(v -> {
+        sneezeButton.setOnClickListener((View v) -> {
             /*START LOCATION CODE*/
             MainActivity mainAct = (MainActivity) getActivity();
             if (mainAct.checkLocationPermission()) {
@@ -83,7 +92,34 @@ public class HomeFragment extends Fragment {
                     Log.e("location", e.getLocalizedMessage());
                 });
             }
+            Integer multiNumber;
+            int i;
+            multiNumber = multiMaker.getMultiNum();
+            if (multiNumber > 1) {
+                for (i = 0; i < multiNumber; i++) {
+                    handleSneeze();
+                }
+                mBinding.setSneeze(mSneeze);
+                mMulti.getMulti(1);
+                mBinding.setMulti(mMulti);
+            }
+            else {
+                handleSneeze();
+                mBinding.setSneeze(mSneeze);
+            }
 
+        });
+
+        minusButton.setOnClickListener((View v) -> {
+            mMulti.getMulti(3);
+            mBinding.setMulti(mMulti);
+            mBinding.setSneeze(mSneeze);
+        });
+
+        plusButton.setOnClickListener((View v) -> {
+            mMulti.getMulti(2);
+            mBinding.setMulti(mMulti);
+            mBinding.setSneeze(mSneeze);
         });
 
         return view;
@@ -167,6 +203,7 @@ public class HomeFragment extends Fragment {
         return lat + "," + lng;
     }
 
+
     private void setLocationPopup() {
 //        Toast.makeText(getActivity(),"Location popup called",Toast.LENGTH_SHORT).show();
 
@@ -236,6 +273,7 @@ public class HomeFragment extends Fragment {
         return todaysSneezes;
 
     }
+
 
 
     public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj) {

@@ -80,7 +80,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(sharedPref.loadNightModeState()==true) {
             setTheme(R.style.darkTheme);
         }
-        else setTheme(R.style.AppTheme);
+        else{
+            setTheme(R.style.AppTheme);
+        }
 
         //set up forecastObj
         int locationPref = sharedPref.loadLocationPreference();
@@ -328,7 +330,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void logoutPopup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.darkTheme);
         builder.setCancelable(true);
         builder.setTitle("Logout");
         builder.setMessage("Are you sure you want to logout?");
@@ -350,6 +353,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         AlertDialog dialog = builder.create();
         dialog.show();
+        sharedPref = new SharedPref(this);
+        if(sharedPref.loadNightModeState()==true) {
+            dialog.getWindow().setBackgroundDrawableResource(R.color.darkBackground);
+        }
+        else {
+            dialog.getWindow().setBackgroundDrawableResource(R.color.lightBackground);
+        }
     }
 
 

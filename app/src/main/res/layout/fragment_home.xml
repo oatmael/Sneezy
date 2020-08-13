@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
     <layout>
+    <data>
+        <variable
+            name="sneeze"
+            type="com.app.sneezyapplication.binding.SneezeBind"/>
+        <variable
+            name="multi"
+            type="com.app.sneezyapplication.binding.MultiBind"/>
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/homeConstraintLayout"
@@ -9,8 +17,6 @@
         android:orientation="vertical"
         android:background="?attr/backgroundMainColor"
         xmlns:app="http://schemas.android.com/apk/res-auto">
-
-
         <FrameLayout
             android:id="@+id/topSectionLayout"
             android:layout_width="wrap_content"
@@ -390,9 +396,9 @@
                         android:id="@+id/sneezesTodayText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="You've sneezed x times today"
+                        android:text="@{String.valueOf(sneeze.getTodaysSneezes())}"
                         android:textColor="?attr/mainText"
-                        android:textSize="20dp"
+                        android:textSize="20sp"
                         android:textAlignment="center"
                         app:layout_constraintTop_toTopOf="@id/homeGraphs"
                         app:layout_constraintLeft_toLeftOf="@+id/homeGraphs"
@@ -534,7 +540,7 @@
                 android:background="@drawable/button_times"
                 android:fontFamily="@font/arial"
                 android:minHeight="35dp"
-                android:text="1X"
+                android:text="@{String.valueOf(multi.getMulti(4))}"
                 android:textAllCaps="true"
                 android:textColor="?attr/sneezeAndTimesText"
                 android:textSize="30sp"
