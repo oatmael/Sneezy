@@ -4,6 +4,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
+import static android.content.ContentValues.TAG;
 import static com.app.sneezyapplication.MainActivity.repo;
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
@@ -43,30 +46,35 @@ public class DailyFragmentTab extends Fragment {
 
         Cartesian cartesian = AnyChart.column();
 
-        //Will clean once working unable to test in current state
+        //Currently working on dummy data, will require adjustments later
         List<DataEntry> data = new ArrayList<>();
 
         String date;
         int sneezes;
-        for (SneezeItem s : repo.getWeeklyUserSneezeItems()){
+        List<SneezeItem> weeklySneezes = repo.getWeeklyDummyData();
 
-            sneezes = 0;
+        if (weeklySneezes.size() != 0) {
+            for (SneezeItem s : weeklySneezes) {
+                sneezes = 0;
 
-            date = s.getDate();
-            for (SneezeData d : s.getSneezes()){
-                sneezes++;
+                date = s.getDate();
+                for (SneezeData d : s.getSneezes()) {
+                    sneezes++;
+                }
+                //adds at index 0 for chronological order
+                //displays only first 3 chars of date string
+                data.add(0, new ValueDataEntry(date.substring(0,3), sneezes));
             }
-
-            data.add(new ValueDataEntry(date, sneezes));
         }
 
-//        data.add(new ValueDataEntry("Sat", 8));
-//        data.add(new ValueDataEntry("Sun", 9));
-//        data.add(new ValueDataEntry("Mon", 10));
-//        data.add(new ValueDataEntry("Tue", 11));
-//        data.add(new ValueDataEntry("Wed", 12));
-//        data.add(new ValueDataEntry("Thu", 14));
-//        data.add(new ValueDataEntry("Fri", 17));
+        //dummy data
+//        data.add(new ValueDataEntry("Sat", 4));
+//        data.add(new ValueDataEntry("Sun", 3));
+//        data.add(new ValueDataEntry("Mon", 5));
+//        data.add(new ValueDataEntry("Tue", 1));
+//        data.add(new ValueDataEntry("Wed", 2));
+//        data.add(new ValueDataEntry("Thu", 4));
+//        data.add(new ValueDataEntry("Fri", 0));
 
         Column column = cartesian.column(data);
 
@@ -75,13 +83,15 @@ public class DailyFragmentTab extends Fragment {
                 .position(Position.CENTER_BOTTOM)
                 .anchor(Anchor.CENTER_BOTTOM)
                 .offsetX(0d)
-                .offsetY(5d)
+                .offsetY(1d)
                 .format("{%Value}{groupsSeparator: }");
 
         cartesian.animation(true);
         cartesian.title("DailySneezes");
 
-        cartesian.yScale().minimum(0d);
+        cartesian.yScale()
+                .minimum(0d)
+                .ticks().interval(1);
 
         cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator: }");
 
@@ -95,7 +105,7 @@ public class DailyFragmentTab extends Fragment {
 
         //Appearance Options
         //cartesian.background().fill("GET COLOR FROM STYLE");
-        column.color("red");
+        //column.color("red");
 
         return view;
     }

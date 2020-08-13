@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class SneezeRepository {
@@ -38,6 +40,31 @@ public class SneezeRepository {
     public SneezeItem todayUserSneezeItems() {
         updateUserTodaySneeze();
         return todayUserSneezeItem;
+    }
+
+    public List<SneezeItem> getWeeklyDummyData(){
+        ArrayList<SneezeItem> dummyList = new ArrayList<>();
+
+        Random r = new Random();
+        int rSneeze;
+        int maxSneezes = 6;
+        RealmList<SneezeData> sl;
+        SneezeItem si;
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+
+        for (int d = 0; d < 7; d++) {
+            sl = new RealmList<SneezeData>();
+            rSneeze = r.nextInt(maxSneezes);
+            for (int i = 0; i < rSneeze; i++) {
+                SneezeData sd = new SneezeData(new Date().toString(), "111,111");
+                sl.add(sd);
+            }
+            si = new SneezeItem(c.getTime().toString(), "ownerID01", sl);
+            dummyList.add(si);
+            c.add(Calendar.DATE, -1);
+        }
+        return dummyList;
     }
 
     public SneezeRepository(){
