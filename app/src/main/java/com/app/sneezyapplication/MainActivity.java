@@ -25,6 +25,7 @@ import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.app.sneezyapplication.data.SneezeRepository;
 import com.google.android.gms.location.FusedLocationProviderClient;
