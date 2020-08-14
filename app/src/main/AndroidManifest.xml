@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -44,6 +45,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/gcp_api_key"/>
 
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/gcp_api_key" />
+        <uses-library
+            android:name="com.google.android.maps" />
 
     </application>
 
