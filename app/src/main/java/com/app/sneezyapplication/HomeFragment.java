@@ -135,11 +135,9 @@ public class HomeFragment extends Fragment {
         packageName = getActivity().getBaseContext().getPackageName();
         viewForUpdateView = getView();
         resources = getResources();
-        //update forecast location text field
-
+        //update forecast location text field and day/colour values for forecast
         forecastObj = MainActivity.getForecastObj();
-        updatePollenCountLocationTxt();
-//        upDatePollenForecastView(getView(), getResources(), getActivity().getBaseContext().getPackageName(), forecastObj);
+        upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastObj);
         Button setLocationBtn = getView().findViewById(R.id.changeLocation);
         setLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,7 +214,7 @@ public class HomeFragment extends Fragment {
         final View popupView = getLayoutInflater().inflate(R.layout.popup_set_location, null);
 
         //check the radiobutton which corresponds to the city that has been set in forecastObj.selectedCity
-        final RadioGroup radioGroupCities = (RadioGroup) popupView.findViewById(R.id.radioGCities);
+        final RadioGroup radioGroupCities = popupView.findViewById(R.id.radioGCities);
         ((RadioButton) radioGroupCities.getChildAt(cityNo)).setChecked(true);
 //        Toast.makeText(getActivity(),"selectedNo:" +cityNo,Toast.LENGTH_LONG);
 
@@ -232,7 +230,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 //get the selected radio button to save it to the selectedLocationNo
                 int selectedCityId = radioGroupCities.getCheckedRadioButtonId();
-                RadioButton selectedCityRadio = (RadioButton) popupView.findViewById(selectedCityId);
+                RadioButton selectedCityRadio = popupView.findViewById(selectedCityId);
                 String selectedCity = selectedCityRadio.getText().toString().replace("_radio", "");
 //                Toast.makeText(getActivity(),"Save Clicked Selected City: "+forecastObj.getCityIndex(selectedCity),Toast.LENGTH_LONG).show();
                 //get the index of the city that was selected and save it to the forecastObj
@@ -244,11 +242,10 @@ public class HomeFragment extends Fragment {
                     Log.i("ForecastObj", "Location " + selectedCity + "successfully saved to shared prefs");
 
 
-                    //update pollen forecast
+                    //update pollen forecast from source
                     new MainActivity.getForecastAsync().execute(forecastObj.getUrl());
+                    forecastObj = MainActivity.getForecastObj();
                     //update home frag values
-                    updatePollenCountLocationTxt();
-//                    upDatePollenForecastView(getView(), getResources(), getActivity().getBaseContext().getPackageName(), forecastObj);
                 } else {
                     Toast.makeText(getActivity(), "Developer Error: selectedCity value does not exist", Toast.LENGTH_LONG).show();
                 }
@@ -256,11 +253,6 @@ public class HomeFragment extends Fragment {
             }//end of onclick
         });//onClickListener END
     }// setLocationPopup END
-
-    public void updatePollenCountLocationTxt() {
-        TextView pollenLocationTxt = getView().findViewById(R.id.pollenCountLocationTxt);
-        pollenLocationTxt.setText(forecastObj.getCityName(forecastObj.getSelectedCityNo()) + ", " + forecastObj.getStateName(forecastObj.getSelectedCityNo()));
-    }
 
     private int getTodaysSneezes() {
         if (repo.todayUserSneezeItems() == null) { //TODO REMOVE WHEN GOOGLE LOGIN IS WORKING CORRECTLY
@@ -277,6 +269,11 @@ public class HomeFragment extends Fragment {
 
 
     public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj) {
+        //update location textview
+        TextView pollenLocationTxt = view.findViewById(R.id.pollenCountLocationTxt);
+        pollenLocationTxt.setText(forecastObj.getCityName(forecastObj.getSelectedCityNo()) + ", " + forecastObj.getStateName(forecastObj.getSelectedCityNo()));
+
+
         final int numDays = 4;
         final String[] weekDays = new String[]{"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
         //get views to edit and reference resources
@@ -349,7 +346,7 @@ public class HomeFragment extends Fragment {
     static Resources resources;
     static View viewForUpdateView;
 
-    //called by main activity to update forecast values for
+    //called by main activity to update forecast values after a forecast has been retrieved
     public static void upDatePollenForecastViewOnPostExecute(ForecastObj forecastObj) {
         upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastObj);
     }//upDatePollenForecastViewOnPostExecute END
