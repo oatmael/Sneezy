@@ -1,11 +1,14 @@
 package com.app.sneezyapplication.GraphTabs;
 
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
+import com.app.sneezyapplication.MainActivity;
 import com.app.sneezyapplication.R;
 
 import java.util.ArrayList;
@@ -27,7 +31,10 @@ import java.util.List;
 import java.util.Date;
 
 import static android.content.ContentValues.TAG;
+import static com.app.sneezyapplication.MainActivity.graphData;
 import static com.app.sneezyapplication.MainActivity.repo;
+
+import com.app.sneezyapplication.data.GraphData;
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
 
@@ -46,26 +53,28 @@ public class DailyFragmentTab extends Fragment {
 
         Cartesian cartesian = AnyChart.column();
 
-        //Currently working on dummy data, will require adjustments later
-        List<DataEntry> data = new ArrayList<>();
+        List<DataEntry> data = graphData.getWeeklyUserData();
 
-        String date;
-        int sneezes;
-        List<SneezeItem> weeklySneezes = repo.getWeeklyDummyData();
-
-        if (weeklySneezes.size() != 0) {
-            for (SneezeItem s : weeklySneezes) {
-                sneezes = 0;
-
-                date = s.getDate();
-                for (SneezeData d : s.getSneezes()) {
-                    sneezes++;
-                }
-                //adds at index 0 for chronological order
-                //displays only first 3 chars of date string
-                data.add(0, new ValueDataEntry(date.substring(0,3), sneezes));
-            }
-        }
+//        //Currently working on dummy data, will require adjustments later
+//        List<DataEntry> data = new ArrayList<>();
+//
+//        String date;
+//        int sneezes;
+//        List<SneezeItem> weeklySneezes = repo.getWeeklyUserSneezeItems();
+//
+//        if (weeklySneezes.size() != 0) {
+//            for (SneezeItem s : weeklySneezes) {
+//                sneezes = 0;
+//
+//                date = s.getDate();
+//                for (SneezeData d : s.getSneezes()) {
+//                    sneezes++;
+//                }
+//                //adds at index 0 for chronological order
+//                //displays only first 3 chars of date string
+//                data.add(0, new ValueDataEntry(date.substring(0,3), sneezes));
+//            }
+//        }
 
         //dummy data
 //        data.add(new ValueDataEntry("Sat", 4));
@@ -104,8 +113,39 @@ public class DailyFragmentTab extends Fragment {
         anyChartView.setChart(cartesian);
 
         //Appearance Options
-        //cartesian.background().fill("GET COLOR FROM STYLE");
-        //column.color("red");
+        TypedArray c1;
+        TypedArray c2;
+
+        if (MainActivity.sharedPref.loadNightModeState()){
+            c1 = getContext().getTheme().obtainStyledAttributes(
+                    R.style.darkTheme,
+                    new int[] { R.attr.colorPrimary });
+            c2 = getContext().getTheme().obtainStyledAttributes(
+                    R.style.darkTheme,
+                    new int[] { R.attr.colorAccent });
+        } else {
+            c1 = getContext().getTheme().obtainStyledAttributes(
+                    R.style.AppTheme,
+                    new int[] { R.attr.colorPrimary });
+            c2 = getContext().getTheme().obtainStyledAttributes(
+                    R.style.AppTheme,
+                    new int[] { R.attr.colorAccent });
+        }
+
+        // Get color hex code (eg, #fff) and format string to match API conventions
+        //ColorPrimary
+        int intColor1 = c1.getColor(0 /* index */, 0 /* defaultVal */);
+        String colorPrimary = "#" +Integer.toHexString(intColor1).substring(2);
+        //ColorAccent
+        int intColor2 = c2.getColor(0 /* index */, 0 /* defaultVal */);
+        String colorAccent = "#" +Integer.toHexString(intColor2).substring(2);
+
+        cartesian.background().fill(colorPrimary);
+        column.color(colorAccent);
+
+// Don't forget to recycle
+        c1.recycle();
+        c2.recycle();
 
         return view;
     }

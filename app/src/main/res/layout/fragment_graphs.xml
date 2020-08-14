@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/holo_green_light"
+    android:background="?attr/backgroundMainColor"
     android:fitsSystemWindows="true"
     tools:context=".GraphsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="wrap_content">
+<!--        android:theme="@style/AppTheme.AppBarOverlay">-->
 
         <com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"

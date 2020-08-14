@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
+
+import com.app.sneezyapplication.data.GraphData;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.app.ActivityCompat;
@@ -61,13 +63,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public FusedLocationProviderClient fusedLocationClient;
 
     public static SneezeRepository repo;
+    public static GraphData graphData;
 
     private String userID;
     public String getUserID() {
         return userID;
     }
 
-    SharedPref sharedPref;
+    public static SharedPref sharedPref;
 
     public static ForecastObj forecastObj;
 
@@ -123,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         repo = new SneezeRepository();
+        graphData = new GraphData();
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (checkLocationPermission()) {
