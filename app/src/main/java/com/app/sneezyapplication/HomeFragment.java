@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -55,6 +56,11 @@ public class HomeFragment extends Fragment {
 
     private SneezeBind mSneeze;
     private MultiBind mMulti;
+
+
+    private static String packageName;
+    private static Resources resources;
+    private static View viewForUpdateView;
 
     @Nullable
     @Override
@@ -137,7 +143,7 @@ public class HomeFragment extends Fragment {
         resources = getResources();
         //update forecast location text field and day/colour values for forecast
         forecastObj = MainActivity.getForecastObj();
-        upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastObj);
+//        upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastObj);
         Button setLocationBtn = getView().findViewById(R.id.changeLocation);
         setLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +152,12 @@ public class HomeFragment extends Fragment {
             }
         });
     }//onViewCreated
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastObj);
+    }
 
     private void handleSneeze() {
         RealmQuery<SneezeItem> searchForCurrentDateQuery = MainActivity.realm.where(SneezeItem.class)
@@ -266,8 +278,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-
-
     public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj) {
         //update location textview
         TextView pollenLocationTxt = view.findViewById(R.id.pollenCountLocationTxt);
@@ -276,30 +286,21 @@ public class HomeFragment extends Fragment {
 
         final int numDays = 4;
         final String[] weekDays = new String[]{"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
-        //get views to edit and reference resources
+        //declare and get views to edit
         ConstraintLayout constraintLayout = view.findViewById(R.id.homeConstraintLayout);
-//        ArrayList<String> forecastDays =new ArrayList<String>(forecastObj.getDaysList());
-//        ImageView backgroundImg;
-
-//        relativeLayout.findViewById(R.id.forecastImage1);
-//        View homeLayout = (R.layout.fragment_home);
         TextView dayNameTxt;
-        View dayImgView;
+        ImageView dayImgView;
         String txtName;
         String imgName;
         int txtID;
         int imgID;
         //background variables
-        int dayForecastValue;
-//        forecast_block_
-
         final String[] drawableColours = new String[]{"green", "yellow", "orange", "red_orange", "red"};
         final ArrayList<Integer> IndexValueNums = forecastObj.getIndexValues();
-
         int drawableID;
         String drawableName;
         Drawable background;
-        //day variables
+        //day variables name
         int counter = 0;
         Calendar calendar = Calendar.getInstance();
         int currentDayNo = calendar.get(Calendar.DAY_OF_WEEK) - 1;
@@ -311,11 +312,9 @@ public class HomeFragment extends Fragment {
                 drawableName = ("forecast_block_" + drawableColours[IndexValueNums.get(i)]);
                 drawableID = resources.getIdentifier(drawableName, "drawable", packageName);
                 background = resources.getDrawable(drawableID);
-//            background = resources.getDrawable(R.drawable.forecast_block_red_orange);
             } catch (Exception ex) {
                 background = resources.getDrawable(R.drawable.forecast_block_green);
                 Log.e("ForecastObj", "An Exception was thrown\nDrawable Not found\n" + ex);
-
             }
             //get and edit background
             try {
@@ -341,10 +340,6 @@ public class HomeFragment extends Fragment {
             counter++;
         }//for END
     }//upDatePollenForecastView END
-
-    static String packageName;
-    static Resources resources;
-    static View viewForUpdateView;
 
     //called by main activity to update forecast values after a forecast has been retrieved
     public static void upDatePollenForecastViewOnPostExecute(ForecastObj forecastObj) {
