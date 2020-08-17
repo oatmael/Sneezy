@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<RelativeLayout-->
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,28 +7,9 @@
     android:background="@android:color/holo_blue_light"
     tools:context=".MapsFragment">
 
-<!--        <com.google.android.gms.maps.MapView-->
-<!--            android:id="@+id/map_view"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            />-->
-    <com.google.android.gms.maps.MapView
+    <com.google.android.gms.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/extremeColour"
-        class="com.google.android.gms.maps.MapView">
-    </com.google.android.gms.maps.MapView>
-</FrameLayout>
-<!--    </RelativeLayout>-->
-    <!--        class="com.google.android.gms.maps.MapFragment"-->
+        android:layout_height="match_parent" />
 
-
-    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    xmlns:map="http://schemas.android.com/apk/res-auto"-->
-    <!--    xmlns:tools="http://schemas.android.com/tools"-->
-    <!--    android:id="@+id/map"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="match_parent"-->
-    <!--    android:name="com.google.android.gms.maps.SupportMapFragment"-->
-    <!--    tools:context=".MapsFragment" />-->
+    </RelativeLayout>

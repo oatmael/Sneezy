@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -25,7 +24,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
-//    private GoogleMap mMap;
+    private MapView mMapView;
+    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
     @Nullable
     @Override
@@ -36,31 +36,76 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        MapFragment.onCreate(savedInstanceState);
-        try{
-            MapView mapView = getView().findViewById(R.id.map_view);
-            mapView.getMapAsync(this);
-            Log.e("MapsFragment","getMapAsync() executed successfully");
+
+        // *** IMPORTANT ***
+        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
+        // objects or sub-Bundles.
+        Bundle mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
-        catch (Exception ex){
-            Log.e("MapsFragment","getMapAsync() Threw an exception:\n"+ex);
+        mMapView = (MapView) view.findViewById(R.id.map_view);
+        mMapView.onCreate(mapViewBundle);
+
+        mMapView.getMapAsync(this);
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
+        if (mapViewBundle == null) {
+            mapViewBundle = new Bundle();
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
         }
-        Toast.makeText(getContext(),"getMapAsync called", Toast.LENGTH_LONG).show();
+
+        mMapView.onSaveInstanceState(mapViewBundle);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        //TODO call get map async
-//        mMap = googleMap;
-//
-//
-//        LatLng marker = new LatLng(-33.867, 151.206);
-//
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 13));
-//
-//        googleMap.addMarker(new MarkerOptions().title("Hello Google Maps!").position(marker));
-        Toast.makeText(getContext(),"onMap ready called", Toast.LENGTH_LONG).show();
+        //TODO get sneeze locations
+        //TODO overlay heat map
+        //TODO show user location
+        //TODO set starting location at user location
+        //
+//        for testing
+//        googleMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }//onMapReady END
+    //TODO add function to chose between day/week/month sneeze locations
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMapView.onStop();
+    }
+    @Override
+    public void onPause() {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
     }
 
 }
