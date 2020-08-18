@@ -17,8 +17,6 @@ import static com.app.sneezyapplication.MainActivity.repo;
 
 public class SneezeRepository {
 
-    private List<ListChangeListener> listeners = new ArrayList<>();
-
     private List<SneezeItem> allSneezeItems;
     private List<SneezeItem> allUserSneezeItems;
     private List<SneezeItem> monthlyUserSneezeItems;
@@ -88,10 +86,6 @@ public class SneezeRepository {
         updateUserMonthlySneezes();
         updateUserWeeklySneezes();
         updateUserTodaySneeze();
-
-        for (ListChangeListener listener : listeners){
-            listener.onListChange();
-        }
     }
 
     private void updateAllSneezes(){
@@ -128,8 +122,6 @@ public class SneezeRepository {
     }
 
     private void updateUserMonthlySneezes(){
-        monthlyUserSneezeItems = new ArrayList<>();
-
         Calendar current = Calendar.getInstance();
         Calendar test = Calendar.getInstance();
 
@@ -146,8 +138,6 @@ public class SneezeRepository {
     }
 
     private void updateUserWeeklySneezes(){
-        weeklyUserSneezeItems = new ArrayList<>();
-
         Calendar current = Calendar.getInstance();
         Calendar test = Calendar.getInstance();
 
@@ -163,11 +153,8 @@ public class SneezeRepository {
         }
     }
 
-    public void addListener(ListChangeListener listener) {
-        listeners.add(listener);
-    }
-    public interface ListChangeListener {
-        void onListChange();
-    }
-}
 
+
+
+
+}
