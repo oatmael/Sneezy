@@ -84,6 +84,10 @@ public class HomeFragment extends Fragment {
         mMulti.getMulti(1);
         mBinding.setMulti(mMulti);
 
+        repo.addListener(() -> {
+            mBinding.setSneeze(mSneeze);
+        });
+
         sneezeButton.setOnClickListener((View v) -> {
             /*START LOCATION CODE*/
             MainActivity mainAct = (MainActivity) getActivity();
