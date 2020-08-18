@@ -315,6 +315,7 @@ public class HomeFragment extends Fragment {
             } catch (Exception ex) {
                 background = resources.getDrawable(R.drawable.forecast_block_green);
                 Log.e("ForecastObj", "An Exception was thrown\nDrawable Not found\n" + ex);
+
             }
             //get and edit background
             try {
