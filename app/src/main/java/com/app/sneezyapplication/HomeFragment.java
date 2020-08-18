@@ -29,16 +29,12 @@ import com.app.sneezyapplication.binding.MultiBind;
 import com.app.sneezyapplication.binding.SneezeBind;
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
-import com.app.sneezyapplication.data.SneezeRepository;
 import com.app.sneezyapplication.databinding.FragmentHomeBinding;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 import io.realm.RealmList;
@@ -83,6 +79,10 @@ public class HomeFragment extends Fragment {
         mMulti = multiMaker;
         mMulti.getMulti(1);
         mBinding.setMulti(mMulti);
+
+        repo.addListener(() -> {
+            mBinding.setSneeze(mSneeze);
+        });
 
         sneezeButton.setOnClickListener((View v) -> {
             /*START LOCATION CODE*/

@@ -20,7 +20,7 @@ public class GraphData {
     }
 
     private void updateWeeklyUserData(){
-        weeklyUserData = getGraphableData(repo.getWeeklyUserSneezeItems(), "Week");
+        weeklyUserData = getGraphableData(repo.getAllUserSneezeItems(), "Week");
     }
 
     public GraphData(){
@@ -54,6 +54,8 @@ public class GraphData {
                         for (SneezeData d : s.getSneezes()) {
                             sneezes++;
                         }
+                        //removes SneezeItems once accounted for
+                        //sneezeList.remove(s);
                     }
                 }
                 //adds at index 0 for chronological order
