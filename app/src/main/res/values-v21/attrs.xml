@@ -11,6 +11,7 @@
         <attr name="timesBubble" format="color"/>
         <attr name="toolbarColor" format="color"/>
         <attr name="changeLocText" format="color"/>
+        <attr name="navViewTextColour" format="color"/>
 
 
     </declare-styleable>
