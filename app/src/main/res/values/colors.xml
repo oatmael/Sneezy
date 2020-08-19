@@ -53,6 +53,8 @@
     <color name="sneezeAndTimesLight">#FFFFFF</color>
     <color name="timesBubbleLight">#373737</color>
 
-
+    <!-- Maps Frag -->
+    <!-- ****** Temporary ****** -->
+    <color name="google_blue">#4C8BF5</color>
 
 </resources>
