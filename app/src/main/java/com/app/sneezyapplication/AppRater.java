@@ -55,7 +55,7 @@ public class AppRater {
 
     public static void showRatePopup(Context mContext, final SharedPreferences.Editor editor) {
         sharedPref = new SharedPref(mContext);
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.AlertDialogCustom)); /*Replace mcontext if not working.*/
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.AlertDialogCustom));
         builder.setCancelable(true);
         builder.setTitle("Rate " + APP_TITLE);
 

@@ -54,9 +54,6 @@
         <item name="android:background">?attr/backgroundMainColor</item>
     </style>
 
-
-
-
 <!--    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/darkPurp</item>
         <item name="colorPrimaryDark">@color/midPurpText</item>

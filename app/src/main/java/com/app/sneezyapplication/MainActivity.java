@@ -6,12 +6,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 
 import com.app.sneezyapplication.data.GraphData;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
@@ -24,7 +27,9 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
@@ -53,7 +58,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SettingsFragment.RestartListener {
-//TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES
+    //TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES
     private DrawerLayout drawer;
 
     public static App app;
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static GraphData graphData;
 
     private String userID;
+
     public String getUserID() {
         return userID;
     }
@@ -81,19 +87,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         sharedPref = new SharedPref(this);
-        if(sharedPref.loadNightModeState()==true) {
+        if (sharedPref.loadNightModeState() == true) {
             setTheme(R.style.darkTheme);
-        }
-        else{
+        } else {
             setTheme(R.style.AppTheme);
         }
 
         //set up forecastObj
         int locationPref = sharedPref.loadLocationPreference();
-        if(locationPref != -1){
+        if (locationPref != -1) {
             forecastObj = new ForecastObj(locationPref);
-        }
-        else{forecastObj = new ForecastObj();
+        } else {
+            forecastObj = new ForecastObj();
         }
         new getForecastAsync().execute(forecastObj.getUrl());
 
@@ -120,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         //Handles if the phone is flipped if the saved instance state is empty(when app first launches) it launches to the home fragment and not to an empty activity.
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new HomeFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_home);
@@ -133,15 +138,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (checkLocationPermission()) {
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(_location -> {
-                        if (_location != null){
+                        if (_location != null) {
                             location = _location;
                         }
                     }).addOnFailureListener(e -> {
-                        Log.e("location", e.getLocalizedMessage());
-                    });
+                Log.e("location", e.getLocalizedMessage());
+            });
         }
     }
-
 
 
     public void restartApp() {
@@ -149,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(i);
         finish();
     }
-
 
 
     @Override
@@ -186,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         login();
     }
 
-    private void connectToDB(){
+    private void connectToDB() {
         String appID = getResources().getString(R.string.stitch_client_app_id);
         if (realm == null)
             realm = Realm.getDefaultInstance();
@@ -195,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             app = new App(new AppConfiguration.Builder(appID).build());
     }
 
-    private void login(){
+    private void login() {
         try {
             user = app.currentUser();
         } catch (IllegalStateException e) {
@@ -215,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void logout(){
+    private void logout() {
         if (user != null) {
             user.logOutAsync(r -> {
                 Log.i("REALM", "Logged out");
@@ -224,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         realm.close();
     }
 
-    private void setupLocalData(){
+    private void setupLocalData() {
         String partitionValue = "partition";
         SyncConfiguration config = new SyncConfiguration.Builder(user, partitionValue)
                 .waitForInitialRemoteData()
@@ -258,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.addToBackStack(null);
 
 
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.nav_home:
                 transaction.replace(R.id.fragment_container,
                         new HomeFragment()).commit();
@@ -304,14 +307,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void sendEmail() {
         Log.i("Send email", "");
         String[] TO = {"tommy_b55@hotmail.com"};
-/*        String[] CC = {"xyz@gmail.com"};*/
+        /*        String[] CC = {"xyz@gmail.com"};*/
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setData(Uri.parse("mailto:"));
         emailIntent.setType("text/plain");
 
 
         emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-/*        emailIntent.putExtra(Intent.EXTRA_CC, CC);*/
+        /*        emailIntent.putExtra(Intent.EXTRA_CC, CC);*/
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report: ");
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Bug Report: Write your description of the bug, as well as the steps to make the bug occur. Screenshots help alot. Thanksyou.");
 
@@ -331,7 +334,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String APP_RATE_NAME = "SneezyApplication"; /*TODO ADD ACTUAL GOOGLE MARKET PACKAGE NAME HERE WHEN ACQUIRED*/
         this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_RATE_NAME)));
     }
-
 
 
     public void logoutPopup() {
@@ -362,11 +364,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     @Override
-    public void onBackPressed(){
-        if (drawer.isDrawerOpen(GravityCompat.START)){
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (f instanceof HomeFragment) {
+                navigationView.setCheckedItem(R.id.nav_home);
+            }
+            if (f instanceof MapsFragment) {
+                navigationView.setCheckedItem(R.id.nav_maps);
+            }
+            if (f instanceof GraphsFragment) {
+                navigationView.setCheckedItem(R.id.nav_graph);
+            }
+            if (f instanceof StatsFragment) {
+                navigationView.setCheckedItem(R.id.nav_stats);
+            }
+            if (f instanceof SettingsFragment) {
+                navigationView.setCheckedItem(R.id.nav_settings);
+            }
+            if (f instanceof AboutFragment) {
+                navigationView.setCheckedItem(R.id.nav_about);
+            }
+            if (f instanceof ChangelogFragment) {
+                navigationView.setCheckedItem(R.id.nav_changelog);
+            }
         }
     }
 
@@ -459,27 +484,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }//onRequestPermission End
 
-    public static ForecastObj getForecastObj(){
+    public static ForecastObj getForecastObj() {
         return forecastObj;
     }// getForecastObj End
 
-    public static void setForecastObj(ForecastObj forecastObj){
+    public static void setForecastObj(ForecastObj forecastObj) {
         MainActivity.forecastObj = forecastObj;
     }// setForecastObj End
 
-    static class getForecastAsync extends AsyncTask<String,String,String> {
+    static class getForecastAsync extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 //            Toast.makeText(MainActivity.this, "Retrieving forecast",Toast.LENGTH_LONG).show();
-            Log.d("ForecastObj","Retrieving forecast");
+            Log.d("ForecastObj", "Retrieving forecast");
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 //            Toast.makeText(MainActivity(), "The connection result: " + result, Toast.LENGTH_LONG).show();
-            Log.d("ForecastObj","The connection result: " + result);
+            Log.d("ForecastObj", "The connection result: " + result);
             HomeFragment.upDatePollenForecastViewOnPostExecute(forecastObj);
 
         }
@@ -490,31 +515,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             final String TAG = "doInBackground";
 
             try {
-                String url =strings[0];
+                String url = strings[0];
                 //parse the page html to the document
                 Document pageHtml = Jsoup.connect(url).get();
                 //Check document is not empty
                 if (pageHtml != null) {
                     Elements listElement = pageHtml.select("ul.pollen_graph");
-                    String forecasts = ""+ (listElement.select("li").text()).toUpperCase();
-                    result = "successful\n Values:"+forecasts;//**
+                    String forecasts = "" + (listElement.select("li").text()).toUpperCase();
+                    result = "successful\n Values:" + forecasts;//**
                     //split the pollen forecast values into array (potential values: Low, Moderate, High, Very High, Extreme)
-                    forecasts = forecasts.replace("VERY HIGH","VERY_HIGH");
+                    forecasts = forecasts.replace("VERY HIGH", "VERY_HIGH");
                     String delim = "\\W+";
                     String[] days = forecasts.split(delim);
                     ArrayList<String> daysList = new ArrayList<>();
                     Collections.addAll(daysList, days);
                     forecastObj.setForecastList(daysList);//update daysList in forecastObj
-                }
-                else {
-                    result = "could not retrieve page from site\nUrl: "+url;
+                } else {
+                    result = "could not retrieve page from site\nUrl: " + url;
                 }
             }//end of try
             catch (Exception ex) {
                 ex.printStackTrace();
 //                Log.e(TAG,"An Exception was thrown\n" +ex);
-                Log.e("ForecastObj","An Exception was thrown\n" +ex);
-                result = "An Exception was thrown\n"+ex;
+                Log.e("ForecastObj", "An Exception was thrown\n" + ex);
+                result = "An Exception was thrown\n" + ex;
             }//end of catch
             return result;//returns result to onPostExecute
         }//end of doInBackground

@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <layout>
+<layout>
+
     <data>
+
         <variable
             name="sneeze"
-            type="com.app.sneezyapplication.binding.SneezeBind"/>
+            type="com.app.sneezyapplication.binding.SneezeBind" />
+
         <variable
             name="multi"
-            type="com.app.sneezyapplication.binding.MultiBind"/>
+            type="com.app.sneezyapplication.binding.MultiBind" />
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/homeConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="?attr/backgroundMainColor"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        android:orientation="vertical">
+
         <FrameLayout
             android:id="@+id/topSectionLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="10dp"
             android:paddingLeft="10dp"
+            android:paddingTop="5dp"
             android:paddingRight="10dp"
+            android:paddingBottom="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -45,7 +49,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-
 
                 <TextView
                     android:id="@+id/forecastFor"
@@ -262,10 +265,11 @@
 
             <!--START FORECAST-->
             <LinearLayout
-                android:layout_width="360dp"
+                android:layout_width="240dp"
                 android:layout_height="57dp"
-                android:layout_gravity="bottom|center_horizontal"
+                android:layout_gravity="bottom|left"
                 android:layout_marginBottom="40dp"
+                android:layout_marginLeft="15dp"
                 android:orientation="horizontal">
 
                 <RelativeLayout
@@ -368,49 +372,50 @@
         <!--START OF GRAPHS AREA-->
 
 
-            <FrameLayout
-                android:id="@+id/bottomSection"
+        <FrameLayout
+            android:id="@+id/bottomSection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/topSectionLayout"
+            app:layout_constraintBottom_toTopOf="@id/buttonSection">
+
+            <ImageView
+                android:id="@+id/bottomSectionImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="0dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/topSectionLayout">
+                android:background="@drawable/section_homegraph" />
 
-                <ImageView
-                    android:id="@+id/bottomSectionImage"
+            <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/homeGraphs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/sneezesTodayText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/section_homegraph" />
+                    android:layout_marginLeft="70dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@{String.valueOf(sneeze.getTodaysSneezes())}"
+                    android:textAlignment="center"
+                    android:textColor="?attr/mainText"
+                    android:textSize="20sp"
+                    app:layout_constraintLeft_toLeftOf="@+id/homeGraphs"
+                    app:layout_constraintRight_toRightOf="@id/homeGraphs"
+                    app:layout_constraintTop_toTopOf="@id/homeGraphs"
 
-                <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/homeGraphs"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    />
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <TextView
-                        android:id="@+id/sneezesTodayText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{String.valueOf(sneeze.getTodaysSneezes())}"
-                        android:textColor="?attr/mainText"
-                        android:textSize="20sp"
-                        android:textAlignment="center"
-                        app:layout_constraintTop_toTopOf="@id/homeGraphs"
-                        app:layout_constraintLeft_toLeftOf="@+id/homeGraphs"
-                        app:layout_constraintRight_toRightOf="@id/homeGraphs"
-                        android:layout_marginLeft="70dp"
-                        android:layout_marginTop="20dp"
-
-                        />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </FrameLayout>
+        </FrameLayout>
 
         <!--END OF GRAPHS-->
 
@@ -422,11 +427,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
+            android:paddingBottom="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bottomSection"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:paddingBottom="5dp">
+            app:layout_constraintTop_toBottomOf="@id/bottomSection">
 
 
             <ImageView
@@ -446,12 +451,12 @@
                 android:background="@drawable/sneeze_button"
                 android:fontFamily="@font/arial"
                 android:minHeight="35dp"
+                android:stateListAnimator="@null"
                 android:text=""
                 android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:textSize="30sp"
-                android:textStyle="normal"
-                android:stateListAnimator="@null"/>
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/sneezeButtonText"
@@ -477,12 +482,12 @@
                 android:background="@drawable/plus_button"
                 android:fontFamily="@font/arial"
                 android:minHeight="35dp"
+                android:stateListAnimator="@null"
                 android:text=""
                 android:textAllCaps="true"
                 android:textColor="@color/plusMinusGrey"
                 android:textSize="80sp"
-                android:textStyle="normal"
-                android:stateListAnimator="@null"/>
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/plusButtonText"
@@ -508,12 +513,12 @@
                 android:background="@drawable/minus_button"
                 android:fontFamily="@font/arial"
                 android:minHeight="35dp"
+                android:stateListAnimator="@null"
                 android:text=""
                 android:textAllCaps="true"
                 android:textColor="@color/plusMinusGrey"
                 android:textSize="80sp"
-                android:textStyle="normal"
-                android:stateListAnimator="@null"/>
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/minusButtonText"
@@ -540,14 +545,13 @@
                 android:background="@drawable/button_times"
                 android:fontFamily="@font/arial"
                 android:minHeight="35dp"
+                android:stateListAnimator="@null"
                 android:text="@{String.valueOf(multi.getMulti(4))}"
+                android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="?attr/sneezeAndTimesText"
                 android:textSize="30sp"
-                android:textStyle="normal"
-                android:textAlignment="center"
-                android:stateListAnimator="@null"/>
-
+                android:textStyle="normal" />
 
 
         </FrameLayout>

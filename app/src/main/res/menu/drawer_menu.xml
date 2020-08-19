@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
 
         <item android:id="@+id/nav_home"
             android:icon="@drawable/ic_baseline_home_24"
-            android:title="@string/homeNavText"/>
+            android:title="@string/homeNavText" />
         <item android:id="@+id/nav_maps"
             android:icon="@drawable/ic_baseline_map_24"
-            android:title="@string/mapsNavText"/>
+            android:title="@string/mapsNavText" />
         <item android:id="@+id/nav_graph"
             android:icon="@drawable/ic_baseline_poll_24"
-            android:title="@string/graphNavText"/>
+            android:title="@string/graphNavText" />
         <item android:id="@+id/nav_stats"
             android:icon="@drawable/ic_baseline_dvr_24"
-            android:title="@string/statsNavText"/>
+            android:title="@string/statsNavText" />
         <item android:id="@+id/nav_settings"
             android:icon="@drawable/ic_baseline_settings_24"
-            android:title="@string/settingsNavText"/>
+            android:title="@string/settingsNavText" />
         <item android:id="@+id/nav_about"
             android:icon="@drawable/ic_baseline_search_24"
-            android:title="@string/aboutNavText"/>
+            android:title="@string/aboutNavText" />
         <item android:id="@+id/nav_changelog"
             android:icon="@drawable/ic_baseline_bug_report_24"
             android:title="@string/changlogNavText"
