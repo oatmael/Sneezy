@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -46,6 +47,7 @@ import io.realm.RealmQuery;
 
 
 import java.util.Calendar;
+
 import static com.app.sneezyapplication.MainActivity.repo;
 
 public class HomeFragment extends Fragment {
@@ -72,6 +74,8 @@ public class HomeFragment extends Fragment {
         final Button sneezeButton = view.findViewById(R.id.sneezeButton);
         final Button minusButton = view.findViewById(R.id.minusButton);
         final Button plusButton = view.findViewById(R.id.plusButton);
+
+
 
         //BINDING
         //SneezeBind
@@ -112,8 +116,7 @@ public class HomeFragment extends Fragment {
                 mBinding.setSneeze(mSneeze);
                 mMulti.getMulti(1);
                 mBinding.setMulti(mMulti);
-            }
-            else {
+            } else {
                 handleSneeze();
                 mBinding.setSneeze(mSneeze);
             }
@@ -269,18 +272,6 @@ public class HomeFragment extends Fragment {
             }//end of onclick
         });//onClickListener END
     }// setLocationPopup END
-
-    private int getTodaysSneezes() {
-        if (repo.todayUserSneezeItems() == null) { //TODO REMOVE WHEN GOOGLE LOGIN IS WORKING CORRECTLY
-            todaysSneezes = 0;
-        } else {
-            todaysSneezes = repo.todayUserSneezeItems()
-                    .getSneezes()
-                    .size();
-        }
-        return todaysSneezes;
-
-    }
 
     public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj) {
         //update location textview

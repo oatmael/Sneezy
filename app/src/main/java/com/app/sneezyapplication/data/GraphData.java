@@ -20,14 +20,14 @@ public class GraphData {
     }
 
     private void updateWeeklyUserData(){
-        weeklyUserData = getGraphableData(repo.getWeeklyUserSneezeItems(), "Week");
+        weeklyUserData = getDailyGraphableData(repo.getAllUserSneezeItems(), "Week");
     }
 
     public GraphData(){
         weeklyUserData = new ArrayList<>();
     }
 
-    private List<DataEntry> getGraphableData(List<SneezeItem> _sneezeList, String forGraph) {
+    private List<DataEntry> getDailyGraphableData(List<SneezeItem> _sneezeList, String forGraph) {
 
         int days = 0;
         if (forGraph == "Week")
@@ -43,26 +43,28 @@ public class GraphData {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
 
-        if (sneezeList.size() != 0) {
-            for (int i = days; i > 0; i--) {
-                sneezes = 0;
 
-                for (SneezeItem s : sneezeList) {
-                    date = s.getDate();
+        for (int i = days; i > 0; i--) {
+            sneezes = 0;
 
-                    if (compareDate(date, c.getTime().toString())) {
-                        for (SneezeData d : s.getSneezes()) {
-                            sneezes++;
-                        }
+            for (SneezeItem s : sneezeList) {
+                date = s.getDate();
+
+                if (compareDate(date, c.getTime().toString())) {
+                    for (SneezeData d : s.getSneezes()) {
+                        sneezes++;
                     }
+                    //removes SneezeItems once accounted for
+                    //sneezeList.remove(s);
                 }
-                //adds at index 0 for chronological order
-                //displays only first 3 chars of date string
-                data.add(new ValueDataEntry(c.getTime().toString().substring(0, 3), sneezes));
-                //take one from calender date to check previous day
-                c.add(Calendar.DATE, -1);
             }
+            //adds at index 0 for chronological order
+            //displays only first 3 chars of date string
+            data.add(new ValueDataEntry(c.getTime().toString().substring(0, 3), sneezes));
+            //take one from calender date to check previous day
+            c.add(Calendar.DATE, -1);
         }
+
         return data;
     }
 

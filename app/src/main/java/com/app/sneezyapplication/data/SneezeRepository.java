@@ -128,6 +128,8 @@ public class SneezeRepository {
     }
 
     private void updateUserMonthlySneezes(){
+        monthlyUserSneezeItems = new ArrayList<>();
+
         Calendar current = Calendar.getInstance();
         Calendar test = Calendar.getInstance();
 
@@ -144,6 +146,8 @@ public class SneezeRepository {
     }
 
     private void updateUserWeeklySneezes(){
+        weeklyUserSneezeItems = new ArrayList<>();
+
         Calendar current = Calendar.getInstance();
         Calendar test = Calendar.getInstance();
 

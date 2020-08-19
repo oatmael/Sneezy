@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SneezyApplication</string>
+    <string name="app_name">Sneezy</string>
 
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
@@ -19,8 +19,6 @@
     <string name="plus">+</string>
     <string name="minus">-</string>
 
-
-
     <string name="homeMonday">MON</string>
     <string name="homeTuesday">TUES</string>
     <string name="homeWednesday">WED</string>
@@ -35,6 +33,7 @@
     <string name="stitch_client_app_id">sneezyapp-vfmmi</string>
 
     <string name="google_web_client_id">1045273968584-ko38ka6og4qp6ithoo3fcnmbvg2aueph.apps.googleusercontent.com</string>
+<!--    <string name="google_web_client_id">1045273968584-dpvp9sbm06vm244bs0f9sukgvoa7tslq.apps.googleusercontent.com</string>-->
     <string name="gcp_api_key">AIzaSyA2sd7VDUwn66-HuLcV5ej4LbSGHreTBMo</string>
 
     <!-- TODO: Remove or change this placeholder text -->
