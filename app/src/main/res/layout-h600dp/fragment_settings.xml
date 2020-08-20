@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundMainColor"
+    tools:context=".SettingsFragment">
+
+
+    <FrameLayout
+        android:id="@+id/settingsFragmentFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:id="@+id/settingsFragBackingImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/about_us_backing" />
+
+        <LinearLayout
+            android:id="@+id/settingsLinearMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/settingsTitle"
+                android:textSize="40sp"
+                android:textColor="?attr/mainText" />
+
+            <Switch
+                android:id="@+id/darkModeSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/darkMode"
+                android:textColor="?attr/mainText"
+                android:layout_marginTop="5dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/appRestartButton"
+                android:text="RESTART"
+                android:textColor="?attr/mainText"
+                android:background="?attr/backgroundMainColor"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="App will require restart to apply above settings"
+                android:id="@+id/restartNoticeText"
+                android:textColor="?attr/mainText"
+                android:layout_marginTop="10dp"/>
+
+
+        </LinearLayout>
+
+    </FrameLayout>
+</RelativeLayout>

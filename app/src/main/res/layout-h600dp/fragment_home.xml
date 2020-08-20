@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -13,8 +14,7 @@
             type="com.app.sneezyapplication.binding.MultiBind" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/homeConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,11 +25,12 @@
             android:id="@+id/topSectionLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
+            android:paddingLeft="0dp"
+            android:paddingTop="0dp"
+            android:paddingRight="0dp"
+            android:paddingBottom="0dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -414,7 +415,7 @@
                 android:id="@+id/bottomSectionImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/section_homegraph" />
+                android:background="@drawable/section_homegraph_600dp" />
 
             <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -440,6 +441,16 @@
 
                     />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="THIS IS 600dp"
+                    android:textAlignment="center"
+                    android:textColor="?attr/mainText"
+                    app:layout_constraintLeft_toLeftOf="@+id/homeGraphs"
+                    app:layout_constraintRight_toRightOf="@id/homeGraphs"
+                    app:layout_constraintTop_toTopOf="@id/homeGraphs"/>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </FrameLayout>
@@ -453,8 +464,8 @@
             android:id="@+id/buttonSection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="5dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -470,7 +481,7 @@
             <!--Sneeze Button-->
             <Button
                 android:id="@+id/sneezeButton"
-                android:layout_width="wrap_content"
+                android:layout_width="338dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
@@ -494,7 +505,7 @@
                 android:fontFamily="@font/arial"
                 android:text="@string/sneeze"
                 android:textColor="?attr/sneezeAndTimesText"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:translationZ="90dp" />
 
 

@@ -54,6 +54,8 @@
     <!--Settings Page Strings-->
     <string name="darkMode">Dark Mode</string>
     <string name="settingsTitle">Settings</string>
+    <string name="appRestartReminder">App will require restart to apply above settings</string>
+    <string name="restartButtonText">RESTART</string>
     <!--End of Settings Page Strings-->
 
     <!--Drawer Menu Strings-->
