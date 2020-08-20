@@ -97,4 +97,40 @@
     <string name="btn_save">SAVE</string>
     <!--    End Select Location PopUp Strings   -->
 
+    <!--Privacy Policy Fragment-->
+    <string name="policyTitle">Privacy Policy</string>
+    <string name="firstBlurb">Sneezy Team built the Sneezy app as an Open Source app. This SERVICE is provided by the Sneezy Team at no cost and is intended for use as is.
+This page is used to inform visitors regarding the policies with the collection, use, and disclosure of Personal Information if anyone decided to use this Service.
+If you choose to use my Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that we collect is used for providing and improving the Service. We will not use or share your information with anyone except as described in this Privacy Policy.<br /><br />
+</string>
+    <string name="InfoCollectTitle">Information Collection and Use</string>
+    <string name="InfoCollectBlurb">For a better experience, while using our Service, we may require you to provide us with certain personally identifiable information, including but not limited to location data. The information that we request will be stored remotely on our database server. While we recognize that location data may be sensitive, this data is not uniquely identifiable, as this is the only personal data we collect.
+The app does use third party services that may collect information used to identify you.
+Links to privacy policy of third party service providers used by the app:<br /><br />
+</string>
+    <string name="googleLink"><a href="https://policies.google.com/privacy">Google Play Services</a></string>
+    <string name="logDataTitle">Log Data</string>
+    <string name="logDataBlurb">We want to inform you that whenever you use our Service, in the case of an error, we may collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing our Service, the time and date of your use of the Service, and other statistics.<br /><br /></string>
+    <string name="cookiesTitle">Cookies</string>
+    <string name="cookiesBlurb">Cookies are files with a small amount of data that are commonly used as anonymous unique identifiers. These are sent to your browser from the websites that you visit and are stored on your devices internal memory. This Service does not use these “cookies” explicitly. However, the app may use third party code and libraries that use “cookies” to collect information and improve their services. You have the option to either accept or refuse these cookies and know when a cookie is being sent to your device. If you choose to refuse our cookies, you may not be able to use some portions of this Service.<br /><br /></string>
+    <string name="servicesTitle">Service Providers</string>
+    <string name="servicesBlurb">We may employ third-party companies and individuals due to the following reasons:<br />
+</string>
+    <string name="servicesPoint1">•To facilitate our Service</string>
+    <string name="servicesPoint2">•To provide the Service on our behalf</string>
+    <string name="servicesPoint3">•To perform Service-related services or</string>
+    <string name="servicesPoint4">•To assist us in analyzing how our Service is used.</string>
+    <string name="servicesPoint5">I want to inform users of this Service that these third parties have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose.</string>
+
+    <string name="securityTitle">Security</string>
+    <string name="securityBlurb">We value your trust in providing us your Personal Information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure and reliable, and we cannot guarantee its absolute security.<br /><br /></string>
+    <string name="linksTitle">Links to Other Sites</string>
+    <string name="linksBlurb">This Service may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by us. Therefore, we strongly advise you to review the Privacy Policy of these websites. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.<br /><br /></string>
+    <string name="changesPolicyTitle">Changes to This Privacy Policy</string>
+    <string name="changesPolicyBlurb">I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
+This policy is effective as of 2020-08-13<br /><br /></string>
+    <string name="contactUsTitle">Contact Us</string>
+    <string name="contactUsBlurb">If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact us at sneezyapp@gmail.com.<br /><br /></string>
+    <!--End Policy Frag-->
+
 </resources>
