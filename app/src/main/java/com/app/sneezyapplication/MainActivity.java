@@ -290,6 +290,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.replace(R.id.fragment_container,
                         new ChangelogFragment()).commit();
                 break;
+            case R.id.nav_policy:
+                transaction.replace(R.id.fragment_container,
+                        new PolicyFragment()).commit();
+                break;
             case R.id.nav_logout:
                 logoutPopup();
                 break;
@@ -391,6 +395,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             if (f instanceof ChangelogFragment) {
                 navigationView.setCheckedItem(R.id.nav_changelog);
+            }
+            if (f instanceof PolicyFragment) {
+                navigationView.setCheckedItem(R.id.nav_policy);
             }
         }
     }

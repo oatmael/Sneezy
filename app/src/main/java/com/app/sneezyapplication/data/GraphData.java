@@ -69,7 +69,7 @@ public class GraphData {
     }
 
     private Boolean compareDate(String d1, String d2){
-        if (d1.substring(0, 7).equals(d2.substring(0,7))){
+        if (d1.substring(0, 9).equals(d2.substring(0,9))){
             return true;
         }else
             return false;

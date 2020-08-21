@@ -24,9 +24,12 @@
             android:icon="@drawable/ic_baseline_search_24"
             android:title="@string/aboutNavText" />
         <item android:id="@+id/nav_changelog"
-            android:icon="@drawable/ic_baseline_bug_report_24"
+            android:icon="@drawable/ic_baseline_history_24"
             android:title="@string/changlogNavText"
             />
+        <item android:id="@+id/nav_policy"
+            android:icon="@drawable/ic_baseline_policy_24"
+            android:title="@string/policyTitle"/>
 
     </group>
     <item android:title="Other"><!--These are linking items, cannot be used to go to other pages etc.

@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 
 import com.app.sneezyapplication.R;
 
-public class WeeklyFragmentTab extends Fragment {
+public class MonthlyFragmentTab extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_graphs_weeklytab, container, false);
+        View view = inflater.inflate(R.layout.fragment_graphs_monthlytab, container, false);
 
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

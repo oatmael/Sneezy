@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.app.sneezyapplication.GraphTabs.DailyFragmentTab;
-import com.app.sneezyapplication.GraphTabs.WeeklyFragmentTab;
+import com.app.sneezyapplication.GraphTabs.MonthlyFragmentTab;
 import com.app.sneezyapplication.GraphTabs.YearlyFragmentTab;
 
 public class GraphsFragment extends Fragment {
@@ -23,8 +23,8 @@ public class GraphsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_graphs, container, false);
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
-        tabLayout.addTab(tabLayout.newTab().setText("Daily"));
         tabLayout.addTab(tabLayout.newTab().setText("Weekly"));
+        tabLayout.addTab(tabLayout.newTab().setText("Monthly"));
         tabLayout.addTab(tabLayout.newTab().setText("Yearly"));
 
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewPager);
@@ -69,7 +69,7 @@ public class GraphsFragment extends Fragment {
                 case 0:
                     return new DailyFragmentTab();
                 case 1:
-                    return new WeeklyFragmentTab();
+                    return new MonthlyFragmentTab();
                 case 2:
                     return new YearlyFragmentTab();
 
@@ -86,9 +86,9 @@ public class GraphsFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Daily";
-                case 1:
                     return "Weekly";
+                case 1:
+                    return "Monthly";
                 case 2:
                     return "Yearly";
             }

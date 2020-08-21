@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -13,8 +14,7 @@
             type="com.app.sneezyapplication.binding.MultiBind" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/homeConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,13 +46,11 @@
                     android:id="@+id/topSectionImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/section_forecast_600dp"
+                    android:background="@drawable/section_forecast_680dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/forecastFor"
@@ -414,7 +412,7 @@
                 android:id="@+id/bottomSectionImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/section_homegraph" />
+                android:background="@drawable/section_homegraph_680dp" />
 
             <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -439,6 +437,15 @@
                     app:layout_constraintTop_toTopOf="@id/homeGraphs"
 
                     />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="THIS IS 680dp"
+                    android:textAlignment="center"
+                    android:textColor="?attr/mainText"
+                    app:layout_constraintLeft_toLeftOf="@+id/homeGraphs"
+                    app:layout_constraintRight_toRightOf="@id/homeGraphs"
+                    app:layout_constraintTop_toTopOf="@id/homeGraphs"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -470,7 +477,7 @@
             <!--Sneeze Button-->
             <Button
                 android:id="@+id/sneezeButton"
-                android:layout_width="wrap_content"
+                android:layout_width="364dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
