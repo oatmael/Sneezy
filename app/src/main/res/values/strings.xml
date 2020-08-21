@@ -95,4 +95,7 @@
     <string name="btn_save">SAVE</string>
     <!--    End Select Location PopUp Strings   -->
 
+    <!--    Maps Fragment Strings-->
+    <!--    End Maps Fragment Strings-->
+
 </resources>

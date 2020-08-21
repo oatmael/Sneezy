@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.common.util.IOUtils;
+import com.app.sneezyapplication.data.SneezeData;
+import com.app.sneezyapplication.data.SneezeItem;
+import com.app.sneezyapplication.data.SneezeRepository;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,16 +27,14 @@ import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import io.realm.RealmList;
+
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener {
@@ -45,16 +46,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final String CLASS_TAG = "MapsFragment";
     private static final LatLng DEFAULT_LOCATION = new LatLng(-30, 133);
+    SneezeRepository repo;
+    ArrayList<SneezeItem> sneezeItems;
+    private boolean setToWeekly;
+    private boolean setToUser;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_maps, container, false);
-    }
+    }// onCreate END
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        setToWeekly = true;
+        setToUser = true;
+        updateHeatMapOptions();
+        this.repo = MainActivity.repo;
 
         // *** MapView requires that the Bundle you pass contain _ONLY_ MapView SDK objects or sub-Bundles. ***
         Bundle mapViewBundle = null;
@@ -66,10 +77,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         mMapView.getMapAsync(this);
 
-//        FloatingActionButton myLocationBtn = getView()).findViewById(R.id.btn_my_location);
-//        myLocationBtn.setOnClickListener(v ->
-//                        onMyLocationButtonClick()
-//        );
     }//onViewCreated END
 
     @Override
@@ -87,73 +94,97 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap gMap) {
         googleMap = gMap;
-
-        //============== dummy data ==============
-        ArrayList<LatLng> sneezeLocations = new ArrayList<>();
-        double[] lats = {-37.1886, -37.8361, -38.4034, -38.7597, -36.9672};
-        double[] lngs = {145.708, 144.845, 144.192, 143.67, 141.083};
-
-        //make a list of sneeze locations with lat & lng values
-        for (int i = 0; i < lats.length; i++) {
-            sneezeLocations.add(new LatLng(lats[i], lngs[i]));
-        }
-
-
-        //============== dummy data ==============
-        //TODO Try-Catch for no data retrieved
         //TODO check theme to apply dark styled-map
-        //Create a heat map tile provider and overlay
-        mProvider = new HeatmapTileProvider.Builder().data(sneezeLocations).build();
-        mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+
+        addHeatMap();
         //TODO check if location services are enabled before MyLocation permission check
 
-        //Permission check to enable MyLocation and MyLocationButton
+        //Permission check to enable MyLocation marker and MyLocationButton
         if (MyLocationPermissionCheck()) {
             //Initialize MyLocation button
-            Toast.makeText(getContext(), "myLocationEnabled",Toast.LENGTH_LONG).show();
+
             googleMap.setOnMyLocationButtonClickListener(this);
             googleMap.setOnMyLocationClickListener(this);
             //hide default MyLocation button
 //            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
             //set starting location to be users location
 //            onMyLocationButtonClick();
+            Log.e(CLASS_TAG,"MyLocation has been disabled");
         }
         else{
             //set starting location to default location
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));
-
-            /*
-            //set MyLocationButton drawable to disabled
-            FloatingActionButton myLocationBtn = getView().findViewById(R.id.btn_my_location);
-            Drawable myLocationDisabled = getResources().getDrawable(R.drawable.ic_my_location_disabled);
-            myLocationBtn.setImageDrawable(myLocationDisabled);
-
-        //Set location services disabled
-//        Drawable locationDisabled = getResources().getDrawable(R.drawable.ic_my_location_disabled);//<<<< Location services off drawable
-//        myLocationBtn.setImageDrawable(locationDisabled);
-        int[][] states = new int[][] {
-                new int[] { android.R.attr.state_enabled}, // enabled
-                new int[] {-android.R.attr.state_enabled}, // disabled
-        };
-        int[] colors = new int[] {
-                R.color.google_blue,
-                R.color.darkButtonMain
-        };
-        ColorStateList tintList = new ColorStateList(states, colors);
-        myLocationBtn.setBackgroundTintList(tintList);
-        */
-
-            Toast.makeText(getContext(), "myLocationDisabled",Toast.LENGTH_LONG).show();
+            googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+//            Toast.makeText(getContext(), "myLocationDisabled",Toast.LENGTH_LONG).show();
+            Log.e(CLASS_TAG,"MyLocation has been disabled");
         }
 
     }//onMapReady END
 
-    private void changeTest(){
-
+    private void addHeatMap(){
+        List<LatLng> sneezeLocations = getLatLongList();
+        Toast.makeText(getContext(),"SneezeLocationsList size: "+ sneezeLocations.size(),Toast.LENGTH_LONG).show();
+        try {
+            //Create a heat map tile provider and overlay
+            mProvider = new HeatmapTileProvider.Builder().data(sneezeLocations).build();
+            mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        }
+        catch (NullPointerException ex){
+            ex.printStackTrace();
+            Log.e(CLASS_TAG, "SneezeLocations was empty" + ex);
+            Toast.makeText(getContext(), "No Sneeze Data Provided", Toast.LENGTH_LONG).show();
+        }
     }
-//    private void addHeatMap(GoogleMap googleMap) { }
 
-    //TODO add function to chose between day/week/month sneeze locations
+
+    private void updateHeatMapOptions(){
+        //TODO add UI elements to toggle day/week/month sneeze locations
+    }
+
+    //gets data from the repo and returns LatLong list
+    private List<LatLng> getLatLongList(){
+        List<LatLng> latLongList = makeList();
+        List<SneezeItem> siList;
+/*
+        if(setToUser){
+        //get user userdata
+            if(setToWeekly){
+                //get user weekly data
+                siList = repo.getAllSneezeItems();
+            }
+            //get user daily data *change to monthly
+            siList = repo.getAllSneezeItems();
+        }
+        else{
+        //get all/global data
+            if(setToWeekly) {//change to weekly data}
+                //get all weekly data
+                siList = repo.getAllSneezeItems();
+            }
+            //get weekly
+            siList = repo.getAllSneezeItems();
+        }*/
+        siList = repo.getAllSneezeItems();//**TEMPORARY**
+        siList.size();
+        //Currently no data available
+        RealmList<SneezeData> sdList;
+        Location location;
+        LatLng coords;
+
+        List<LatLng> sneezeLocations = makeList();
+        for(int i = 0; i< siList.size(); i++){
+            sdList = siList.get(0).getSneezes();
+            for(int j = 0; j < sdList.size(); j++ ){
+                //Probably better to make method in SneezeData class to return just LatLong coords instead of Location object
+                location = sdList.get(0).locationAsAndroidLocation();
+                coords = new LatLng(location.getLatitude(), location.getLongitude());
+                sneezeLocations.add(coords);
+            }
+        }
+
+        return latLongList;
+    }//getLatLongList END
+
 
     private boolean MyLocationPermissionCheck(){
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -166,8 +197,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //enable MyLocation marker
         googleMap.setMyLocationEnabled(true);
         return true;
-
     }
+
     //OnMapReadyCallback METHODS
     @Override
     public void onResume() {
@@ -211,15 +242,134 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        /*
-//        Toast.makeText(getContext(),"MyLocationBtn executed",Toast.LENGTH_LONG).show();
 
-        if(location != null) { // Check to ensure coordinates aren't null, probably a better way of doing this...
-            googleMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10));
-        }
-
-         */
     }
+
+    private List<LatLng> makeList(){
+        List<LatLng> list =  new List<LatLng>() {
+            @Override
+            public int size() {
+                return 0;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @Override
+            public boolean contains(@Nullable Object o) {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            public Iterator<LatLng> iterator() {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public Object[] toArray() {
+                return new Object[0];
+            }
+
+            @NonNull
+            @Override
+            public <T> T[] toArray(@NonNull T[] a) {
+                return null;
+            }
+
+            @Override
+            public boolean add(LatLng latLng) {
+                return false;
+            }
+
+            @Override
+            public boolean remove(@Nullable Object o) {
+                return false;
+            }
+
+            @Override
+            public boolean containsAll(@NonNull Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public boolean addAll(@NonNull Collection<? extends LatLng> c) {
+                return false;
+            }
+
+            @Override
+            public boolean addAll(int index, @NonNull Collection<? extends LatLng> c) {
+                return false;
+            }
+
+            @Override
+            public boolean removeAll(@NonNull Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public boolean retainAll(@NonNull Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public void clear() {
+
+            }
+
+            @Override
+            public LatLng get(int index) {
+                return null;
+            }
+
+            @Override
+            public LatLng set(int index, LatLng element) {
+                return null;
+            }
+
+            @Override
+            public void add(int index, LatLng element) {
+
+            }
+
+            @Override
+            public LatLng remove(int index) {
+                return null;
+            }
+
+            @Override
+            public int indexOf(@Nullable Object o) {
+                return 0;
+            }
+
+            @Override
+            public int lastIndexOf(@Nullable Object o) {
+                return 0;
+            }
+
+            @NonNull
+            @Override
+            public ListIterator<LatLng> listIterator() {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public ListIterator<LatLng> listIterator(int index) {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public List<LatLng> subList(int fromIndex, int toIndex) {
+                return null;
+            }
+        };
+
+        return list;
+    }//makeList END
 
 }//MapsFragment Class END
