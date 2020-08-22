@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -23,9 +22,16 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -94,7 +100,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap gMap) {
         googleMap = gMap;
-        //TODO check theme to apply dark styled-map
+
+        checkNightMode();
 
         addHeatMap();
         //TODO check if location services are enabled before MyLocation permission check
@@ -102,28 +109,57 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //Permission check to enable MyLocation marker and MyLocationButton
         if (MyLocationPermissionCheck()) {
             //Initialize MyLocation button
-
             googleMap.setOnMyLocationButtonClickListener(this);
             googleMap.setOnMyLocationClickListener(this);
             //hide default MyLocation button
 //            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
             //set starting location to be users location
 //            onMyLocationButtonClick();
-            Log.e(CLASS_TAG,"MyLocation has been disabled");
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));//***TEMPORARY
+            googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));//***TEMPORARY
+            Log.d(CLASS_TAG,"MyLocation has been enabled");
         }
         else{
             //set starting location to default location
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));
-            googleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
-//            Toast.makeText(getContext(), "myLocationDisabled",Toast.LENGTH_LONG).show();
-            Log.e(CLASS_TAG,"MyLocation has been disabled");
+            googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));
+            Log.d(CLASS_TAG,"MyLocation has been disabled");
         }
-
     }//onMapReady END
 
     private void addHeatMap(){
-        List<LatLng> sneezeLocations = getLatLongList();
-        Toast.makeText(getContext(),"SneezeLocationsList size: "+ sneezeLocations.size(),Toast.LENGTH_LONG).show();
+//        List<LatLng> sneezeLocations = getLatLongList();
+        List<LatLng> sneezeLocations = new ArrayList<>();
+
+//        File file = new File(getContext().getFilesDir(),"heat_map_dummy_data");
+        String jsonString;
+        try {
+            InputStream is = getContext().getAssets().open("heat_map_dummy_data.json");
+
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+
+            jsonString = new String(buffer, "UTF-8");
+            JSONArray jArray = new JSONArray(jsonString);
+
+            double lat;
+            double lon;
+            for (int i = 0; i < jArray.length(); i++) {
+                lat = Double.parseDouble(jArray.getJSONObject(i).getString("lat"));
+                lon = Double.parseDouble(jArray.getJSONObject(i).getString("long"));
+                sneezeLocations.add(new LatLng(lat, lon));
+            }
+        }
+        catch (IOException e) {
+        e.printStackTrace();
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }//Try-Catch END
+
+
         try {
             //Create a heat map tile provider and overlay
             mProvider = new HeatmapTileProvider.Builder().data(sneezeLocations).build();
@@ -132,10 +168,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         catch (NullPointerException ex){
             ex.printStackTrace();
             Log.e(CLASS_TAG, "SneezeLocations was empty" + ex);
-            Toast.makeText(getContext(), "No Sneeze Data Provided", Toast.LENGTH_LONG).show();
         }
-    }
+    }//addHeatMap END
 
+    private void checkNightMode(){
+        SharedPref sharedPref = MainActivity.sharedPref;
+        if(sharedPref.loadNightModeState()){
+            try{
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_dark_mode));
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+                Log.e(CLASS_TAG,"Map Style Failure: Dark mode could not be enabled\n"+ex);
+            }
+        }
+    }//checkNightMode END
 
     private void updateHeatMapOptions(){
         //TODO add UI elements to toggle day/week/month sneeze locations

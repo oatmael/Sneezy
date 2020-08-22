@@ -150,7 +150,6 @@ public class HomeFragment extends Fragment {
         resources = getResources();
         //update forecast location text field and day/colour values for forecast
         forecastObj = MainActivity.getForecastObj();
-//        upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastObj);
         Button setLocationBtn = getView().findViewById(R.id.changeLocation);
         setLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
