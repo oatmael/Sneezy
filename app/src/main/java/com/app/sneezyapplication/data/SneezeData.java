@@ -47,6 +47,8 @@ public class SneezeData extends RealmObject {
             }
             location.setLongitude(lng);
             location.setLatitude(lat);
+        } else {
+            return null;
         }
 
         return location;
