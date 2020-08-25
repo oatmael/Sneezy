@@ -503,15 +503,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            Toast.makeText(MainActivity.this, "Retrieving forecast",Toast.LENGTH_LONG).show();
             Log.d("ForecastObj", "Retrieving forecast");
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-//            Toast.makeText(MainActivity(), "The connection result: " + result, Toast.LENGTH_LONG).show();
-            Log.d("ForecastObj", "The connection result: " + result);
+            Log.d("ForecastObj", "/getForecastAsync --> onPostExecute The connection result: " + result);
             HomeFragment.upDatePollenForecastViewOnPostExecute(forecastObj);
 
         }
