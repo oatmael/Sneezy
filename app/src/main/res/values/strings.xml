@@ -80,8 +80,8 @@
 
     <!--ChangeLog Strings-->
     <string name="changeLogTitle">Change Log</string>
-    <string name="ver.xxx">Ver xxx:</string>
-    <string name="ver.xxxText">Addition this addition that.</string>
+    <string name="ver.xxx"></string>
+    <string name="ver.xxxText"></string>
     <!--End Changelog Strings-->
 
 
@@ -130,7 +130,7 @@ Links to privacy policy of third party service providers used by the app:<br /><
     <string name="changesPolicyBlurb">I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
 This policy is effective as of 2020-08-13<br /><br /></string>
     <string name="contactUsTitle">Contact Us</string>
-    <string name="contactUsBlurb">If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact us at sneezyapp@gmail.com.<br /><br /></string>
+    <string name="contactUsBlurb">If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact us at sneezyapp@gmail.com<br /><br /></string>
     <!--End Policy Frag-->
 
 </resources>
