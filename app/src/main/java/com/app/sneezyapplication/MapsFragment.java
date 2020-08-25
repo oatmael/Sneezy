@@ -30,9 +30,13 @@ import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -130,7 +134,35 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private void addHeatMap(){
         //getLatLong list of coordinates
-        List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
+//        List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
+        List<LatLng> sneezeLocations = new ArrayList<>();
+
+//        String pathToCsv ="src/main/assets/au-towns-sample.csv";
+//        String pathToCsv ="au-towns-sample.csv";
+        String pathToCsv ="app/src/main/assets/au-towns-sample.csv";
+        try {
+            InputStream is = getContext().getAssets().open("au-towns-sample.csv");
+
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+
+            String csvString = new String(buffer, StandardCharsets.UTF_8);
+            String[] lines = csvString.split("\\r?\\n");
+
+            for(int i = 0; i < lines.length; i++) {
+                String[] coords = lines[i].split(",");
+                sneezeLocations.add(new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1])));
+            }
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e("DummyData", "File not found\n"+ e);
+        }
+        catch (Exception e){
+            Log.e("DummyData", "Exception was thrown\n"+e);
+        }
 
 /*
         try {
