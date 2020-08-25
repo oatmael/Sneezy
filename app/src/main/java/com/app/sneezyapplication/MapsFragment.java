@@ -103,7 +103,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         checkNightMode();
 
-        addHeatMap();
+
         //TODO check if location services are enabled before MyLocation permission check
 
         //Permission check to enable MyLocation marker and MyLocationButton
@@ -116,24 +116,25 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             //set starting location to be users location
 //            onMyLocationButtonClick();
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));//***TEMPORARY
-            googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));//***TEMPORARY
+//            googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));//***TEMPORARY
             Log.d(CLASS_TAG,"MyLocation has been enabled");
         }
         else{
             //set starting location to default location
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));
-            googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));
+//            googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));
             Log.d(CLASS_TAG,"MyLocation has been disabled");
         }
+        addHeatMap();
     }//onMapReady END
 
     private void addHeatMap(){
-//        List<LatLng> sneezeLocations = getLatLongList();
-        List<LatLng> sneezeLocations = new ArrayList<>();
+        //getLatLong list of coordinates
+        List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
 
-//        File file = new File(getContext().getFilesDir(),"heat_map_dummy_data");
-        String jsonString;
+/*
         try {
+            String jsonString;
             InputStream is = getContext().getAssets().open("heat_map_dummy_data.json");
 
             int size = is.available();
@@ -158,8 +159,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         catch (JSONException e) {
             e.printStackTrace();
         }//Try-Catch END
-
-
+*/
         try {
             //Create a heat map tile provider and overlay
             mProvider = new HeatmapTileProvider.Builder().data(sneezeLocations).build();
@@ -189,10 +189,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     //gets data from the repo and returns LatLong list
-    private List<LatLng> getLatLongList(){
-        List<LatLng> latLongList = makeList();
+//    private ArrayList<LatLng> getLatLongList(){
+    private ArrayList<LatLng> getLatLongList(){
+        ArrayList<LatLng> latLongList = new ArrayList<>();
         List<SneezeItem> siList;
-/*
+
+        siList = repo.getAllSneezeItems();//**TEMPORARY**
+        /*
         if(setToUser){
         //get user userdata
             if(setToWeekly){
@@ -211,24 +214,38 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             //get weekly
             siList = repo.getAllSneezeItems();
         }*/
-        siList = repo.getAllSneezeItems();//**TEMPORARY**
-        siList.size();
         //Currently no data available
         RealmList<SneezeData> sdList;
         Location location;
         LatLng coords;
 
-        List<LatLng> sneezeLocations = makeList();
-        for(int i = 0; i< siList.size(); i++){
-            sdList = siList.get(0).getSneezes();
-            for(int j = 0; j < sdList.size(); j++ ){
-                //Probably better to make method in SneezeData class to return just LatLong coords instead of Location object
-                location = sdList.get(0).locationAsAndroidLocation();
-                coords = new LatLng(location.getLatitude(), location.getLongitude());
-                sneezeLocations.add(coords);
-            }
-        }
-
+        try{
+            for(int i = 0; i< siList.size(); i++){
+                sdList = siList.get(i).getSneezes();
+                for(int j = 0; j < sdList.size(); j++ ){
+                    //Probably better to make method in SneezeData class to return just LatLong coords instead of Location objec
+                    try{
+                        location = sdList.get(j).locationAsAndroidLocation();
+                        if(location != null){
+//                            Log.d(CLASS_TAG,"locationAsAndroidLocation Not null || i count "+i+"|| j count "+j+" : \n"+location);
+                              coords = new LatLng(location.getLatitude(), location.getLongitude());
+                              latLongList.add(coords);
+                        }
+                        else{
+                            Log.d(CLASS_TAG,"locationAsAndroidLocation Returned null");
+                        }
+                    }
+                    catch (Exception ex){
+                        ex.printStackTrace();
+                        Log.e(CLASS_TAG, "getLatLongList: location as android location error\n"+ ex);
+                    }//try-catch
+                }//Inner for loop
+            }//Main for loop
+        }//try catch
+        catch (Exception ex){
+            ex.printStackTrace();
+            Log.e(CLASS_TAG, "Error getting sneeze locations: \n"+ex);
+        }//try-catch END
         return latLongList;
     }//getLatLongList END
 
