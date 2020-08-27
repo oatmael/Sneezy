@@ -134,12 +134,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private void addHeatMap(){
         //getLatLong list of coordinates
-//        List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
-        List<LatLng> sneezeLocations = new ArrayList<>();
-
-//        String pathToCsv ="src/main/assets/au-towns-sample.csv";
-//        String pathToCsv ="au-towns-sample.csv";
-        String pathToCsv ="app/src/main/assets/au-towns-sample.csv";
+        List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
+//        List<LatLng> sneezeLocations = new ArrayList<>();
+/*
         try {
             InputStream is = getContext().getAssets().open("au-towns-sample.csv");
 
@@ -162,36 +159,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
         catch (Exception e){
             Log.e("DummyData", "Exception was thrown\n"+e);
-        }
+        }*/
 
-/*
-        try {
-            String jsonString;
-            InputStream is = getContext().getAssets().open("heat_map_dummy_data.json");
-
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-
-            jsonString = new String(buffer, "UTF-8");
-            JSONArray jArray = new JSONArray(jsonString);
-
-            double lat;
-            double lon;
-            for (int i = 0; i < jArray.length(); i++) {
-                lat = Double.parseDouble(jArray.getJSONObject(i).getString("lat"));
-                lon = Double.parseDouble(jArray.getJSONObject(i).getString("long"));
-                sneezeLocations.add(new LatLng(lat, lon));
-            }
-        }
-        catch (IOException e) {
-        e.printStackTrace();
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }//Try-Catch END
-*/
         try {
             //Create a heat map tile provider and overlay
             mProvider = new HeatmapTileProvider.Builder().data(sneezeLocations).build();
@@ -221,7 +190,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     //gets data from the repo and returns LatLong list
-//    private ArrayList<LatLng> getLatLongList(){
     private ArrayList<LatLng> getLatLongList(){
         ArrayList<LatLng> latLongList = new ArrayList<>();
         List<SneezeItem> siList;
