@@ -44,7 +44,7 @@ public class GraphData {
         c.setTime(new Date());
 
 
-        for (int i = days; i > 0; i--) {
+        for (int i = 0; i < days; i++) {
             sneezes = 0;
 
             for (SneezeItem s : sneezeList) {
@@ -60,7 +60,7 @@ public class GraphData {
             }
             //adds at index 0 for chronological order
             //displays only first 3 chars of date string
-            data.add(new ValueDataEntry(c.getTime().toString().substring(0, 3), sneezes));
+            data.add(0, (new ValueDataEntry(c.getTime().toString().substring(0, 3), sneezes)));
             //take one from calender date to check previous day
             c.add(Calendar.DATE, -1);
         }

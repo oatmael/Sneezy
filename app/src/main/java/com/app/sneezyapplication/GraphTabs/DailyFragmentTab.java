@@ -55,27 +55,6 @@ public class DailyFragmentTab extends Fragment {
 
         List<DataEntry> data = graphData.getWeeklyUserData();
 
-//        //Currently working on dummy data, will require adjustments later
-//        List<DataEntry> data = new ArrayList<>();
-//
-//        String date;
-//        int sneezes;
-//        List<SneezeItem> weeklySneezes = repo.getWeeklyUserSneezeItems();
-//
-//        if (weeklySneezes.size() != 0) {
-//            for (SneezeItem s : weeklySneezes) {
-//                sneezes = 0;
-//
-//                date = s.getDate();
-//                for (SneezeData d : s.getSneezes()) {
-//                    sneezes++;
-//                }
-//                //adds at index 0 for chronological order
-//                //displays only first 3 chars of date string
-//                data.add(0, new ValueDataEntry(date.substring(0,3), sneezes));
-//            }
-//        }
-
         //dummy data
 //        data.add(new ValueDataEntry("Sat", 4));
 //        data.add(new ValueDataEntry("Sun", 3));
