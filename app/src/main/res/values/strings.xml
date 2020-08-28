@@ -80,8 +80,8 @@
 
     <!--ChangeLog Strings-->
     <string name="changeLogTitle">Change Log</string>
-    <string name="ver.xxx"></string>
-    <string name="ver.xxxText"></string>
+    <string name="ver.xxx">Version 1.0</string>
+    <string name="ver.xxxText">Initial Release</string>
     <!--End Changelog Strings-->
 
 

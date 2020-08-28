@@ -20,14 +20,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Removed for release -->
     <Button
         android:id="@+id/anon_login_button"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="15dp"
         android:background="@android:color/transparent"
         android:elevation="2dp"
-        android:text="Anonymous (DEBUG ONLY)"
+        android:text=""
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView2" />
 
