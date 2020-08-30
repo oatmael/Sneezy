@@ -37,11 +37,11 @@ public class SneezeData extends RealmObject {
         //Dumb error checking, should rethink this later
         String[] tokens = this.location.split(",");
         if (!tokens[0].equals("") || !tokens[1].equals("")){
-            Long lat = 0L;
-            Long lng = 0L;
+            double lat = 0;
+            double lng = 0;
             try {
-                lat = Long.parseLong(tokens[0]);
-                lng = Long.parseLong(tokens[1]);
+                lat = Double.parseDouble(tokens[0]);
+                lng = Double.parseDouble(tokens[1]);
             } catch (Exception e) {
                 Log.e("location", e.getLocalizedMessage());
             }
