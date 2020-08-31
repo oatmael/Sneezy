@@ -129,7 +129,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         SharedPref sharedPref = MainActivity.sharedPref;
         if(sharedPref.loadNightModeState()){
             try{
-                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style_dark_mode));
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_dark_mode));
             }
             catch(Exception ex){
                 ex.printStackTrace();
