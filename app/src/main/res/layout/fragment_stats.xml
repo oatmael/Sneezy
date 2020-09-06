@@ -8,6 +8,8 @@
         android:layout_height="wrap_content"
         android:text="Coming Soon!"
         android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:textColor="?attr/mainText"
+        />
 
 </RelativeLayout>

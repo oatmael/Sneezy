@@ -82,6 +82,7 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_save"
             android:background="?attr/colorButtonNormal"
+            android:layout_marginTop="10dp"
             />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
