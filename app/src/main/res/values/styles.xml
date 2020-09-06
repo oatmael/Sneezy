@@ -12,7 +12,7 @@
     <!--LIGHT-->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/lightBackground</item>
-        <item name="colorPrimaryDark">@color/appBarBlack</item>
+        <item name="colorPrimaryDark">@color/sectionWhite</item>
         <item name="colorAccent">@color/lightMainText</item>
         <item name="backgroundMainColor">@color/lightBackground</item>
         <item name="mainText">@color/lightMainText</item>

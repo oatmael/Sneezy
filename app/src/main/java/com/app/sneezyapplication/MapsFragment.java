@@ -2,42 +2,46 @@ package com.app.sneezyapplication;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.app.sneezyapplication.data.SneezeData;
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeRepository;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import io.realm.RealmList;
 
@@ -46,14 +50,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         GoogleMap.OnMyLocationClickListener {
 
     private MapView mMapView;
-
+    private HeatmapTileProvider mProvider;
+    private TileOverlay mOverlay;
     private GoogleMap googleMap;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final String CLASS_TAG = "MapsFragment";
     private static final LatLng DEFAULT_LOCATION = new LatLng(-30, 133);
-    FusedLocationProviderClient fusedLocationClient;
     SneezeRepository repo;
-    LatLng userCoords;
+    ArrayList<SneezeItem> sneezeItems;
+    private boolean setToWeekly;
+    private boolean setToUser;
+
 
     @Nullable
     @Override
@@ -64,7 +71,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        userCoords = DEFAULT_LOCATION;
+
+        setToWeekly = true;
+        setToUser = true;
         updateHeatMapOptions();
         this.repo = MainActivity.repo;
 
@@ -78,10 +87,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         mMapView.getMapAsync(this);
 
-        FloatingActionButton myLocationBtn = getView().findViewById(R.id.btn_my_location);
-        myLocationBtn.setOnClickListener(v ->
-                recenterUser()
-        );
     }//onViewCreated END
 
     @Override
@@ -94,56 +99,44 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
         }
         mMapView.onSaveInstanceState(mapViewBundle);
-    }//onSaveInstanceState END
+    }
 
     @Override
     public void onMapReady(GoogleMap gMap) {
         googleMap = gMap;
 
         checkNightMode();
-        //check if location services are turned on
-        if(isLocationOn()) {
-            //Permission check to enable MyLocation marker and MyLocationButton
-            if (myLocationPermissionCheck()) {
-                //Initialize MyLocation button
-                googleMap.setOnMyLocationButtonClickListener(this);
-                googleMap.setOnMyLocationClickListener(this);
-                //hide default MyLocation button
-                googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-                //set starting location to be users location
-                Log.d(CLASS_TAG, "MyLocation has been enabled");
-            }
+
+
+        //TODO check if location services are enabled before MyLocation permission check
+
+        //Permission check to enable MyLocation marker and MyLocationButton
+        if (MyLocationPermissionCheck()) {
+            //Initialize MyLocation button
+            googleMap.setOnMyLocationButtonClickListener(this);
+            googleMap.setOnMyLocationClickListener(this);
+            //hide default MyLocation button
+//            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            //set starting location to be users location
+//            onMyLocationButtonClick();
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));//***TEMPORARY
+//            googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));//***TEMPORARY
+            Log.d(CLASS_TAG,"MyLocation has been enabled");
         }
         else{
             //set starting location to default location
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));
-            googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));
+//            googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));
             Log.d(CLASS_TAG,"MyLocation has been disabled");
         }
-
-        updateFab();
         addHeatMap();
     }//onMapReady END
 
-    private void checkNightMode(){
-        SharedPref sharedPref = MainActivity.sharedPref;
-        if(sharedPref.loadNightModeState()){
-            try{
-                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style_dark_mode));
-            }
-            catch(Exception ex){
-                ex.printStackTrace();
-                Log.e(CLASS_TAG,"Map Style Failure: Dark mode could not be enabled\n"+ex);
-            }
-        }
-    }//checkNightMode END
-
-    private void updateHeatMapOptions(){
-        //TODO add UI elements to toggle day/week/month sneeze locations
-    }//updateHeatMapOptions END
-
     private void addHeatMap(){
-        /*      //DUMMY DATA
+        //getLatLong list of coordinates
+        List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
+//        List<LatLng> sneezeLocations = new ArrayList<>();
+/*
         try {
             InputStream is = getContext().getAssets().open("au-towns-sample.csv");
 
@@ -167,10 +160,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         catch (Exception e){
             Log.e("DummyData", "Exception was thrown\n"+e);
         }*/
-        HeatmapTileProvider mProvider;
-        TileOverlay mOverlay;
-        //getLatLong list of coordinates
-        List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
 
         try {
             //Create a heat map tile provider and overlay
@@ -183,12 +172,49 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }//addHeatMap END
 
+    private void checkNightMode(){
+        SharedPref sharedPref = MainActivity.sharedPref;
+        if(sharedPref.loadNightModeState()){
+            try{
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_dark_mode));
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+                Log.e(CLASS_TAG,"Map Style Failure: Dark mode could not be enabled\n"+ex);
+            }
+        }
+    }//checkNightMode END
+
+    private void updateHeatMapOptions(){
+        //TODO add UI elements to toggle day/week/month sneeze locations
+    }
+
     //gets data from the repo and returns LatLong list
     private ArrayList<LatLng> getLatLongList(){
         ArrayList<LatLng> latLongList = new ArrayList<>();
         List<SneezeItem> siList;
 
         siList = repo.getAllSneezeItems();//**TEMPORARY**
+        /*
+        if(setToUser){
+        //get user userdata
+            if(setToWeekly){
+                //get user weekly data
+                siList = repo.getAllSneezeItems();
+            }
+            //get user daily data *change to monthly
+            siList = repo.getAllSneezeItems();
+        }
+        else{
+        //get all/global data
+            if(setToWeekly) {//change to weekly data}
+                //get all weekly data
+                siList = repo.getAllSneezeItems();
+            }
+            //get weekly
+            siList = repo.getAllSneezeItems();
+        }*/
+        //Currently no data available
         RealmList<SneezeData> sdList;
         Location location;
         LatLng coords;
@@ -197,13 +223,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             for(int i = 0; i< siList.size(); i++){
                 sdList = siList.get(i).getSneezes();
                 for(int j = 0; j < sdList.size(); j++ ){
-                    //Probably better to make method in SneezeData class to return just LatLong coords instead of Location object
+                    //Probably better to make method in SneezeData class to return just LatLong coords instead of Location objec
                     try{
                         location = sdList.get(j).locationAsAndroidLocation();
                         if(location != null){
 //                            Log.d(CLASS_TAG,"locationAsAndroidLocation Not null || i count "+i+"|| j count "+j+" : \n"+location);
-                            coords = new LatLng(location.getLatitude(), location.getLongitude());
-                            latLongList.add(coords);
+                              coords = new LatLng(location.getLatitude(), location.getLongitude());
+                              latLongList.add(coords);
                         }
                         else{
                             Log.d(CLASS_TAG,"locationAsAndroidLocation Returned null");
@@ -223,28 +249,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return latLongList;
     }//getLatLongList END
 
-    private boolean isLocationOn() {
-        LocationManager lm = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //location is turned on
-        //                Toast.makeText(getContext(), "Location services turned on",Toast.LENGTH_LONG).show();
-        return gps_enabled && network_enabled;
-//            Toast.makeText(getContext(), "Location services turned off",Toast.LENGTH_LONG).show();
-        //location is not turned on
-    }//isLocationEnabled END
 
-    private boolean myLocationPermissionCheck(){
+    private boolean MyLocationPermissionCheck(){
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
@@ -253,89 +259,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
         //Permission granted
         //enable MyLocation marker
-        try {
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
-            fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
-                if (location != null) {
-                    userCoords = new LatLng(location.getLatitude(), location.getLongitude());
-//                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(userCoords));
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
-                    googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                }
-                //TODO else: Request location update https://developer.android.com/training/location/receive-location-updates
-            });
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
         googleMap.setMyLocationEnabled(true);
         return true;
-    }//myLocationPermissionCheck END
-
-    private void recenterUser(){
-        String locationPermissionStatus = locationPermissionStatus();
-        if (locationPermissionStatus.equals("LocationPermissionDenied")){
-            //popup for location not permitted
-            Toast.makeText(getContext(),"Location Permission Denied",Toast.LENGTH_LONG).show();
-            //TODO popup to request location permission
-        }
-        else if(locationPermissionStatus.equals("LocationOff")) {
-            //popup for location services are not turned on
-            Toast.makeText(getContext(),"Location Services Are Off",Toast.LENGTH_LONG).show();
-            //TODO popup to make turn on location services
-        }
-        else if(locationPermissionStatus.equals("LocationPermissionGranted")){
-            //animate camera to user location
-//            Toast.makeText(getContext(),"LocationPermissionGranted",Toast.LENGTH_LONG).show();
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
-            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-        else {
-            Log.e(CLASS_TAG,"recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
-        }
-    }//recenterUser END
-
-    private String locationPermissionStatus(){
-        if (!googleMap.isMyLocationEnabled()){
-            if(!isLocationOn()){
-                return "LocationOff";
-            }
-            else{
-                return "LocationPermissionDenied";
-            }
-        }
-        else{
-            return "LocationPermissionGranted";
-        }
-    }//locationPermissionStatus END
-
-    private void updateFab(){
-        FloatingActionButton myLocationFab = getView().findViewById(R.id.btn_my_location);
-        String locationPermissionStatus = locationPermissionStatus();
-        Drawable fabIcon;
-        ColorStateList tintList;
-        if (locationPermissionStatus.equals("LocationPermissionDenied")){
-            //location not permitted
-            fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location_disabled, null);
-            tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
-        }
-        else if(locationPermissionStatus.equals("LocationOff")) {
-            //location services turned off
-            fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
-            tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
-        }
-        else if(locationPermissionStatus.equals("LocationPermissionGranted")){
-            // default
-            fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location, null);
-            tintList = ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state,null);
-        }
-        else {
-            Log.e(CLASS_TAG,"recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
-            fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
-            tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
-        }
-        myLocationFab.setBackgroundTintList(tintList);
-        myLocationFab.setImageDrawable(fabIcon);
     }
 
     //OnMapReadyCallback METHODS
@@ -373,7 +298,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         super.onLowMemory();
         mMapView.onLowMemory();
     }
-
     //MyLocation METHODS
     @Override
     public boolean onMyLocationButtonClick() {
@@ -382,6 +306,134 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
+
     }
+
+    private List<LatLng> makeList(){
+        List<LatLng> list =  new List<LatLng>() {
+            @Override
+            public int size() {
+                return 0;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @Override
+            public boolean contains(@Nullable Object o) {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            public Iterator<LatLng> iterator() {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public Object[] toArray() {
+                return new Object[0];
+            }
+
+            @NonNull
+            @Override
+            public <T> T[] toArray(@NonNull T[] a) {
+                return null;
+            }
+
+            @Override
+            public boolean add(LatLng latLng) {
+                return false;
+            }
+
+            @Override
+            public boolean remove(@Nullable Object o) {
+                return false;
+            }
+
+            @Override
+            public boolean containsAll(@NonNull Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public boolean addAll(@NonNull Collection<? extends LatLng> c) {
+                return false;
+            }
+
+            @Override
+            public boolean addAll(int index, @NonNull Collection<? extends LatLng> c) {
+                return false;
+            }
+
+            @Override
+            public boolean removeAll(@NonNull Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public boolean retainAll(@NonNull Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public void clear() {
+
+            }
+
+            @Override
+            public LatLng get(int index) {
+                return null;
+            }
+
+            @Override
+            public LatLng set(int index, LatLng element) {
+                return null;
+            }
+
+            @Override
+            public void add(int index, LatLng element) {
+
+            }
+
+            @Override
+            public LatLng remove(int index) {
+                return null;
+            }
+
+            @Override
+            public int indexOf(@Nullable Object o) {
+                return 0;
+            }
+
+            @Override
+            public int lastIndexOf(@Nullable Object o) {
+                return 0;
+            }
+
+            @NonNull
+            @Override
+            public ListIterator<LatLng> listIterator() {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public ListIterator<LatLng> listIterator(int index) {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public List<LatLng> subList(int fromIndex, int toIndex) {
+                return null;
+            }
+        };
+
+        return list;
+    }//makeList END
 
 }//MapsFragment Class END
