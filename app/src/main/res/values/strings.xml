@@ -84,6 +84,25 @@
     <string name="ver.xxxText">Addition this addition that.</string>
     <!--End Changelog Strings-->
 
+    <!--Index Details Popup Strings-->
+    <string name="index_breakdown">INDEX BREAKDOWN</string>
+    <string name="index_details_extreme_header">EXTREME</string>
+    <string name="index_details_extreme">Most sufferers of pollen allergies will experience symptoms on extreme pollen level days. Symptoms may be severe in some sufferers.
+        These days typically occur as a result of high temperatures and/or dry, hot winds, so the best precaution is to stay indoors.</string>
+    <string name="index_details_very_high_header">VERY HIGH</string>
+    <string name="index_details_very_high">Most sufferers of pollen allergies will experience symptoms on very high pollen level days.
+        These days are typically warm and dry so the best precaution is to stay indoors away from sources of pollen.</string>
+    <string name="index_details_high_header">HIGH</string>
+    <string name="index_details_high">Some sufferers of pollen allergies will experience symptoms on high pollen level days, but these are unlikely to be severe.
+        Temperatures are likely to be warm on these days, but there may be a limiting factor such as rain or sea breezes.</string>
+    <string name="index_details_moderate_header">MODERATE</string>
+    <string name="index_details_moderate">A few sufferers of pollen allergies may experience symptoms on moderate pollen level days.
+        These are typically cooler days or days on which rain is expected to "flush" the pollen out of the air.</string>
+    <string name="index_details_low_header">LOW</string>
+    <string name="index_details_low">Very few sufferers of pollen allergies would be expected to experience symptoms on low pollen level days.
+        These are typically either cold or wet days when there is likely to be little pollen released into the atmosphere.</string>
+    <string name="forecast_source">weatherzone</string>
+    <!--End Index Details Popup Strings-->
 
     <!--    Select Location Popup Strings   -->
     <string name="popup_header">Select a city</string>

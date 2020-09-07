@@ -5,7 +5,7 @@
 
 
     <solid
-        android:color="@color/moderatedColour"/>
+        android:color="@color/moderateColour"/>
 
     <size
         android:width="60dp"

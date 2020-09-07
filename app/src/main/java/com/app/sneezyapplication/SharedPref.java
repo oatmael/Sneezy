@@ -17,7 +17,7 @@ public class SharedPref {
         editor.putBoolean("NightMode", state);
         editor.commit();
     }
-
+    //true: night mode on - false: night mode off
     public Boolean loadNightModeState() {
         Boolean state = colourModePref.getBoolean("NightMode", false);
         return state;
