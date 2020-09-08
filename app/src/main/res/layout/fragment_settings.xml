@@ -48,7 +48,7 @@
                 android:id="@+id/appRestartButton"
                 android:text="RESTART"
                 android:textColor="?attr/mainText"
-                android:background="?attr/backgroundMainColor"
+                android:backgroundTint="@color/statelist_normal_button"
                 android:layout_marginTop="10dp"/>
 
             <TextView

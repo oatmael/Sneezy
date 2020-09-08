@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_save"
             android:textColor="?attr/mainText"
-            android:backgroundTint="?attr/backgroundMainColor"
+            android:backgroundTint="@color/statelist_normal_button"
             />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
