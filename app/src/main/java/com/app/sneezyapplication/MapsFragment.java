@@ -285,26 +285,27 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }//myLocationPermissionCheck END
 
     private void recenterUser(){
-        String locationPermissionStatus = locationPermissionStatus();
-        if (locationPermissionStatus.equals("LocationPermissionDenied")){
-            //popup for location not permitted
-            Toast.makeText(getContext(),"Location Permission Denied",Toast.LENGTH_LONG).show();
-            //TODO popup to request location permission
-        }
-        else if(locationPermissionStatus.equals("LocationOff")) {
-            //popup for location services are not turned on
-            Toast.makeText(getContext(),"Location Services Are Off",Toast.LENGTH_LONG).show();
-            //TODO popup to make turn on location services
-        }
-        else if(locationPermissionStatus.equals("LocationPermissionGranted")){
-            //animate camera to user location
+//        String locationPermissionStatus = locationPermissionStatus();
+        switch (locationPermissionStatus()){
+            case "LocationPermissionDenied":
+                //popup for location not permitted
+                Toast.makeText(getContext(),"Location Permission Denied",Toast.LENGTH_LONG).show();
+                //TODO popup to request location permission
+                break;
+            case "LocationOff":
+                //popup for location services are not turned on
+                Toast.makeText(getContext(),"Location Services Are Off",Toast.LENGTH_LONG).show();
+                //TODO popup to make turn on location services
+                break;
+            case "LocationPermissionGranted":
+                //animate camera to user location
 //            Toast.makeText(getContext(),"LocationPermissionGranted",Toast.LENGTH_LONG).show();
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
-            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-        else {
-            Log.e(CLASS_TAG,"recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
-        }
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                break;
+            default:
+                Log.e(CLASS_TAG,"recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
+        }//locationPermissionStatus switch END
     }//recenterUser END
 
     private String locationPermissionStatus(){
@@ -323,29 +324,27 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private void updateFab(){
         FloatingActionButton myLocationFab = getView().findViewById(R.id.btn_my_location);
-        String locationPermissionStatus = locationPermissionStatus();
         Drawable fabIcon;
         ColorStateList tintList;
-        if (locationPermissionStatus.equals("LocationPermissionDenied")){
-            //location not permitted
-            fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location_disabled, null);
-            tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
-        }
-        else if(locationPermissionStatus.equals("LocationOff")) {
-            //location services turned off
-            fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
-            tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
-        }
-        else if(locationPermissionStatus.equals("LocationPermissionGranted")){
-            // default
-            fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location, null);
-            tintList = ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state,null);
-        }
-        else {
-            Log.e(CLASS_TAG,"recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
-            fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
-            tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
-        }
+        switch (locationPermissionStatus()){
+            case "LocationPermissionDenied"://location not permitted
+                fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location_disabled, null);
+                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
+                break;
+            case "LocationOff"://location services turned off
+                fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
+                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
+                break;
+            case "LocationPermissionGranted"://location services on & permission granted
+
+                fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location, null);
+                tintList = ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state,null);
+                break;
+            default:
+                Log.e(CLASS_TAG,"recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
+                fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
+                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
+        }//locationPermissionStatus switch END
         myLocationFab.setBackgroundTintList(tintList);
         myLocationFab.setImageDrawable(fabIcon);
     }
