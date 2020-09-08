@@ -8,7 +8,7 @@
         android:topLeftRadius="0dp"/>
 
     <solid
-        android:color="?attr/plusMinusColor"/>
+        android:color="@color/statelist_plus_minus_button"/>
 
     <size
         android:width="119dp"

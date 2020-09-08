@@ -41,15 +41,6 @@ import java.util.List;
 
 import io.realm.RealmList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener {
 
@@ -329,21 +320,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         switch (locationPermissionStatus()){
             case "LocationPermissionDenied"://location not permitted
                 fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location_disabled, null);
-                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
+                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt,null);
                 break;
             case "LocationOff"://location services turned off
                 fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
-                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
+                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt,null);
                 break;
             case "LocationPermissionGranted"://location services on & permission granted
 
                 fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location, null);
-                tintList = ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state,null);
+                tintList = ResourcesCompat.getColorStateList(getResources(), R.color.statelist_maps_fab,null);
                 break;
             default:
                 Log.e(CLASS_TAG,"recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
                 fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
-                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.maps_fab_color_state_alt,null);
+                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt,null);
         }//locationPermissionStatus switch END
         myLocationFab.setBackgroundTintList(tintList);
         myLocationFab.setImageDrawable(fabIcon);
