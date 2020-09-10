@@ -269,11 +269,12 @@
 
                     <ImageView
                         android:id="@+id/indexInfoImgView"
-                        android:layout_gravity="top|center"
+                        android:layout_gravity="top|end"
                         android:layout_width="21dp"
                         android:layout_height="21dp"
                         android:backgroundTint="?attr/mainText"
                         android:background="@drawable/ic_info"
+
                         />
                 </LinearLayout>
                 <!--INDEX END-->
