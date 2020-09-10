@@ -15,11 +15,27 @@
       },
       "oauth_client": [
         {
-          "client_id": "1045273968584-dpvp9sbm06vm244bs0f9sukgvoa7tslq.apps.googleusercontent.com",
+          "client_id": "1045273968584-0djb3mefsirmbaupko44kbpap7ja19jl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.sneezyapplication",
+            "certificate_hash": "d4fe8e4467b629efbd2077e3bcc2d97076dc7db4"
+          }
+        },
+        {
+          "client_id": "1045273968584-8ek2277alfcjgqvr5eru4kun7khc07i7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.app.sneezyapplication",
             "certificate_hash": "e1043a5bdad7b87f329e52bdc689253b8b1adc39"
+          }
+        },
+        {
+          "client_id": "1045273968584-dpvp9sbm06vm244bs0f9sukgvoa7tslq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.sneezyapplication",
+            "certificate_hash": "3b1bb18c14c4530026657c8ed46f6b3a436d19f1"
           }
         },
         {

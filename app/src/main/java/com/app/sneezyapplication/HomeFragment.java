@@ -1,8 +1,10 @@
 package com.app.sneezyapplication;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -10,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
 import androidx.fragment.app.Fragment;
@@ -19,7 +22,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -157,6 +162,13 @@ public class HomeFragment extends Fragment {
                 setLocationPopup();
             }
         });
+        LinearLayout indexLayout = getView().findViewById(R.id.indexLayout);
+        indexLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openIndexPopup();
+            }
+        });
     }//onViewCreated
 
     @Override
@@ -221,7 +233,6 @@ public class HomeFragment extends Fragment {
 
 
     private void setLocationPopup() {
-
         final String TAG = "setLocationPopup";
         Log.i(TAG, "launched set location popup");
 
@@ -256,7 +267,6 @@ public class HomeFragment extends Fragment {
                     //update forecastObj in MainActivity
                     Log.d("ForecastObj", "Location " + selectedCity + "successfully saved to shared prefs");
 
-
                     //update pollen forecast from source
                     new MainActivity.getForecastAsync().execute(forecastObj.getUrl());
                     forecastObj = MainActivity.getForecastObj();
@@ -268,6 +278,46 @@ public class HomeFragment extends Fragment {
             }//end of onclick
         });//onClickListener END
     }// setLocationPopup END
+
+    private void openIndexPopup(){
+        final AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+        final View popupView = getLayoutInflater().inflate(R.layout.popup_index_details, null);
+        //build dialog
+        mBuilder.setView(popupView);
+        final AlertDialog dialog = mBuilder.create();
+        //set drawable for imageButton based on theme
+//        SharedPref sharedPref = MainActivity.sharedPref;
+        Drawable img;
+        if(MainActivity.sharedPref.loadNightModeState()){
+            img = ResourcesCompat.getDrawable(getResources(), R.drawable.weatherzone_logo_full_dark, null);
+        }
+        else{
+            img = ResourcesCompat.getDrawable(getResources(), R.drawable.weatherzone_logo_full_light, null);
+        }
+        ImageButton weatherzoneLinkBtn = popupView.findViewById(R.id.weatherzoneImg);
+        weatherzoneLinkBtn.setBackground(img);
+        //show the dialog
+        dialog.show();
+        //Button to close dialog
+        Button closeBtn = popupView.findViewById(R.id.btn_index_popup_close);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });//closeBtn onClick END
+        //open www.weatherzone.com
+        weatherzoneLinkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "https://www.weatherzone.com.au";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });//weatherzoneLinkBtn onClick END
+    }//openIndexPopup END
+
 
     public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj) {
         //update location textview

@@ -29,6 +29,6 @@
         android:src="@drawable/ic_my_location"
         />
 
-<!--        android:backgroundTint="@color/google_blue"-->
-<!--    android:contentDescription="@string/my_location_description"-->
+    <!--        android:backgroundTint="@color/google_blue"-->
+    <!--    android:contentDescription="@string/my_location_description"-->
 </RelativeLayout>

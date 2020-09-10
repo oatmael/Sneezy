@@ -6,7 +6,7 @@
         android:radius="31dp"/>
 
     <solid
-        android:color="?attr/buttonMain"/>
+        android:color="@color/statelist_sneeze_button"/>
 
     <size
         android:width="390dp"

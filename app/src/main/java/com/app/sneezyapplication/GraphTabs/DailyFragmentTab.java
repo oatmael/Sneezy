@@ -75,7 +75,7 @@ public class DailyFragmentTab extends Fragment {
                 .format("{%Value}{groupsSeparator: }");
 
         cartesian.animation(true);
-        cartesian.title("DailySneezes");
+        //cartesian.title("DailySneezes");
 
         cartesian.yScale()
                 .minimum(0d)
@@ -122,7 +122,7 @@ public class DailyFragmentTab extends Fragment {
         cartesian.background().fill(colorPrimary);
         column.color(colorAccent);
 
-// Don't forget to recycle
+        // Recycle
         c1.recycle();
         c2.recycle();
 

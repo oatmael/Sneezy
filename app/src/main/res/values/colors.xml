@@ -29,7 +29,7 @@
     <color name="extremeColour">#CA0D26</color>
     <color name="vHighColour">#DD4B09</color>
     <color name="highColour">#EC8D3B</color>
-    <color name="moderatedColour">#EAD844</color>
+    <color name="moderateColour">#EAD844</color>
     <color name="lowColour">#99CC33</color>
 
     <!--Dark Theme Colour Set-->

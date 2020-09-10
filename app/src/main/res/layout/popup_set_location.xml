@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="?attr/backgroundMainColor"
+    android:background="?attr/sectionColor"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -14,6 +14,7 @@
         android:orientation="vertical"
         android:gravity="center"
         android:textColor="?attr/mainText"
+        android:padding="5dp"
         >
 
         <TextView
@@ -37,43 +38,49 @@
                 android:layout_height="wrap_content"
                 android:text="@string/radio_adelaide"
                 android:textColor="?attr/mainText"
-                />
+                android:buttonTint="?attr/mainText"/>
             <RadioButton
                 android:id="@+id/radioBrisbane"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/radio_brisbane"
-                android:textColor="?attr/mainText"/>
+                android:textColor="?attr/mainText"
+                android:buttonTint="?attr/mainText"/>
             <RadioButton
                 android:id="@+id/radioCanberra"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/radio_canberra"
-                android:textColor="?attr/mainText"/>
+                android:textColor="?attr/mainText"
+                android:buttonTint="?attr/mainText"/>
             <RadioButton
                 android:id="@+id/radioHobart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/radio_hobart"
-                android:textColor="?attr/mainText"/>
+                android:textColor="?attr/mainText"
+                android:buttonTint="?attr/mainText"/>
             <RadioButton
                 android:id="@+id/radioMelbourne"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/radio_melbourne"
-                android:textColor="?attr/mainText"/>
+                android:textColor="?attr/mainText"
+                android:buttonTint="?attr/mainText"/>
             <RadioButton
                 android:id="@+id/radioPerth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/radio_perth"
-                android:textColor="?attr/mainText"/>
+                android:textColor="?attr/mainText"
+                android:buttonTint="?attr/mainText"/>
             <RadioButton
                 android:id="@+id/radioSydney"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/radio_sydney"
-                android:textColor="?attr/mainText"/>
+                android:textColor="?attr/mainText"
+                android:buttonTint="?attr/mainText"/>
         </RadioGroup>
 
         <Button
@@ -81,8 +88,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_save"
-            android:background="?attr/colorButtonNormal"
-            android:layout_marginTop="10dp"
+            android:textColor="?attr/mainText"
+            android:backgroundTint="@color/statelist_normal_button"
             />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
