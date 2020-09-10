@@ -2,12 +2,13 @@ package com.app.sneezyapplication;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -35,16 +36,12 @@ import com.app.sneezyapplication.binding.MultiBind;
 import com.app.sneezyapplication.binding.SneezeBind;
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
-import com.app.sneezyapplication.data.SneezeRepository;
 import com.app.sneezyapplication.databinding.FragmentHomeBinding;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 import io.realm.RealmList;
@@ -319,73 +316,84 @@ public class HomeFragment extends Fragment {
         });//weatherzoneLinkBtn onClick END
     }//openIndexPopup END
 
-
+    private static boolean locationFetched = false;
     public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj) {
-        //update location textview
-        TextView pollenLocationTxt = view.findViewById(R.id.pollenCountLocationTxt);
-        pollenLocationTxt.setText(forecastObj.getCityName(forecastObj.getSelectedCityNo()) + ", " + forecastObj.getStateName(forecastObj.getSelectedCityNo()));
+        //if location has been fetched
+        int size = forecastObj.getIndexValues().size();
+        if(forecastObj.getIndexValues().size() == 4){
+            //update location textview
+            TextView pollenLocationTxt = view.findViewById(R.id.pollenCountLocationTxt);
+            pollenLocationTxt.setText(forecastObj.getCityName(forecastObj.getSelectedCityNo()) + ", " + forecastObj.getStateName(forecastObj.getSelectedCityNo()));
 
+            final int numDays = 4;
+            final String[] weekDays = new String[]{"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+            //declare and get views to edit
+            //check forecast has been initialized
+            ConstraintLayout constraintLayout = view.findViewById(R.id.homeConstraintLayout);
+            TextView dayNameTxt;
+            ImageView dayImgView;
+            String txtName;
+            String imgName;
+            int txtID;
+            int imgID;
+            //background colour variables
+            final String[] coloursNames = new String[]{"lowColour", "moderateColour", "highColour", "vHighColour", "extremeColour"};
+            final ArrayList<Integer> indexValueNums = forecastObj.getIndexValues();
+            int colorID;
+            int colorValue;
 
-        final int numDays = 4;
-        final String[] weekDays = new String[]{"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
-        //declare and get views to edit
-        ConstraintLayout constraintLayout = view.findViewById(R.id.homeConstraintLayout);
-        TextView dayNameTxt;
-        ImageView dayImgView;
-        String txtName;
-        String imgName;
-        int txtID;
-        int imgID;
-        //background variables
-        final String[] drawableColours = new String[]{"green", "yellow", "orange", "red_orange", "red"};
-        final ArrayList<Integer> IndexValueNums = forecastObj.getIndexValues();
-        int drawableID;
-        String drawableName;
-        Drawable background;
-        //day variables name
-        int counter = 0;
-        Calendar calendar = Calendar.getInstance();
-        int currentDayNo = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        String dayOfWeek;
+            //day name variables
+            int counter = 0;
+            Calendar calendar = Calendar.getInstance();
+            int currentDayNo = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+            String dayOfWeek;
 
-        for (int i = 0; i < numDays; i++) {
-            //get background colour for forecast
-            try {
-                drawableName = ("forecast_block_" + drawableColours[IndexValueNums.get(i)]);
-                drawableID = resources.getIdentifier(drawableName, "drawable", packageName);
-                background = resources.getDrawable(drawableID);
-            } catch (Exception ex) {
-                background = resources.getDrawable(R.drawable.forecast_block_green);
-                Log.e("ForecastObj", "An Exception was thrown\nDrawable Not found\n" + ex);
+            for (int i = 0; i < numDays; i++) {
+                //get background colour for forecast
+                try {
+                    colorID = resources.getIdentifier(coloursNames[indexValueNums.get(i)], "color", packageName);
+                    colorValue = ResourcesCompat.getColor(resources, colorID,null);
+//                    String hexColor = String.format("#%06X", (0xFFFFFF &colorValue));
+                } catch (Exception ex) {
+                    colorValue = ResourcesCompat.getColor(resources, R.color.black,null);
+                    Log.e("ForecastObj", "An Exception was thrown\nColor Not found\n" + ex);
+                }
+                //get and edit background
+                try {
+                    imgName = "forecastImage" + (i + 1);
+                    imgID = resources.getIdentifier(imgName, "id", packageName);
+                    dayImgView = constraintLayout.findViewById(imgID);
+                    int[][] states = new int[][] {
+                            new int[] {} // enabled
+                    };
+                    int[] color = new int[] {
+                            colorValue
+                    };
+                    dayImgView.setBackgroundTintList(new ColorStateList(states, color));
+                }
+                catch (Exception ex) {
+                    Log.e("ForecastObj", "An Exception was thrown\nDay Img cant be found\n" + ex);
+                }
+                //get Current day from weekDays array
+                if (currentDayNo + counter > 6) {
+                    currentDayNo = 0;
+                    counter = 0;
+                }
+                dayOfWeek = weekDays[currentDayNo + counter];
+                //get and edit text View
+                txtName = "forecastTextBlock" + (i + 1);
+                txtID = resources.getIdentifier(txtName, "id", packageName);
+                dayNameTxt = constraintLayout.findViewById(txtID);
+                dayNameTxt.setText(dayOfWeek);
 
-            }
-            //get and edit background
-            try {
-                imgName = "forecastImage" + (i + 1);
-                imgID = resources.getIdentifier(imgName, "id", packageName);
-                dayImgView = constraintLayout.findViewById(imgID);
-                dayImgView.setBackground(background);
-            } catch (Exception ex) {
-                Log.e("ForecastObj", "An Exception was thrown\nDay Img cant be found\n" + ex);
-            }
-            //get Current day from weekDays array
-            if (currentDayNo + counter > 6) {
-                currentDayNo = 0;
-                counter = 0;
-            }
-            dayOfWeek = weekDays[currentDayNo + counter];
-            //get and edit text View
-            txtName = "forecastTextBlock" + (i + 1);
-            txtID = resources.getIdentifier(txtName, "id", packageName);
-            dayNameTxt = constraintLayout.findViewById(txtID);
-            dayNameTxt.setText(dayOfWeek);
-
-            counter++;
-        }//for END
+                counter++;
+            }//for END
+        }//if END
     }//upDatePollenForecastView END
 
     //called by main activity to update forecast values after a forecast has been retrieved
     public static void upDatePollenForecastViewOnPostExecute(ForecastObj forecastObj) {
+        locationFetched = true;
         upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastObj);
     }//upDatePollenForecastViewOnPostExecute END
 }//HomeFragment END

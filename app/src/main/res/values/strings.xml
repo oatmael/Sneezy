@@ -116,6 +116,8 @@
     <string name="btn_save">SAVE</string>
     <!--    End Select Location PopUp Strings   -->
 
+    <string name="forecastBackgroundDescription">Block background is the colour of the foretasted value for the day</string>
+
     <!--Privacy Policy Fragment-->
     <string name="policyTitle">Privacy Policy</string>
     <string name="firstBlurb">Sneezy Team built the Sneezy app as an Open Source app. This SERVICE is provided by the Sneezy Team at no cost and is intended for use as is.

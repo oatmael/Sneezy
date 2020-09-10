@@ -267,7 +267,7 @@
 
                     <ImageView
                         android:id="@+id/indexInfoImgView"
-                        android:layout_gravity="top|center"
+                        android:layout_gravity="top|end"
                         android:layout_width="21dp"
                         android:layout_height="21dp"
                         android:backgroundTint="?attr/mainText"
@@ -283,7 +283,7 @@
                     android:layout_width="240dp"
                     android:layout_height="57dp"
                     android:layout_gravity=""
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:orientation="horizontal"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/weekAheadText">
@@ -294,9 +294,10 @@
 
                         <ImageView
                             android:id="@+id/forecastImage1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/forecast_block_red" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/forecast_background_start"
+                            android:contentDescription="@string/forecastBackgroundDescription" />
 
                         <TextView
                             android:id="@+id/forecastTextBlock1"
@@ -317,9 +318,10 @@
 
                         <ImageView
                             android:id="@+id/forecastImage2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/forecast_block_red" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/forecast_background_middle"
+                            android:contentDescription="@string/forecastBackgroundDescription" />
 
                         <TextView
                             android:id="@+id/forecastTextBlock2"
@@ -340,9 +342,10 @@
 
                         <ImageView
                             android:id="@+id/forecastImage3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/forecast_block_red" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/forecast_background_middle"
+                            android:contentDescription="@string/forecastBackgroundDescription" />
 
                         <TextView
                             android:id="@+id/forecastTextBlock3"
@@ -363,9 +366,10 @@
 
                         <ImageView
                             android:id="@+id/forecastImage4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/forecast_block_red" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/forecast_background_end"
+                            android:contentDescription="@string/forecastBackgroundDescription" />
 
                         <TextView
                             android:id="@+id/forecastTextBlock4"

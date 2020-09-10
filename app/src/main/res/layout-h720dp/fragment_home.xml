@@ -302,9 +302,10 @@
 
                         <ImageView
                             android:id="@+id/forecastImage1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/forecast_block_red" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/forecast_background_start"
+                            android:contentDescription="@string/forecastBackgroundDescription"/>
 
                         <TextView
                             android:id="@+id/forecastTextBlock1"
@@ -325,9 +326,10 @@
 
                         <ImageView
                             android:id="@+id/forecastImage2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/forecast_block_red" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/forecast_background_middle"
+                            android:contentDescription="@string/forecastBackgroundDescription"  />
 
                         <TextView
                             android:id="@+id/forecastTextBlock2"
@@ -348,9 +350,10 @@
 
                         <ImageView
                             android:id="@+id/forecastImage3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/forecast_block_red" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/forecast_background_middle"
+                            android:contentDescription="@string/forecastBackgroundDescription"  />
 
                         <TextView
                             android:id="@+id/forecastTextBlock3"
@@ -371,9 +374,10 @@
 
                         <ImageView
                             android:id="@+id/forecastImage4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/forecast_block_red" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/forecast_background_end"
+                            android:contentDescription="@string/forecastBackgroundDescription" />
 
                         <TextView
                             android:id="@+id/forecastTextBlock4"
