@@ -256,21 +256,20 @@ public class HomeFragment extends Fragment {
                 int selectedCityId = radioGroupCities.getCheckedRadioButtonId();
                 RadioButton selectedCityRadio = popupView.findViewById(selectedCityId);
                 String selectedCity = selectedCityRadio.getText().toString().replace("_radio", "");
-//                Toast.makeText(getActivity(),"Save Clicked Selected City: "+forecastObj.getCityIndex(selectedCity),Toast.LENGTH_LONG).show();
                 //get the index of the city that was selected and save it to the forecastObj
                 if (forecastObj.getCityIndex(selectedCity) != -1) {
                     forecastObj.setSelectedCityNo(forecastObj.getCityIndex(selectedCity));
                     MainActivity.setForecastObj(forecastObj);// *NON-STATIC CONTEXT
-                    Log.i("ForecastObj", "Location successfully set to " + forecastObj.getCityName(forecastObj.getSelectedCityNo()));
+                    Log.d("ForecastObj", "Location successfully set to " + forecastObj.getCityName(forecastObj.getSelectedCityNo()));
                     //update forecastObj in MainActivity
-                    Log.i("ForecastObj", "Location " + selectedCity + "successfully saved to shared prefs");
+                    Log.d("ForecastObj", "Location " + selectedCity + "successfully saved to shared prefs");
 
                     //update pollen forecast from source
                     new MainActivity.getForecastAsync().execute(forecastObj.getUrl());
                     forecastObj = MainActivity.getForecastObj();
                     //update home frag values
                 } else {
-                    Toast.makeText(getActivity(), "Developer Error: selectedCity value does not exist", Toast.LENGTH_LONG).show();
+                    Log.e("ForecastObj", "Developer Error: selectedCity value does not exist");
                 }
                 dialog.dismiss();
             }//end of onclick

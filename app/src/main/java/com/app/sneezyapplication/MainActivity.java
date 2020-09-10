@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected void sendEmail() {
         Log.i("Send email", "");
-        String[] TO = {"tommy_b55@hotmail.com"};
+        String[] TO = {"sneezyapp@gmail.com"};
         /*        String[] CC = {"xyz@gmail.com"};*/
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setData(Uri.parse("mailto:"));
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
         /*        emailIntent.putExtra(Intent.EXTRA_CC, CC);*/
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report: ");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Bug Report: Write your description of the bug, as well as the steps to make the bug occur. Screenshots help alot. Thanksyou.");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Bug Report: Write your description of the bug, as well as the steps to make the bug occur. Screenshots help a lot. Thank you.");
 
         try {
             startActivity(Intent.createChooser(emailIntent, "Send mail..."));
@@ -503,15 +503,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            Toast.makeText(MainActivity.this, "Retrieving forecast",Toast.LENGTH_LONG).show();
             Log.d("ForecastObj", "Retrieving forecast");
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-//            Toast.makeText(MainActivity(), "The connection result: " + result, Toast.LENGTH_LONG).show();
-            Log.d("ForecastObj", "The connection result: " + result);
+            Log.d("ForecastObj", "/getForecastAsync --> onPostExecute The connection result: " + result);
             HomeFragment.upDatePollenForecastViewOnPostExecute(forecastObj);
 
         }

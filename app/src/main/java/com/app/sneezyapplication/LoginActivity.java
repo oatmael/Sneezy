@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         final String googleWebClientId = getString(R.string.google_web_client_id);
         enableGoogleAuth(googleWebClientId);
 
-        enableAnonymousAuth();
+        //enableAnonymousAuth();
     }
 
     private void enableGoogleAuth(String googleWebClientId){
