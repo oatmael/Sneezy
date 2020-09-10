@@ -62,13 +62,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/ver.xxx"
+                    android:text="@string/ver.1.0"
                     android:textColor="?attr/mainText"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/ver.xxxText"
+                    android:text="@string/ver.1.0Text"
                     android:textColor="?attr/mainText"/>
 
             </LinearLayout>
