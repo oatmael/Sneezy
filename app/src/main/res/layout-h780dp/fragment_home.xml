@@ -433,15 +433,7 @@
                     app:layout_constraintTop_toTopOf="@id/homeGraphs"
 
                     />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="THIS IS 780dp"
-                    android:textAlignment="center"
-                    android:textColor="?attr/mainText"
-                    app:layout_constraintLeft_toLeftOf="@+id/homeGraphs"
-                    app:layout_constraintRight_toRightOf="@id/homeGraphs"
-                    app:layout_constraintTop_toTopOf="@id/homeGraphs"/>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

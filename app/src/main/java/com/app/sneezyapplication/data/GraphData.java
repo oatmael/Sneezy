@@ -59,7 +59,7 @@ public class GraphData {
         c.setTime(fromDate);
 
 
-        for (int i = days; i > 0; i--) {
+        for (int i = 0; i < days; i++) {
             sneezes = 0;
 
             for (SneezeItem s : sneezeList) {

@@ -22,7 +22,7 @@ public class AppRater {
     private final static String APP_PNAME = "SneezeApplication"; /*REPLACE WITH ACTUAL GOOGLE PACKAGE NAME*/
 
     private final static int DAYS_UNTIL_PROMPT = 3;
-    private final static int LAUNCHES_UNTIL_PROMPT = 3;
+    private final static int LAUNCHES_UNTIL_PROMPT = 6;
 
     private static SharedPref sharedPref;
 

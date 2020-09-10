@@ -244,7 +244,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //                Toast.makeText(getContext(), "Location services turned on",Toast.LENGTH_LONG).show();
         return gps_enabled && network_enabled;
 //            Toast.makeText(getContext(), "Location services turned off",Toast.LENGTH_LONG).show();
+
         //location is not turned on
+
     }//isLocationEnabled END
 
     private boolean myLocationPermissionCheck(){
@@ -315,6 +317,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private void updateFab(){
         FloatingActionButton myLocationFab = getView().findViewById(R.id.btn_my_location);
+
         Drawable fabIcon;
         ColorStateList tintList;
         switch (locationPermissionStatus()){
@@ -336,6 +339,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
                 tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt,null);
         }//locationPermissionStatus switch END
+
         myLocationFab.setBackgroundTintList(tintList);
         myLocationFab.setImageDrawable(fabIcon);
     }
