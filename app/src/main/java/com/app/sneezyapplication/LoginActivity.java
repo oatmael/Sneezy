@@ -80,15 +80,17 @@ public class LoginActivity extends AppCompatActivity {
 
             MainActivity.app.loginAsync(googleCredentials, it -> {
                 if (it.isSuccess()) {
-                    /*Toast.makeText(LoginActivity.this,
-                            "Logged in with Google. ID: " +  MainActivity.user.getId(),
-                            Toast.LENGTH_LONG).show();*/
+                    Toast.makeText(LoginActivity.this,
+                            "Logged in with Google. "
+                            + "ID: " +  MainActivity.app.currentUser().getId()
+                            , Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(i);
                     finish();
                 } else {
                     Toast.makeText(this, it.getError().getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
-
         } catch (ApiException e) {
             Log.w("GOOGLE AUTH FAILURE", "signInResult:failed code=" + e.getStatusCode());
             setResult(Activity.RESULT_CANCELED);
