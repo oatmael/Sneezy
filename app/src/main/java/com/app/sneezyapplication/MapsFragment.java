@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -121,7 +122,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
 
         updateFab();
-        addHeatMap();
+//        addHeatMap();
+        addPoints();
     }//onMapReady END
 
 
@@ -185,7 +187,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             Log.e(CLASS_TAG, "SneezeLocations was empty" + ex);
         }
     }//addHeatMap END
+    //add overlay of sneeze locations in
+    private void addPoints(){
+        List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
 
+        for(int i =0; i < sneezeLocations.size(); i++){
+            LatLng sneezeLocation = sneezeLocations.get(i);
+            googleMap.addMarker(new MarkerOptions()
+                    .position(sneezeLocation));
+        }
+    }
     //gets data from the repo and returns LatLong list
     private ArrayList<LatLng> getLatLongList(){
         ArrayList<LatLng> latLongList = new ArrayList<>();

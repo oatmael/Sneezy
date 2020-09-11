@@ -158,9 +158,10 @@
 
                         <ImageView
                             android:id="@+id/indexImageRed"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/index_block_red" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/extremeColour"
+                            android:background="@drawable/index_background_top" />
 
                         <TextView
                             android:id="@+id/indexExtreme"
@@ -181,9 +182,10 @@
 
                         <ImageView
                             android:id="@+id/indexImageRedOrange"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/index_block_red_orange" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/vHighColour"
+                            android:background="@drawable/index_background_middle" />
 
                         <TextView
                             android:id="@+id/indexVeryHigh"
@@ -204,9 +206,10 @@
 
                         <ImageView
                             android:id="@+id/indexImageOrange"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/index_block_orange" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/highColour"
+                            android:background="@drawable/index_background_middle" />
 
                         <TextView
                             android:id="@+id/indexHigh"
@@ -227,9 +230,10 @@
 
                         <ImageView
                             android:id="@+id/indexImageYellow"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/index_block_yellow" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/moderateColour"
+                            android:background="@drawable/index_background_middle" />
 
                         <TextView
                             android:id="@+id/indexModerate"
@@ -251,9 +255,10 @@
 
                         <ImageView
                             android:id="@+id/indexImageGreen"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/index_block_green" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/lowColour"
+                            android:background="@drawable/index_background_bottom" />
 
                         <TextView
                             android:id="@+id/indexLow"
@@ -274,6 +279,7 @@
                         android:layout_height="21dp"
                         android:backgroundTint="?attr/mainText"
                         android:background="@drawable/ic_info"
+
                         />
                 </LinearLayout>
                 <!--INDEX END-->
