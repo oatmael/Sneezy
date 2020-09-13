@@ -9,12 +9,16 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -78,11 +82,46 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         mMapView.getMapAsync(this);
 
-        FloatingActionButton myLocationBtn = getView().findViewById(R.id.btn_my_location);
-        myLocationBtn.setOnClickListener(v ->
-                recenterUser()
-        );
+        FloatingActionButton myLocationBtn = getView().findViewById(R.id.fab_my_location);
+        myLocationBtn.setOnClickListener(v -> recenterUser());
+
+        FloatingActionButton menuBtn = getView().findViewById(R.id.fab_menu);
+        menuBtn.setOnClickListener(v -> openMenu());
+
+        LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
+        mapMask.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+//                Toast.makeText(getContext(), "Map was touched",Toast.LENGTH_SHORT).show();
+                closeMenu();
+                return false;
+            }
+        });
+
     }//onViewCreated END
+
+
+    public void openMenu(){
+
+        ConstraintLayout mapsMenu = getView().findViewById(R.id.map_menu_layout);
+        mapsMenu.setVisibility(View.VISIBLE);
+        FloatingActionButton menuFab = getView().findViewById(R.id.fab_menu);
+        menuFab.hide();
+        LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
+        mapMask.setVisibility(View.VISIBLE);
+        Toast.makeText(getContext(), "Menu open",Toast.LENGTH_SHORT).show();
+    }
+
+    public void closeMenu(){
+        FloatingActionButton menuFab = getView().findViewById(R.id.fab_menu);
+        menuFab.show();
+        ConstraintLayout mapsMenu = getView().findViewById(R.id.map_menu_layout);
+        mapsMenu.setVisibility(View.GONE);
+        LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
+        mapMask.setVisibility(View.GONE);
+        Toast.makeText(getContext(), "Menu close",Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -327,7 +366,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }//locationPermissionStatus END
 
     private void updateFab(){
-        FloatingActionButton myLocationFab = getView().findViewById(R.id.btn_my_location);
+        FloatingActionButton myLocationFab = getView().findViewById(R.id.fab_my_location);
 
         Drawable fabIcon;
         ColorStateList tintList;

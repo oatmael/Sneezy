@@ -3,21 +3,183 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     tools:context=".MapsFragment"
     android:layout_gravity="start">
     <!--    android:background="?attr/backgroundMainColor"-->
-
     <!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/map_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/lowColour">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!--Masks MapView when menu is open -->
+        <LinearLayout
+            android:id="@+id/map_mask"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
+        </LinearLayout>
+        <!-- MAPS MENU START-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/map_menu_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@drawable/map_options_button"
+            android:backgroundTint="?sectionColor"
+            android:elevation="20dp"
+            android:outlineSpotShadowColor="@color/plusMinusButtonDark"
+            android:visibility="gone">
+            <!-- DATE RANGE RADIO GROUP START -->
+            <TextView
+                android:id="@+id/txtDateRange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time Frame"
+                android:textSize="16sp"
+                android:textColor="?mainText"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+            <RadioGroup
+                android:id="@+id/radioGMapDateRange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtDateRange"
+                app:layout_constraintRight_toRightOf="parent"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/radio_weekly"
+                    android:checked="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:text="Week"
+                    android:textSize="16sp"
+                    android:textColor="@color/statelist_maps_radio_text"
+                    android:textAlignment="center"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="10dp"
+                    android:background="@drawable/map_options_button"
+                    android:backgroundTint="@color/statelist_maps_radio_button"
+                    android:layout_marginEnd="5dp"
+                    android:elevation="0dp"/>
+                <RadioButton
+                    android:id="@+id/radio_monthly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:text="Month"
+                    android:textSize="16sp"
+                    android:textColor="@color/statelist_maps_radio_text"
+                    android:textAlignment="center"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="10dp"
+                    android:background="@drawable/map_options_button"
+                    android:backgroundTint="@color/statelist_maps_radio_button"
+                    android:layout_marginEnd="0dp"
+                    android:elevation="0dp"/>
+            </RadioGroup>
+            <!-- DATE RANGE RADIO GROUP END -->
+
+            <!-- USER SCOPE RADIO GROUP START -->
+            <TextView
+                android:id="@+id/txtUserScope"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User scope"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:textColor="?mainText"
+                app:layout_constraintTop_toBottomOf="@id/radioGMapDateRange"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/radioGScope"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/txtUserScope"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                >
+
+                <RadioButton
+                    android:id="@+id/radio_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/map_options_button"
+                    android:backgroundTint="@color/statelist_maps_radio_button"
+                    android:button="@null"
+                    android:checked="true"
+                    android:elevation="0dp"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp"
+                    android:text="Me"
+                    android:textAlignment="center"
+                    android:textColor="@color/statelist_maps_radio_text"
+                    android:textSize="16sp" />
+                <RadioButton
+                    android:id="@+id/radio_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:text="All"
+                    android:textSize="16sp"
+                    android:textColor="@color/statelist_maps_radio_text"
+                    android:textAlignment="center"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="10dp"
+                    android:background="@drawable/map_options_button"
+                    android:backgroundTint="@color/statelist_maps_radio_button"
+                    android:layout_marginEnd="0dp"
+                    android:elevation="0dp"/>
+            </RadioGroup>
+            <!-- USER SCOPE RADIO GROUP END -->
+            <!-- SPLIT LINE -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/map_options_button"
+                android:backgroundTint="?toggleButtonBackgroundOn"
+                app:layout_constraintTop_toBottomOf="@id/radioGMapDateRange"
+                android:layout_marginTop="6dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- MAPS MENU END -->
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            app:borderWidth="0dp"
+            android:elevation="6dp"
+            app:fabSize="normal"
+            android:backgroundTint="?sectionColor"
+            android:tint="?mainText"
+            android:src="@drawable/ic_baseline_settings_24"
+            />
+    </RelativeLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_my_location"
+        android:id="@+id/fab_my_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
