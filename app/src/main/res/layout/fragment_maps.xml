@@ -42,7 +42,8 @@
             android:backgroundTint="?sectionColor"
             android:elevation="20dp"
             android:outlineSpotShadowColor="@color/plusMinusButtonDark"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:clickable="true">
             <!-- DATE RANGE RADIO GROUP START -->
             <TextView
                 android:id="@+id/txtDateRange"
@@ -53,6 +54,7 @@
                 android:textColor="?mainText"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
+                android:textStyle="bold"
                 />
             <RadioGroup
                 android:id="@+id/radioGMapDateRange"
@@ -107,6 +109,7 @@
                 android:textColor="?mainText"
                 app:layout_constraintTop_toBottomOf="@id/radioGMapDateRange"
                 app:layout_constraintLeft_toLeftOf="parent"
+                android:textStyle="bold"
                 />
 
             <RadioGroup
@@ -159,10 +162,12 @@
                 android:background="@drawable/map_options_button"
                 android:backgroundTint="?toggleButtonBackgroundOn"
                 app:layout_constraintTop_toBottomOf="@id/radioGMapDateRange"
-                android:layout_marginTop="6dp"/>
+                android:layout_marginTop="6dp"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- MAPS MENU END -->
 
+        <!--        TODO enable when backend is setup -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_menu"
             android:layout_width="wrap_content"
@@ -176,6 +181,7 @@
             android:backgroundTint="?sectionColor"
             android:tint="?mainText"
             android:src="@drawable/ic_baseline_settings_24"
+            android:visibility="gone"
             />
     </RelativeLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton

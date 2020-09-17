@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -41,7 +42,10 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
+import org.xml.sax.DTDHandler;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.RealmList;
@@ -58,6 +62,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     FusedLocationProviderClient fusedLocationClient;
     SneezeRepository repo;
     LatLng userCoords;
+    private enum  UserScope{ALL,USER}
+    private enum DateRange {WEEK,MONTH}
+    UserScope selectedUserScope;
+    DateRange selectedDateRange;
 
     @Nullable
     @Override
@@ -69,9 +77,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         userCoords = DEFAULT_LOCATION;
-        updateHeatMapOptions();
         this.repo = MainActivity.repo;
 
+        selectedUserScope = UserScope.ALL;
+        selectedDateRange = DateRange.WEEK;
         // *** MapView requires that the Bundle you pass contain _ONLY_ MapView SDK objects or sub-Bundles. ***
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
@@ -89,28 +98,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         menuBtn.setOnClickListener(v -> openMenu());
 
         LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
-        mapMask.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-//                Toast.makeText(getContext(), "Map was touched",Toast.LENGTH_SHORT).show();
-                closeMenu();
-                return false;
-            }
-        });
-
+        mapMask.setOnClickListener(v -> closeMenu());
     }//onViewCreated END
 
 
-    public void openMenu(){
 
-        ConstraintLayout mapsMenu = getView().findViewById(R.id.map_menu_layout);
-        mapsMenu.setVisibility(View.VISIBLE);
-        FloatingActionButton menuFab = getView().findViewById(R.id.fab_menu);
-        menuFab.hide();
-        LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
-        mapMask.setVisibility(View.VISIBLE);
-        Toast.makeText(getContext(), "Menu open",Toast.LENGTH_SHORT).show();
-    }
 
     public void closeMenu(){
         FloatingActionButton menuFab = getView().findViewById(R.id.fab_menu);
@@ -119,8 +111,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mapsMenu.setVisibility(View.GONE);
         LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
         mapMask.setVisibility(View.GONE);
-        Toast.makeText(getContext(), "Menu close",Toast.LENGTH_SHORT).show();
-    }
+//        Toast.makeText(getContext(), "Menu close",Toast.LENGTH_SHORT).show();
+    }//close menu END
 
 
     @Override
@@ -165,7 +157,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         addPoints();
     }//onMapReady END
 
-
     private void checkNightMode(){
         SharedPref sharedPref = MainActivity.sharedPref;
         if(sharedPref.loadNightModeState()){
@@ -177,11 +168,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 Log.e(CLASS_TAG,"Map Style Failure: Dark mode could not be enabled\n"+ex);
             }
         }
+        else{
+            try{
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style_light_mode));
+            }
+            catch(Exception ex){
+                ex.printStackTrace();
+                Log.e(CLASS_TAG,"Map Style Failure: Light mode could not be enabled\n"+ex);
+            }
+        }
     }//checkNightMode END
 
-    private void updateHeatMapOptions(){
-        //TODO add UI elements to toggle day/week/month sneeze locations
-    }//updateHeatMapOptions END
+    private void updateHeatMap(){
+        //TODO
+        //clear heat map/marker cache
+        googleMap.clear();
+        Toast.makeText(getContext(),"Cleared", Toast.LENGTH_SHORT).show();
+        //add heat map with new settings
+//        addHeatMap();
+//        addPoints();
+    }//updateHeatMap END
 
     private void addHeatMap(){
         HeatmapTileProvider mProvider;
@@ -226,6 +232,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             Log.e(CLASS_TAG, "SneezeLocations was empty" + ex);
         }
     }//addHeatMap END
+
     //add overlay of sneeze locations in
     private void addPoints(){
         List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
@@ -235,12 +242,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             googleMap.addMarker(new MarkerOptions()
                     .position(sneezeLocation));
         }
-    }
+    }//addPoints
+
     //gets data from the repo and returns LatLong list
     private ArrayList<LatLng> getLatLongList(){
         ArrayList<LatLng> latLongList = new ArrayList<>();
         List<SneezeItem> siList;
 
+        //TODO get list based on selected values
         siList = repo.getAllSneezeItems();//**TEMPORARY**
         RealmList<SneezeData> sdList;
         Location location;
@@ -365,6 +374,50 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }//locationPermissionStatus END
 
+    public void openMenu(){
+        //Show get view and set as visible
+        ConstraintLayout mapsMenu = getView().findViewById(R.id.map_menu_layout);
+        mapsMenu.setVisibility(View.VISIBLE);
+        //Hide fab
+        FloatingActionButton menuFab = getView().findViewById(R.id.fab_menu);
+        menuFab.hide();
+        //Add mask for behind menu
+        LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
+        mapMask.setVisibility(View.VISIBLE);
+//        Toast.makeText(getContext(), "Menu open",Toast.LENGTH_SHORT).show();
+
+        //radio group onChange listeners
+        //user scope
+        RadioGroup radioGUserScope = getView().findViewById(R.id.radioGScope);
+//        radioGUserScope.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        radioGUserScope.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId){
+                case R.id.radio_all:
+//                    Toast.makeText(getContext(),"All selected",Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.radio_user:
+//                    Toast.makeText(getContext(),"User only selected",Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            updateHeatMap();
+        });
+        //date range
+        RadioGroup radioGDateRange = getView().findViewById(R.id.radioGMapDateRange);
+        radioGDateRange.setOnCheckedChangeListener((group, checkedId) ->{
+            switch (checkedId){
+                case R.id.radio_weekly:
+//                    Toast.makeText(getContext(),"Weekly selected",Toast.LENGTH_SHORT).show();
+                    selectedDateRange = DateRange.WEEK;
+                    break;
+                case R.id.radio_monthly:
+//                    Toast.makeText(getContext(),"Monthly selected",Toast.LENGTH_SHORT).show();
+                    selectedDateRange = DateRange.MONTH;
+                    break;
+            }
+            updateHeatMap();
+        });
+    }//openMenu END
+
     private void updateFab(){
         FloatingActionButton myLocationFab = getView().findViewById(R.id.fab_my_location);
 
@@ -392,7 +445,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         myLocationFab.setBackgroundTintList(tintList);
         myLocationFab.setImageDrawable(fabIcon);
-    }
+    }// updateFab END
 
     //OnMapReadyCallback METHODS
     @Override
