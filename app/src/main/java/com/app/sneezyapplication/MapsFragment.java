@@ -9,12 +9,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,10 +40,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
-import org.xml.sax.DTDHandler;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.realm.RealmList;
@@ -62,10 +57,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     FusedLocationProviderClient fusedLocationClient;
     SneezeRepository repo;
     LatLng userCoords;
-    private enum  UserScope{ALL,USER}
-    private enum DateRange {WEEK,MONTH}
+
+    private enum UserScope {ALL, USER}
+
+    private enum DateRange {WEEK, MONTH}
+
+    private enum Presentation {MARKER, HEATMAP}
+
     UserScope selectedUserScope;
     DateRange selectedDateRange;
+    Presentation selectedPresentation;
+
 
     @Nullable
     @Override
@@ -81,6 +83,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         selectedUserScope = UserScope.ALL;
         selectedDateRange = DateRange.WEEK;
+        selectedPresentation = Presentation.MARKER;
         // *** MapView requires that the Bundle you pass contain _ONLY_ MapView SDK objects or sub-Bundles. ***
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
@@ -97,19 +100,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         FloatingActionButton menuBtn = getView().findViewById(R.id.fab_menu);
         menuBtn.setOnClickListener(v -> openMenu());
 
-        LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
+        LinearLayout mapMask = getView().findViewById(R.id.map_mask);
         mapMask.setOnClickListener(v -> closeMenu());
     }//onViewCreated END
 
 
-
-
-    public void closeMenu(){
+    public void closeMenu() {
         FloatingActionButton menuFab = getView().findViewById(R.id.fab_menu);
         menuFab.show();
         ConstraintLayout mapsMenu = getView().findViewById(R.id.map_menu_layout);
         mapsMenu.setVisibility(View.GONE);
-        LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
+        LinearLayout mapMask = getView().findViewById(R.id.map_mask);
         mapMask.setVisibility(View.GONE);
 //        Toast.makeText(getContext(), "Menu close",Toast.LENGTH_SHORT).show();
     }//close menu END
@@ -133,7 +134,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         checkNightMode();
         //check if location services are turned on
-        if(isLocationOn()) {
+        if (isLocationOn()) {
             //Permission check to enable MyLocation marker and MyLocationButton
             if (myLocationPermissionCheck()) {
                 //Initialize MyLocation button
@@ -144,12 +145,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 //set starting location to be users location
                 Log.d(CLASS_TAG, "MyLocation has been enabled");
             }
-        }
-        else{
+        } else {
             //set starting location to default location
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));
             googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));
-            Log.d(CLASS_TAG,"MyLocation has been disabled");
+            Log.d(CLASS_TAG, "MyLocation has been disabled");
         }
 
         updateFab();
@@ -157,39 +157,42 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         addPoints();
     }//onMapReady END
 
-    private void checkNightMode(){
+    private void checkNightMode() {
         SharedPref sharedPref = MainActivity.sharedPref;
-        if(sharedPref.loadNightModeState()){
-            try{
+        if (sharedPref.loadNightModeState()) {
+            try {
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style_dark_mode));
-            }
-            catch(Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
-                Log.e(CLASS_TAG,"Map Style Failure: Dark mode could not be enabled\n"+ex);
+                Log.e(CLASS_TAG, "Map Style Failure: Dark mode could not be enabled\n" + ex);
             }
-        }
-        else{
-            try{
+        } else {
+            try {
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style_light_mode));
-            }
-            catch(Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
-                Log.e(CLASS_TAG,"Map Style Failure: Light mode could not be enabled\n"+ex);
+                Log.e(CLASS_TAG, "Map Style Failure: Light mode could not be enabled\n" + ex);
             }
         }
     }//checkNightMode END
 
-    private void updateHeatMap(){
+    private void updateHeatMap() {
         //TODO
         //clear heat map/marker cache
         googleMap.clear();
-        Toast.makeText(getContext(),"Cleared", Toast.LENGTH_SHORT).show();
-        //add heat map with new settings
-//        addHeatMap();
-//        addPoints();
+        Toast.makeText(getContext(), "Cleared", Toast.LENGTH_SHORT).show();
+        //add heat map or markers with new settings
+        switch (selectedPresentation) {
+            case MARKER:
+                addPoints();
+                break;
+            case HEATMAP:
+                addHeatMap();
+                break;
+        }
     }//updateHeatMap END
 
-    private void addHeatMap(){
+    private void addHeatMap() {
         HeatmapTileProvider mProvider;
         TileOverlay mOverlay;
 
@@ -226,18 +229,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             //Create a heat map tile provider and overlay
             mProvider = new HeatmapTileProvider.Builder().data(sneezeLocations).build();
             mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-        }
-        catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             ex.printStackTrace();
             Log.e(CLASS_TAG, "SneezeLocations was empty" + ex);
         }
     }//addHeatMap END
 
     //add overlay of sneeze locations in
-    private void addPoints(){
+    private void addPoints() {
         List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
 
-        for(int i =0; i < sneezeLocations.size(); i++){
+        for (int i = 0; i < sneezeLocations.size(); i++) {
             LatLng sneezeLocation = sneezeLocations.get(i);
             googleMap.addMarker(new MarkerOptions()
                     .position(sneezeLocation));
@@ -245,7 +247,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }//addPoints
 
     //gets data from the repo and returns LatLong list
-    private ArrayList<LatLng> getLatLongList(){
+    private ArrayList<LatLng> getLatLongList() {
         ArrayList<LatLng> latLongList = new ArrayList<>();
         List<SneezeItem> siList;
 
@@ -255,32 +257,30 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         Location location;
         LatLng coords;
 
-        try{
-            for(int i = 0; i< siList.size(); i++){
+        try {
+            for (int i = 0; i < siList.size(); i++) {
                 sdList = siList.get(i).getSneezes();
-                for(int j = 0; j < sdList.size(); j++ ){
+                for (int j = 0; j < sdList.size(); j++) {
                     //Probably better to make method in SneezeData class to return just LatLong coords instead of Location object
-                    try{
+                    try {
                         location = sdList.get(j).locationAsAndroidLocation();
-                        if(location != null){
+                        if (location != null) {
 //                            Log.d(CLASS_TAG,"locationAsAndroidLocation Not null || i count "+i+"|| j count "+j+" : \n"+location);
                             coords = new LatLng(location.getLatitude(), location.getLongitude());
                             latLongList.add(coords);
+                        } else {
+                            Log.d(CLASS_TAG, "locationAsAndroidLocation Returned null");
                         }
-                        else{
-                            Log.d(CLASS_TAG,"locationAsAndroidLocation Returned null");
-                        }
-                    }
-                    catch (Exception ex){
+                    } catch (Exception ex) {
                         ex.printStackTrace();
-                        Log.e(CLASS_TAG, "getLatLongList: location as android location error\n"+ ex);
+                        Log.e(CLASS_TAG, "getLatLongList: location as android location error\n" + ex);
                     }//try-catch
                 }//Inner for loop
             }//Main for loop
         }//try catch
-        catch (Exception ex){
+        catch (Exception ex) {
             ex.printStackTrace();
-            Log.e(CLASS_TAG, "Error getting sneeze locations: \n"+ex);
+            Log.e(CLASS_TAG, "Error getting sneeze locations: \n" + ex);
         }//try-catch END
         return latLongList;
     }//getLatLongList END
@@ -308,10 +308,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     }//isLocationEnabled END
 
-    private boolean myLocationPermissionCheck(){
+    private boolean myLocationPermissionCheck() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
+                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //Permission not granted
             return false;
         }
@@ -328,25 +327,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 }
                 //TODO else: Request location update https://developer.android.com/training/location/receive-location-updates
             });
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         googleMap.setMyLocationEnabled(true);
         return true;
     }//myLocationPermissionCheck END
 
-    private void recenterUser(){
+    private void recenterUser() {
 //        String locationPermissionStatus = locationPermissionStatus();
-        switch (locationPermissionStatus()){
+        switch (locationPermissionStatus()) {
             case "LocationPermissionDenied":
                 //popup for location not permitted
-                Toast.makeText(getContext(),"Location Permission Denied",Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Location Permission Denied", Toast.LENGTH_LONG).show();
                 //TODO popup to request location permission
                 break;
             case "LocationOff":
                 //popup for location services are not turned on
-                Toast.makeText(getContext(),"Location Services Are Off",Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Location Services Are Off", Toast.LENGTH_LONG).show();
                 //TODO popup to make turn on location services
                 break;
             case "LocationPermissionGranted":
@@ -356,25 +354,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 break;
             default:
-                Log.e(CLASS_TAG,"recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
+                Log.e(CLASS_TAG, "recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
         }//locationPermissionStatus switch END
     }//recenterUser END
 
-    private String locationPermissionStatus(){
-        if (!googleMap.isMyLocationEnabled()){
-            if(!isLocationOn()){
+    private String locationPermissionStatus() {
+        if (!googleMap.isMyLocationEnabled()) {
+            if (!isLocationOn()) {
                 return "LocationOff";
-            }
-            else{
+            } else {
                 return "LocationPermissionDenied";
             }
-        }
-        else{
+        } else {
             return "LocationPermissionGranted";
         }
     }//locationPermissionStatus END
 
-    public void openMenu(){
+    public void openMenu() {
         //Show get view and set as visible
         ConstraintLayout mapsMenu = getView().findViewById(R.id.map_menu_layout);
         mapsMenu.setVisibility(View.VISIBLE);
@@ -382,16 +378,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         FloatingActionButton menuFab = getView().findViewById(R.id.fab_menu);
         menuFab.hide();
         //Add mask for behind menu
-        LinearLayout  mapMask = getView().findViewById(R.id.map_mask);
+        LinearLayout mapMask = getView().findViewById(R.id.map_mask);
         mapMask.setVisibility(View.VISIBLE);
 //        Toast.makeText(getContext(), "Menu open",Toast.LENGTH_SHORT).show();
 
-        //radio group onChange listeners
-        //user scope
-        RadioGroup radioGUserScope = getView().findViewById(R.id.radioGScope);
+        //Radio group onChange listeners
+        //User scope
+        RadioGroup radioGUserScope = getView().findViewById(R.id.radioGUserScope);
 //        radioGUserScope.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
         radioGUserScope.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId){
+            switch (checkedId) {
                 case R.id.radio_all:
 //                    Toast.makeText(getContext(),"All selected",Toast.LENGTH_SHORT).show();
                     break;
@@ -401,10 +397,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             }
             updateHeatMap();
         });
-        //date range
+        //Date range
         RadioGroup radioGDateRange = getView().findViewById(R.id.radioGMapDateRange);
-        radioGDateRange.setOnCheckedChangeListener((group, checkedId) ->{
-            switch (checkedId){
+        radioGDateRange.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
                 case R.id.radio_weekly:
 //                    Toast.makeText(getContext(),"Weekly selected",Toast.LENGTH_SHORT).show();
                     selectedDateRange = DateRange.WEEK;
@@ -416,81 +412,96 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             }
             updateHeatMap();
         });
+        //Presentation
+        RadioGroup radioGPresentation = getView().findViewById(R.id.radioGPresentation);
+        radioGPresentation.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.radio_marker:
+//                    Toast.makeText(getContext(),"Weekly selected",Toast.LENGTH_SHORT).show();
+                    selectedPresentation = Presentation.MARKER;
+                    break;
+                case R.id.radio_heatmap:
+//                    Toast.makeText(getContext(),"Monthly selected",Toast.LENGTH_SHORT).show();
+                    selectedPresentation = Presentation.HEATMAP;
+                    break;
+            }
+                updateHeatMap();
+        });
     }//openMenu END
 
-    private void updateFab(){
-        FloatingActionButton myLocationFab = getView().findViewById(R.id.fab_my_location);
+        private void updateFab () {
+            FloatingActionButton myLocationFab = getView().findViewById(R.id.fab_my_location);
 
-        Drawable fabIcon;
-        ColorStateList tintList;
-        switch (locationPermissionStatus()){
-            case "LocationPermissionDenied"://location not permitted
-                fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location_disabled, null);
-                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt,null);
-                break;
-            case "LocationOff"://location services turned off
-                fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
-                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt,null);
-                break;
-            case "LocationPermissionGranted"://location services on & permission granted
+            Drawable fabIcon;
+            ColorStateList tintList;
+            switch (locationPermissionStatus()) {
+                case "LocationPermissionDenied"://location not permitted
+                    fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location_disabled, null);
+                    tintList = ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt, null);
+                    break;
+                case "LocationOff"://location services turned off
+                    fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
+                    tintList = ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt, null);
+                    break;
+                case "LocationPermissionGranted"://location services on & permission granted
 
-                fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location, null);
-                tintList = ResourcesCompat.getColorStateList(getResources(), R.color.statelist_maps_fab,null);
-                break;
-            default:
-                Log.e(CLASS_TAG,"recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
-                fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
-                tintList =  ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt,null);
-        }//locationPermissionStatus switch END
+                    fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location, null);
+                    tintList = ResourcesCompat.getColorStateList(getResources(), R.color.statelist_maps_fab, null);
+                    break;
+                default:
+                    Log.e(CLASS_TAG, "recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
+                    fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_location_off, null);
+                    tintList = ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt, null);
+            }//locationPermissionStatus switch END
 
-        myLocationFab.setBackgroundTintList(tintList);
-        myLocationFab.setImageDrawable(fabIcon);
-    }// updateFab END
+            myLocationFab.setBackgroundTintList(tintList);
+            myLocationFab.setImageDrawable(fabIcon);
+        }// updateFab END
 
-    //OnMapReadyCallback METHODS
-    @Override
-    public void onResume() {
-        super.onResume();
-        mMapView.onResume();
-    }
+        //OnMapReadyCallback METHODS
+        @Override
+        public void onResume () {
+            super.onResume();
+            mMapView.onResume();
+        }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mMapView.onStart();
-    }
+        @Override
+        public void onStart () {
+            super.onStart();
+            mMapView.onStart();
+        }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        mMapView.onStop();
-    }
-    @Override
-    public void onPause() {
-        mMapView.onPause();
-        super.onPause();
-    }
+        @Override
+        public void onStop () {
+            super.onStop();
+            mMapView.onStop();
+        }
+        @Override
+        public void onPause () {
+            mMapView.onPause();
+            super.onPause();
+        }
 
-    @Override
-    public void onDestroy() {
-        mMapView.onDestroy();
-        super.onDestroy();
-    }
+        @Override
+        public void onDestroy () {
+            mMapView.onDestroy();
+            super.onDestroy();
+        }
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
-    }
+        @Override
+        public void onLowMemory () {
+            super.onLowMemory();
+            mMapView.onLowMemory();
+        }
 
-    //MyLocation METHODS
-    @Override
-    public boolean onMyLocationButtonClick() {
-        return false;
-    }
+        //MyLocation METHODS
+        @Override
+        public boolean onMyLocationButtonClick () {
+            return false;
+        }
 
-    @Override
-    public void onMyLocationClick(@NonNull Location location) {
-    }
+        @Override
+        public void onMyLocationClick (@NonNull Location location){
+        }
 
-}//MapsFragment Class END
+    }//MapsFragment Class END
