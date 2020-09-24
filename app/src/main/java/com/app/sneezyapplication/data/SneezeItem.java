@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 @RealmClass(name = "Sneeze")
 public class SneezeItem extends RealmObject {
@@ -63,7 +64,7 @@ public class SneezeItem extends RealmObject {
 
     public Date dateAsAndroidDate(){
         try {
-            return new SimpleDateFormat("EEE MMM dd yyyy").parse(this.date);
+            return new SimpleDateFormat("EEE MMM dd yyyy", Locale.US).parse(this.date);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
