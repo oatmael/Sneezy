@@ -131,6 +131,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap gMap) {
         googleMap = gMap;
+        //limit zoom to not show houses and their numbers
+        googleMap.setMaxZoomPreference(16);
 
         checkNightMode();
         //check if location services are turned on
@@ -176,7 +178,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }//checkNightMode END
 
-    private void updateHeatMap() {
+    private void updateMapOverlay() {
         //TODO
         //clear heat map/marker cache
         googleMap.clear();
@@ -190,7 +192,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 addHeatMap();
                 break;
         }
-    }//updateHeatMap END
+    }//updateMapOverlay END
 
     private void addHeatMap() {
         HeatmapTileProvider mProvider;
@@ -323,6 +325,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     userCoords = new LatLng(location.getLatitude(), location.getLongitude());
 //                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(userCoords));
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
+
                     googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
                 //TODO else: Request location update https://developer.android.com/training/location/receive-location-updates
@@ -395,7 +398,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 //                    Toast.makeText(getContext(),"User only selected",Toast.LENGTH_SHORT).show();
                     break;
             }
-            updateHeatMap();
+            updateMapOverlay();
         });
         //Date range
         RadioGroup radioGDateRange = getView().findViewById(R.id.radioGMapDateRange);
@@ -410,7 +413,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     selectedDateRange = DateRange.MONTH;
                     break;
             }
-            updateHeatMap();
+            updateMapOverlay();
         });
         //Presentation
         RadioGroup radioGPresentation = getView().findViewById(R.id.radioGPresentation);
@@ -425,7 +428,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     selectedPresentation = Presentation.HEATMAP;
                     break;
             }
-                updateHeatMap();
+                updateMapOverlay();
         });
     }//openMenu END
 
