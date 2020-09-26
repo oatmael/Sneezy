@@ -36,6 +36,7 @@ import com.app.sneezyapplication.binding.MultiBind;
 import com.app.sneezyapplication.binding.SneezeBind;
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
+import com.app.sneezyapplication.data.SneezeRepository;
 import com.app.sneezyapplication.databinding.FragmentHomeBinding;
 import com.app.sneezyapplication.forecast.ForecastObj;
 
@@ -56,6 +57,8 @@ import io.realm.RealmQuery;
 
 
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 import static com.app.sneezyapplication.MainActivity.repo;
 
@@ -134,6 +137,12 @@ public class HomeFragment extends Fragment {
             mMulti.getMulti(3);
             mBinding.setMulti(mMulti);
             mBinding.setSneeze(mSneeze);
+
+            // Sneeze repo testing
+            List<SneezeItem> test = repo.getSneezeItems(27, 8, 2020, 18, 9, 2020, SneezeRepository.Scope.COMBINED, false);
+            //List<SneezeItem> test2 = repo.getSneezeItems(27, 8, 2020, 18, 9, 2020, SneezeRepository.Scope.COMBINED, true);
+            Log.i("test", String.valueOf(test.size()));
+            //Log.i("test", test2.toString());
         });
 
         plusButton.setOnClickListener((View v) -> {
@@ -145,7 +154,7 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    DateFormat dayFormat = new SimpleDateFormat("EEE MMM dd yyyy");
+    DateFormat dayFormat = new SimpleDateFormat("EEE MMM dd yyyy", Locale.US);
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
