@@ -285,7 +285,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         Date startCalAsDate = startCal.getTime();
         Date currentCalAsDate = currentCal.getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        /*SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String startDateStr = dateFormat.format(startCalAsDate);
         String currentDateStr = dateFormat.format(currentCalAsDate);
         Date startDate = null;
@@ -296,10 +296,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             startDate = dateFormat.parse(startDateStr);
         } catch (ParseException ex) {
             ex.printStackTrace();
-        }
+        }*/
 
 //        ArrayList<SneezeItem>
-        siList = repo.getSneezeItems(startDate, currentDate, scope, false);
+        siList = repo.getSneezeItems(startCalAsDate, currentCalAsDate, scope, false);
 //        siList = repo.getAllSneezeItems();//**TEMPORARY**
         RealmList<SneezeData> sdList;
         Location location;
@@ -439,9 +439,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             switch (checkedId) {
                 case R.id.radio_all:
 //                    Toast.makeText(getContext(),"All selected",Toast.LENGTH_SHORT).show();
+                    selectedUserScope = UserScope.ALL;
                     break;
                 case R.id.radio_user:
 //                    Toast.makeText(getContext(),"User only selected",Toast.LENGTH_SHORT).show();
+                    selectedUserScope = UserScope.USER;
                     break;
             }
             updateMapOverlay();
