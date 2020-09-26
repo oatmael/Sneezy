@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.ParcelFormatException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,11 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.RealmList;
@@ -182,7 +187,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //TODO
         //clear heat map/marker cache
         googleMap.clear();
-        Toast.makeText(getContext(), "Cleared", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Cleared Overlay", Toast.LENGTH_SHORT).show();
         //add heat map or markers with new settings
         switch (selectedPresentation) {
             case MARKER:
@@ -253,8 +258,49 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         ArrayList<LatLng> latLongList = new ArrayList<>();
         List<SneezeItem> siList;
 
-        //TODO get list based on selected values
-        siList = repo.getAllSneezeItems();//**TEMPORARY**
+
+        SneezeRepository.Scope scope = SneezeRepository.Scope.COMBINED;
+        switch (selectedUserScope){
+            case ALL:
+                scope = SneezeRepository.Scope.COMBINED;
+                break;
+            case USER:
+                scope = SneezeRepository.Scope.USER;
+                break;
+                //for now
+        }//selectedUserScope switch END
+
+        //get staring date and current calendars
+        Calendar currentCal = Calendar.getInstance();
+        Calendar startCal = Calendar.getInstance();
+        switch (selectedDateRange){
+            case WEEK:
+                startCal.add(Calendar.DATE,-7);
+                break;
+            case MONTH:
+                startCal.add(Calendar.MONTH,-1);
+                break;
+        }//selectedDateRange switch END
+        //convert calendars to dates
+
+        Date startCalAsDate = startCal.getTime();
+        Date currentCalAsDate = currentCal.getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String startDateStr = dateFormat.format(startCalAsDate);
+        String currentDateStr = dateFormat.format(currentCalAsDate);
+        Date startDate = null;
+        Date currentDate = null;
+
+        try {
+            currentDate = dateFormat.parse(currentDateStr);
+            startDate = dateFormat.parse(startDateStr);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+
+//        ArrayList<SneezeItem>
+        siList = repo.getSneezeItems(startDate, currentDate, scope, false);
+//        siList = repo.getAllSneezeItems();//**TEMPORARY**
         RealmList<SneezeData> sdList;
         Location location;
         LatLng coords;

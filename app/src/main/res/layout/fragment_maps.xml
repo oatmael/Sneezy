@@ -247,7 +247,6 @@
             android:elevation="6dp"
             android:src="@drawable/ic_baseline_settings_24"
             android:tint="?mainText"
-            android:visibility="gone"
             app:borderWidth="0dp"
             app:fabSize="normal" />
     </RelativeLayout>
