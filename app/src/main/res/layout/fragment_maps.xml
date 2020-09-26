@@ -50,7 +50,7 @@
                 android:id="@+id/txtDateRange"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Time Frame"
+                android:text="@string/txt_time_frame"
                 android:textColor="?mainText"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -65,10 +65,9 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtDateRange">
-
                 <RadioButton
                     android:id="@+id/radio_weekly"
-                    android:layout_width="wrap_content"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/map_options_button"
@@ -78,14 +77,13 @@
                     android:elevation="0dp"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="5dp"
-                    android:text="Week"
+                    android:text="@string/radio_week"
                     android:textAlignment="center"
                     android:textColor="@color/statelist_maps_radio_text"
                     android:textSize="16sp" />
-
                 <RadioButton
                     android:id="@+id/radio_monthly"
-                    android:layout_width="wrap_content"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="0dp"
                     android:background="@drawable/map_options_button"
@@ -94,7 +92,7 @@
                     android:elevation="0dp"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="5dp"
-                    android:text="Month"
+                    android:text="@string/radio_month"
                     android:textAlignment="center"
                     android:textColor="@color/statelist_maps_radio_text"
                     android:textSize="16sp" />
@@ -107,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="User scope"
+                android:text="@string/txt_user_scope"
                 android:textColor="?mainText"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -122,29 +120,25 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtUserScope">
-
-
-
                 <RadioButton
                     android:id="@+id/radio_all"
-                    android:layout_width="wrap_content"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/map_options_button"
                     android:backgroundTint="@color/statelist_maps_radio_button"
                     android:button="@null"
                     android:checked="true"
-
                     android:elevation="0dp"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="5dp"
-                    android:text="All"
+                    android:text="@string/radio_all"
                     android:textAlignment="center"
                     android:textColor="@color/statelist_maps_radio_text"
                     android:textSize="16sp" />
                 <RadioButton
                     android:id="@+id/radio_user"
-                    android:layout_width="wrap_content"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="0dp"
                     android:background="@drawable/map_options_button"
@@ -153,7 +147,7 @@
                     android:elevation="0dp"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="5dp"
-                    android:text="Me"
+                    android:text="@string/radio_me"
                     android:textAlignment="center"
                     android:textColor="@color/statelist_maps_radio_text"
                     android:textSize="16sp" />
@@ -166,7 +160,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Presentation"
+                android:text="@string/txt_map_presentation"
                 android:textColor="?mainText"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -181,10 +175,9 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtPresentation">
-
                 <RadioButton
                     android:id="@+id/radio_marker"
-                    android:layout_width="wrap_content"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:background="@drawable/map_options_button"
@@ -194,14 +187,13 @@
                     android:elevation="0dp"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="5dp"
-                    android:text="Marker"
+                    android:text="@string/radio_marker"
                     android:textAlignment="center"
                     android:textColor="@color/statelist_maps_radio_text"
                     android:textSize="16sp" />
-
                 <RadioButton
                     android:id="@+id/radio_heatmap"
-                    android:layout_width="wrap_content"
+                    android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="0dp"
                     android:background="@drawable/map_options_button"
@@ -210,7 +202,7 @@
                     android:elevation="0dp"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="5dp"
-                    android:text="Heat Map"
+                    android:text="@string/radio_heat_map"
                     android:textAlignment="center"
                     android:textColor="@color/statelist_maps_radio_text"
                     android:textSize="16sp" />

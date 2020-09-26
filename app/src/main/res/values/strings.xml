@@ -154,4 +154,15 @@ This policy is effective as of 2020-08-13<br /><br /></string>
     <string name="contactUsBlurb">If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact us at sneezyapp@gmail.com<br /><br /></string>
     <!--End Policy Frag-->
 
+<!--    Maps Frag START -->
+    <string name="txt_time_frame">Time Frame</string>
+    <string name="txt_user_scope">Users</string>
+    <string name="txt_map_presentation">Presentation</string>
+    <string name="radio_week">Week</string>
+    <string name="radio_month">Month</string>
+    <string name="radio_all">All</string>
+    <string name="radio_me">Me</string>
+    <string name="radio_marker">Marker</string>
+    <string name="radio_heat_map">Heat Map</string>
+<!--    Maps Frag END   -->
 </resources>
