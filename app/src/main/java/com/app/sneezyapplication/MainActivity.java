@@ -6,15 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 
 import com.app.sneezyapplication.data.GraphData;
+import com.app.sneezyapplication.forecast.ForecastObj;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
@@ -94,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         //set up forecastObj
+        //TODO
         int locationPref = sharedPref.loadLocationPreference();
         if (locationPref != -1) {
             forecastObj = new ForecastObj(locationPref);

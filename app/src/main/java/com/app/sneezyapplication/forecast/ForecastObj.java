@@ -1,7 +1,13 @@
-package com.app.sneezyapplication;
+package com.app.sneezyapplication.forecast;
 
+import com.anychart.scales.DateTime;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class ForecastObj {
     //CONSTANT VALUES
@@ -23,6 +29,7 @@ public class ForecastObj {
     private ArrayList<String> forecastList = new ArrayList<>();//stores the forecast result for each day
     private ArrayList<Integer> forecastValueNums;//stores the forecast value index for each day (e.g. low = 0, extreme = 4)
     private int selectedCityNo;//stores index number of the location to be used
+    Date updateDate;
     //TODO maybe
     //make datetime variable to store when the forecast was last updated
     //add bool: isUpToDate which contains a method to check if the forecast is more than x hours old
@@ -35,7 +42,7 @@ public class ForecastObj {
     }
 
     public ForecastObj(int selectedCityNo){
-        this.selectedCityNo= selectedCityNo;
+        this.selectedCityNo = selectedCityNo;
     }
 
     //GETTERS AND SETTERS
@@ -76,6 +83,18 @@ public class ForecastObj {
         return forecastValueNums;
     }//getIndexValues END
 
+    public Date getForecastUpdateDate(){
+        return this.updateDate;
+    }
+    public void setForecastUpdateDate(Date updateDate){
+        this.updateDate = updateDate;
+    }
+
+    public String getForecastUpdateDateAsString(){
+    String date =new SimpleDateFormat("dd-MM HH:mm").toString();
+//    SimpleDateFormat date =new SimpleDateFormat("dd-MM HH:mm");
+    return date;
+    }
     public String getUrl() {
         return LOCATION_URLS.get(selectedCityNo);
     }

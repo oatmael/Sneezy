@@ -1,10 +1,10 @@
 package com.app.sneezyapplication;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,7 +37,14 @@ import com.app.sneezyapplication.binding.SneezeBind;
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
 import com.app.sneezyapplication.databinding.FragmentHomeBinding;
+import com.app.sneezyapplication.forecast.ForecastObj;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,6 +72,7 @@ public class HomeFragment extends Fragment {
     private static String packageName;
     private static Resources resources;
     private static View viewForUpdateView;
+    private static Activity activity;
 
     @Nullable
     @Override
@@ -72,12 +80,9 @@ public class HomeFragment extends Fragment {
         //Using binding the DataBindingUtil needs to be used with inflation. The Views(view.) will remain the same and you can use as per usual.
         FragmentHomeBinding mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
         View view = mBinding.getRoot();
-
         final Button sneezeButton = view.findViewById(R.id.sneezeButton);
         final Button minusButton = view.findViewById(R.id.minusButton);
         final Button plusButton = view.findViewById(R.id.plusButton);
-
-
 
         //BINDING
         //SneezeBind
@@ -150,6 +155,7 @@ public class HomeFragment extends Fragment {
         packageName = getActivity().getBaseContext().getPackageName();
         viewForUpdateView = getView();
         resources = getResources();
+        activity = getActivity();
         //update forecast location text field and day/colour values for forecast
         forecastObj = MainActivity.getForecastObj();
         Button setLocationBtn = getView().findViewById(R.id.changeLocation);
@@ -318,8 +324,15 @@ public class HomeFragment extends Fragment {
     private static boolean locationFetched = false;
     public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj) {
         //if location has been fetched
-        int size = forecastObj.getIndexValues().size();
-        if(forecastObj.getIndexValues().size() == 4){
+//        int size = forecastObj.getIndexValues().size();
+        Boolean forecastObjFetched =false;
+
+        //if fetched END
+        //TODO load cached values - cached values will be already instantiated in the forecastObj form the forecast Forecast class
+        forecastObjFetched = forecastObj.getIndexValues().size() == 4;
+
+        //update view
+        if(forecastObjFetched){
             //update location textview
             TextView pollenLocationTxt = view.findViewById(R.id.pollenCountLocationTxt);
             pollenLocationTxt.setText(forecastObj.getCityName(forecastObj.getSelectedCityNo()) + ", " + forecastObj.getStateName(forecastObj.getSelectedCityNo()));
@@ -347,7 +360,9 @@ public class HomeFragment extends Fragment {
             int currentDayNo = calendar.get(Calendar.DAY_OF_WEEK) - 1;
             String dayOfWeek;
 
+            //loop through forecast textViews/Background and set the corresponding colour/day
             for (int i = 0; i < numDays; i++) {
+
                 //get background colour for forecast
                 try {
                     colorID = resources.getIdentifier(coloursNames[indexValueNums.get(i)], "color", packageName);
@@ -387,7 +402,7 @@ public class HomeFragment extends Fragment {
 
                 counter++;
             }//for END
-        }//if END
+        }//if forecastObjFetched END
     }//upDatePollenForecastView END
 
     //called by main activity to update forecast values after a forecast has been retrieved
