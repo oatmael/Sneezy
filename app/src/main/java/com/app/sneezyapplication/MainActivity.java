@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 logoutPopup();
                 break;
             case R.id.nav_rate_us:
-                /*rateUs();*/
+                rateUs();
                 break;
             case R.id.nav_report_bug:
                 sendEmail();
@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /*Simple rate us Method which will direct the user to the Google Market rating page I believe. Used with the sidebar button.*/ /*WILL NOT WORK ON THE A.S EMULATOR as the emulator doesent have the*/
     /*market place. A real phone is required to test this properly*/
     public void rateUs() {
-        String APP_RATE_NAME = "SneezyApplication"; /*TODO ADD ACTUAL GOOGLE MARKET PACKAGE NAME HERE WHEN ACQUIRED*/
+        String APP_RATE_NAME = "com.app.sneezyapplication"; /*TODO ADD ACTUAL GOOGLE MARKET PACKAGE NAME HERE WHEN ACQUIRED*/
         this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_RATE_NAME)));
     }
 
