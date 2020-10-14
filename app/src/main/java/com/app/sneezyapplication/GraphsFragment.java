@@ -25,7 +25,8 @@ public class GraphsFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         tabLayout.addTab(tabLayout.newTab().setText("Weekly"));
         tabLayout.addTab(tabLayout.newTab().setText("Monthly"));
-        tabLayout.addTab(tabLayout.newTab().setText("Yearly"));
+        //TODO enable yearly tab once working as intended
+        //tabLayout.addTab(tabLayout.newTab().setText("Yearly"));
 
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewPager);
 
