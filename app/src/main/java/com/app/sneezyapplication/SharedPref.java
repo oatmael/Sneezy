@@ -6,40 +6,60 @@ import android.util.Log;
 
 public class SharedPref {
 
-    SharedPreferences colourModePref;//may need to refactor name to something like sharedPrefs so its more inclusive of the uses
+    SharedPreferences sneezyPreferences;
     public SharedPref(Context context) {
-        colourModePref = context.getSharedPreferences("filename", Context.MODE_PRIVATE);
+        sneezyPreferences = context.getSharedPreferences("filename", Context.MODE_PRIVATE);
 
     }
 
     public void setNightModeState(Boolean state) {
-        SharedPreferences.Editor editor = colourModePref.edit();
+        SharedPreferences.Editor editor = sneezyPreferences.edit();
         editor.putBoolean("NightMode", state);
         editor.commit();
     }
     //true: night mode on - false: night mode off
     public Boolean loadNightModeState() {
-        Boolean state = colourModePref.getBoolean("NightMode", false);
+        Boolean state = sneezyPreferences.getBoolean("NightMode", false);
         return state;
     }
 
     //public static final String SHARED_PREFS = "sharedPrefs";
     public static final String LOCATION_INDEX_KEY= "locationIndex";
+    public static final String MAP_PRESENTATION_KEY= "mapPresentation";
+    public static final String MAP_TIME_RANGE_KEY= "mapTimeRange";
+    public static final String MAP_USER_SCOPE_KEY= "mapUserScope";
 
 
     public void saveLocationPreference(int locationIndex){
         //TODO before calling* unless can be called from popup save btn
-        //check if locationIndex == forecastObj.getSelectedCityNo()
-        //not true update locationIndex
-        SharedPreferences.Editor editor = colourModePref.edit();
+        //check IF locationIndex != forecastObj.getSelectedCityNo()
+        //-IF FALSE update locationIndex
+        //-ELSE do nothing
+        SharedPreferences.Editor editor = sneezyPreferences.edit();
         editor.putInt(LOCATION_INDEX_KEY, locationIndex);
         editor.commit();
         Log.d("SharedPref","locationIndex " + locationIndex + " successfully saved to shared preferences");
     }
 
     public int loadLocationPreference(){
-        int locationIndex = colourModePref.getInt(LOCATION_INDEX_KEY, -1);
+        int locationIndex = sneezyPreferences.getInt(LOCATION_INDEX_KEY, -1);
         return locationIndex;
     }
 
+
+    public void saveMapPreferences(Enum timeRange, Enum userScope,Enum presentation){
+        SharedPreferences.Editor editor = sneezyPreferences.edit();
+        editor.putString(MAP_TIME_RANGE_KEY, timeRange.name());
+        editor.putString(MAP_USER_SCOPE_KEY, userScope.name());
+        editor.putString(MAP_PRESENTATION_KEY, presentation.name());
+        editor.commit();
+    }
+
+    public String[] loadMapPreferences(){
+        String[] mapPreferences= new String[3]; //0:TimeRange || 1:UserScope || 2:Presentation
+        mapPreferences[0] = sneezyPreferences.getString(MAP_TIME_RANGE_KEY, "MONTH");
+        mapPreferences[1] = sneezyPreferences.getString(MAP_USER_SCOPE_KEY, "ALL");
+        mapPreferences[2] = sneezyPreferences.getString(MAP_PRESENTATION_KEY, "MARKER");
+        return mapPreferences;
+    }
 }

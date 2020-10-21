@@ -63,11 +63,53 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     SneezeRepository repo;
     LatLng userCoords;
 
-    private enum UserScope {ALL, USER}
+    private enum UserScope {ALL, USER;
+        UserScope fromString(String value){
+            switch(value){
+                case "ALL":
+                    return ALL;
+                case "USER":
+                    return USER;
+            }
+            return ALL;
+        }
+    }
 
-    private enum DateRange {WEEK, MONTH}
+    private enum DateRange {WEEK, MONTH;
+        DateRange fromString(String value){
+            switch (value){
+                case "WEEK":
+                    return WEEK;
+                case "MONTH":
+                    return MONTH;
+            }
+            return WEEK;
+        }
+    }
 
-    private enum Presentation {MARKER, HEATMAP}
+    private enum Presentation {
+        MARKER, HEATMAP;
+
+        Presentation fromInteger(int x) {
+            switch (x) {
+                case 0:
+                    return MARKER;
+                case 1:
+                    return HEATMAP;
+            }
+            return null;
+        }
+        Presentation fromString(String value) {
+            switch (value) {
+                case "MARKER":
+                    return MARKER;
+                case "HEATMAP":
+                    return HEATMAP;
+            }
+            return MARKER;
+//            return null;//cant be bothered accounting for null values
+        }
+    }
 
     UserScope selectedUserScope;
     DateRange selectedDateRange;
@@ -78,6 +120,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_maps, container, false);
+
     }// onCreate END
 
     @Override
@@ -85,10 +128,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         super.onViewCreated(view, savedInstanceState);
         userCoords = DEFAULT_LOCATION;
         this.repo = MainActivity.repo;
-
-        selectedUserScope = UserScope.ALL;
-        selectedDateRange = DateRange.WEEK;
-        selectedPresentation = Presentation.MARKER;
         // *** MapView requires that the Bundle you pass contain _ONLY_ MapView SDK objects or sub-Bundles. ***
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
@@ -110,6 +149,50 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }//onViewCreated END
 
 
+    public void setupMenu(){
+        //load mapPreferences saved from other sessions
+        String[] mapPreferences = MainActivity.sharedPref.loadMapPreferences();
+        //temp values to avoid null object reference (probably a better solution)
+        selectedDateRange = DateRange.WEEK;
+        selectedUserScope= UserScope.ALL;
+        selectedPresentation = Presentation.MARKER;
+        //assign actual values
+        selectedDateRange = selectedDateRange.fromString(mapPreferences[0]);
+        selectedUserScope = selectedUserScope.fromString(mapPreferences[1]);
+        selectedPresentation = selectedPresentation.fromString(mapPreferences[2]);
+        //assign correct values to menu radio buttons
+        RadioGroup rg;
+        rg = getView().findViewById(R.id.radioGMapDateRange);
+        switch (selectedDateRange){
+            case WEEK:
+                rg.check(R.id.radio_weekly);
+                break;
+            case MONTH:
+                rg.check(R.id.radio_monthly);
+                break;
+        }
+
+        rg = getView().findViewById(R.id.radioGUserScope);
+        switch (selectedUserScope){
+            case ALL:
+                rg.check(R.id.radio_all);
+                break;
+            case USER:
+                rg.check(R.id.radio_user);
+                break;
+        }
+
+        rg = getView().findViewById(R.id.radioGPresentation);
+        switch (selectedPresentation){
+            case MARKER:
+                rg.check(R.id.radio_marker);
+                break;
+            case HEATMAP:
+                rg.check(R.id.radio_heatmap);
+                break;
+        }
+    }//setupMenu END
+
     public void closeMenu() {
         FloatingActionButton menuFab = getView().findViewById(R.id.fab_menu);
         menuFab.show();
@@ -117,6 +200,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mapsMenu.setVisibility(View.GONE);
         LinearLayout mapMask = getView().findViewById(R.id.map_mask);
         mapMask.setVisibility(View.GONE);
+        //TODO replace with enable save button
+        MainActivity.sharedPref.saveMapPreferences(selectedDateRange, selectedUserScope,selectedPresentation);
 //        Toast.makeText(getContext(), "Menu close",Toast.LENGTH_SHORT).show();
     }//close menu END
 
@@ -158,15 +243,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             googleMap.moveCamera(CameraUpdateFactory.zoomTo(3));
             Log.d(CLASS_TAG, "MyLocation has been disabled");
         }
-
         updateFab();
-//        addHeatMap();
-        addPoints();
+        setupMenu();
+        updateMapOverlay();
     }//onMapReady END
 
     private void checkNightMode() {
-        SharedPref sharedPref = MainActivity.sharedPref;
-        if (sharedPref.loadNightModeState()) {
+        if (MainActivity.sharedPref.loadNightModeState()) {
             try {
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style_dark_mode));
             } catch (Exception ex) {
@@ -184,10 +267,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }//checkNightMode END
 
     private void updateMapOverlay() {
-        //TODO
         //clear heat map/marker cache
         googleMap.clear();
-        Toast.makeText(getContext(), "Cleared Overlay", Toast.LENGTH_SHORT).show();
         //add heat map or markers with new settings
         switch (selectedPresentation) {
             case MARKER:
@@ -258,27 +339,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         ArrayList<LatLng> latLongList = new ArrayList<>();
         List<SneezeItem> siList;
 
-
         SneezeRepository.Scope scope = SneezeRepository.Scope.COMBINED;
-        switch (selectedUserScope){
+        switch (selectedUserScope) {
             case ALL:
                 scope = SneezeRepository.Scope.COMBINED;
                 break;
             case USER:
                 scope = SneezeRepository.Scope.USER;
                 break;
-                //for now
+            //for now
         }//selectedUserScope switch END
 
-        //get staring date and current calendars
+        //get staring and current calendars
         Calendar currentCal = Calendar.getInstance();
         Calendar startCal = Calendar.getInstance();
-        switch (selectedDateRange){
+        switch (selectedDateRange) {
             case WEEK:
-                startCal.add(Calendar.DATE,-7);
+                startCal.add(Calendar.DATE, -7);
                 break;
             case MONTH:
-                startCal.add(Calendar.MONTH,-1);
+                startCal.add(Calendar.MONTH, -1);
                 break;
         }//selectedDateRange switch END
         //convert calendars to dates
@@ -353,7 +433,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 //            Toast.makeText(getContext(), "Location services turned off",Toast.LENGTH_LONG).show();
 
         //location is not turned on
-
     }//isLocationEnabled END
 
     private boolean myLocationPermissionCheck() {
@@ -371,7 +450,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     userCoords = new LatLng(location.getLatitude(), location.getLongitude());
 //                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(userCoords));
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
-
                     googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
                 //TODO else: Request location update https://developer.android.com/training/location/receive-location-updates
@@ -385,6 +463,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private void recenterUser() {
 //        String locationPermissionStatus = locationPermissionStatus();
+//        Presentation p = Presentation.valueOf("HEATMAP");
+//        p.fromString("MARKER");
+
         switch (locationPermissionStatus()) {
             case "LocationPermissionDenied":
                 //popup for location not permitted
@@ -397,15 +478,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 //TODO popup to make turn on location services
                 break;
             case "LocationPermissionGranted":
-                //animate camera to user location
-//            Toast.makeText(getContext(),"LocationPermissionGranted",Toast.LENGTH_LONG).show();
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    //animate camera to user location
+                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                            || ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
+                            if (location != null) {
+                                userCoords = new LatLng(location.getLatitude(), location.getLongitude());
+                                CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
+                                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                            }//IF END
+                        });//FusedLocationListener END
+                    }//IF END
                 break;
-            default:
-                Log.e(CLASS_TAG, "recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
-        }//locationPermissionStatus switch END
-    }//recenterUser END
+                    default:
+                        Log.e(CLASS_TAG, "recenterUser(): Unexpected value was returned from locationPermissionStatus method ");
+                }//locationPermissionStatus switch END
+        }//recenterUser END
 
     private String locationPermissionStatus() {
         if (!googleMap.isMyLocationEnabled()) {
@@ -414,7 +502,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             } else {
                 return "LocationPermissionDenied";
             }
-        } else {
+        }
+        else {
             return "LocationPermissionGranted";
         }
     }//locationPermissionStatus END
@@ -430,7 +519,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         LinearLayout mapMask = getView().findViewById(R.id.map_mask);
         mapMask.setVisibility(View.VISIBLE);
 //        Toast.makeText(getContext(), "Menu open",Toast.LENGTH_SHORT).show();
-
         //Radio group onChange listeners
         //User scope
         RadioGroup radioGUserScope = getView().findViewById(R.id.radioGUserScope);
@@ -446,6 +534,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     selectedUserScope = UserScope.USER;
                     break;
             }
+            //TODO call enableSaveBtn
             updateMapOverlay();
         });
         //Date range
@@ -461,6 +550,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     selectedDateRange = DateRange.MONTH;
                     break;
             }
+            //TODO call enableSaveBtn
             updateMapOverlay();
         });
         //Presentation
@@ -476,11 +566,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     selectedPresentation = Presentation.HEATMAP;
                     break;
             }
-                updateMapOverlay();
+            //TODO call enableSaveBtn
+            updateMapOverlay();
         });
     }//openMenu END
+    private void enableMenuSaveBtn(){
+        //TODO enable menu save button
+        //SetOnClickListener
+    }
 
-        private void updateFab () {
+    private void savePreferences(){
+        MainActivity.sharedPref.saveMapPreferences(selectedDateRange, selectedUserScope, selectedPresentation);
+        //TODO disable menu save button
+    }
+
+    private void updateFab () {
             FloatingActionButton myLocationFab = getView().findViewById(R.id.fab_my_location);
 
             Drawable fabIcon;
@@ -495,7 +595,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     tintList = ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt, null);
                     break;
                 case "LocationPermissionGranted"://location services on & permission granted
-
                     fabIcon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_my_location, null);
                     tintList = ResourcesCompat.getColorStateList(getResources(), R.color.statelist_maps_fab, null);
                     break;
@@ -550,7 +649,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         public boolean onMyLocationButtonClick () {
             return false;
         }
-
         @Override
         public void onMyLocationClick (@NonNull Location location){
         }
