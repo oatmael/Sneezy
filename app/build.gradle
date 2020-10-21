@@ -64,6 +64,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     //graphing api
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+    implementation 'org.jetbrains:annotations:15.0'
 
 /*    //noinspection GradleCompatible
     implementation 'com.android.support:support-v4:28.0.0'*/

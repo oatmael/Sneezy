@@ -264,31 +264,35 @@ public class HomeFragment extends Fragment {
 
         //save button will set the value selectedCityNo to access the city name and url
         Button saveBtn = popupView.findViewById(R.id.locationSaveBtn);
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //get the selected radio button to save it to the selectedLocationNo
-                int selectedCityId = radioGroupCities.getCheckedRadioButtonId();
-                RadioButton selectedCityRadio = popupView.findViewById(selectedCityId);
-                String selectedCity = selectedCityRadio.getText().toString().replace("_radio", "");
-                //get the index of the city that was selected and save it to the forecastObj
-                if (forecastObj.getCityIndex(selectedCity) != -1) {
-                    forecastObj.setSelectedCityNo(forecastObj.getCityIndex(selectedCity));
-                    MainActivity.setForecastObj(forecastObj);// *NON-STATIC CONTEXT
-                    Log.d("ForecastObj", "Location successfully set to " + forecastObj.getCityName(forecastObj.getSelectedCityNo()));
-                    //update forecastObj in MainActivity
-                    Log.d("ForecastObj", "Location " + selectedCity + "successfully saved to shared prefs");
+        Button cancelBtn = popupView.findViewById(R.id.locationCancelBtn);
+        //save onclick
+        saveBtn.setOnClickListener(v -> {
+            //get the selected radio button to save it to the selectedLocationNo
+            int selectedCityId = radioGroupCities.getCheckedRadioButtonId();
+            RadioButton selectedCityRadio = popupView.findViewById(selectedCityId);
+            String selectedCity = selectedCityRadio.getText().toString().replace("_radio", "");
+            //get the index of the city that was selected and save it to the forecastObj
+            if (forecastObj.getCityIndex(selectedCity) != -1) {
+                forecastObj.setSelectedCityNo(forecastObj.getCityIndex(selectedCity));
+                MainActivity.setForecastObj(forecastObj);// *NON-STATIC CONTEXT
+                Log.d("ForecastObj", "Location successfully set to " + forecastObj.getCityName(forecastObj.getSelectedCityNo()));
+                //update forecastObj in MainActivity
+//                    Log.d("ForecastObj", "Location " + selectedCity + " successfully saved to shared prefs");
 
-                    //update pollen forecast from source
-                    new MainActivity.getForecastAsync().execute(forecastObj.getUrl());
-                    forecastObj = MainActivity.getForecastObj();
-                    //update home frag values
-                } else {
-                    Log.e("ForecastObj", "Developer Error: selectedCity value does not exist");
-                }
-                dialog.dismiss();
-            }//end of onclick
-        });//onClickListener END
+                //update pollen forecast from source
+                new MainActivity.getForecastAsync().execute(forecastObj.getUrl());
+                forecastObj = MainActivity.getForecastObj();
+                //update home frag values
+            } else {
+                Log.e("ForecastObj", "Developer Error: selectedCity value does not exist");
+            }
+            dialog.dismiss();
+        });//save onClickListener END
+        cancelBtn.setOnClickListener(v ->{
+            dialog.dismiss();
+        });
+        //close onclick
+
     }// setLocationPopup END
 
     private void openIndexPopup(){
@@ -330,7 +334,7 @@ public class HomeFragment extends Fragment {
         });//weatherzoneLinkBtn onClick END
     }//openIndexPopup END
 
-    private static boolean locationFetched = false;
+//    private static boolean locationFetched = false;
     public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastObj forecastObj) {
         //if location has been fetched
 //        int size = forecastObj.getIndexValues().size();
@@ -416,7 +420,7 @@ public class HomeFragment extends Fragment {
 
     //called by main activity to update forecast values after a forecast has been retrieved
     public static void upDatePollenForecastViewOnPostExecute(ForecastObj forecastObj) {
-        locationFetched = true;
+//        locationFetched = true;
         upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastObj);
     }//upDatePollenForecastViewOnPostExecute END
 }//HomeFragment END
