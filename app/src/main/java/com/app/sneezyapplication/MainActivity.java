@@ -2,6 +2,7 @@ package com.app.sneezyapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,7 +10,9 @@ import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 
 import com.app.sneezyapplication.data.GraphData;
+import com.app.sneezyapplication.forecast.Forecast;
 import com.app.sneezyapplication.forecast.ForecastObj;
+import com.app.sneezyapplication.forecast.ForecastResult;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.app.ActivityCompat;
@@ -145,6 +148,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.e("location", e.getLocalizedMessage());
             });
         }
+        Forecast forecastTest = new Forecast(getApplicationContext());
+//        forecastTest.saveForecastResult(forecastTest.getForecastResult(), getApplicationContext());
+//        forecastTest.loadForecastResult();
+//        Toast.makeText(getApplicationContext(), "Tested",Toast.LENGTH_LONG).show();
     }
 
 

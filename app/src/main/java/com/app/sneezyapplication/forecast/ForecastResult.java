@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class ForecastResult {
     //CONSTANT VALUES
@@ -29,6 +30,7 @@ public class ForecastResult {
 //    private ArrayList<Integer> forecastValueNums;//stores the forecast value index for each day (e.g. low = 0, extreme = 4)
     private int selectedCityNo;//stores index number of the location to be used
     private Calendar updateDate;
+    private Calendar yesterdayDate;
     private String yesterday;
     private String updateConclusion;
     //CONSTRUCTORS
@@ -45,6 +47,7 @@ public class ForecastResult {
         this.updateDate.setTimeInMillis(updateTime);
         this.selectedCityNo = selectedCityNo;
         yesterday = null;
+        updateConclusion = "NO SET";
     }
     //GETTERS, SETTERS AND METHODS
     public void setSelectedCityNo(int selectedCityNo) {
@@ -99,6 +102,15 @@ public class ForecastResult {
         this.yesterday = yesterday;
     }
 
+    public long getYesterdayDateInMillis() {
+        return yesterdayDate.getTimeInMillis();
+    }
+
+    public void setYesterdayDate(long yesterdayDateInMillis) {
+        this. yesterdayDate = Calendar.getInstance(TimeZone.getDefault());
+        this.yesterdayDate.setTimeInMillis(yesterdayDateInMillis);
+    }
+
     public String getUpdateDateAsString(){
         SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM hh:mm a");
         return simpleDate.format(updateDate.getTime());
@@ -115,6 +127,35 @@ public class ForecastResult {
         float difInMillis = currentTime.getTimeInMillis() - updateDate.getTimeInMillis();
         float difInHrs = difInMillis/ hrInMillis;
         if (difInHrs < 2 && this.forecastList.size() == 4){
+            return true;
+        }
+        return false;
+    }
+    //returns the age of the yesterday forecast in days (up to 4)
+    public int getYesterdayAge(){
+        int age = 0;
+        int currentDayOfYear= Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int updateDay = yesterdayDate.get(Calendar.DAY_OF_YEAR);
+        //to account for previous years
+        if (currentYear-1 == yesterdayDate.get(Calendar.YEAR)){
+            updateDay -= yesterdayDate.getMaximum(Calendar.DAY_OF_YEAR);
+        }
+        else if(currentYear-1 > yesterdayDate.get(Calendar.YEAR)){
+            updateDay = -365;
+        }
+        age = currentDayOfYear - updateDay;
+        return age;
+    }
+
+
+    //Checks if yesterday value is old enough to be used
+    public boolean yesterdayIsValid(){
+        //if same year & current day -1 OR year -1 & maximum day = yesterday
+        if(updateDate.get(Calendar.DAY_OF_YEAR)-1 == yesterdayDate.get(Calendar.DAY_OF_YEAR)
+                && updateDate.get(Calendar.YEAR) == yesterdayDate.get(Calendar.YEAR)
+                || yesterdayDate.getMaximum(Calendar.DAY_OF_YEAR) == yesterdayDate.get(Calendar.DAY_OF_YEAR)
+                && updateDate.get(Calendar.YEAR) == yesterdayDate.get(Calendar.YEAR)-1) {
             return true;
         }
         return false;
