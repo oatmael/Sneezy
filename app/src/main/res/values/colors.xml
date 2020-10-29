@@ -37,6 +37,7 @@
     <color name="mainGreyText">#909090</color>
     <color name="sectionDark">#202020</color>
     <color name="darkButtonMain">#909090</color>
+    <color name="darkButtonTransparent">#4D909090</color>
     <color name="plusMinusButtonDark">#373737</color>
     <color name="changeLocButtonDark">#909090</color>
     <color name="sneezeAndTimesDark">#FFFFFF</color>
@@ -46,6 +47,7 @@
     <!--Light Theme Colour Set-->
     <color name="lightBackground">#DAE0E6</color>
     <color name="lightMainText">#222222</color>
+    <color name="lightMainTextTransparent">#99222222</color>
     <color name="sectionWhite">#FFFFFF</color>
     <color name="lightButtonMain">#1A1A1B</color>
     <color name="lightPlusMinusButton">#818384</color>

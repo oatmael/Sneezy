@@ -27,8 +27,10 @@
         <item name="navViewTextColour">@color/lightMainText</item>
         <item name="toggleButtonBackgroundOn">@color/lightBackground</item>
         <item name="toggleButtonBackgroundOff">@color/sectionWhite</item>
+<!--        <item name="toggleButtonBackgroundDisabled">@color/sectionWhite</item>-->
         <item name="toggleButtonTextOn">@color/lightMainText</item>
         <item name="toggleButtonTextOff">@color/lightMainText</item>
+        <item name="toggleButtonTextDisabled">@color/lightMainTextTransparent</item>
 
     </style>
 
@@ -52,6 +54,7 @@
         <item name="toggleButtonBackgroundOff">@color/sectionDark</item>
         <item name="toggleButtonTextOn">@color/sectionDark</item>
         <item name="toggleButtonTextOff">@color/darkButtonMain</item>
+        <item name="toggleButtonTextDisabled">@color/darkButtonTransparent</item>
     </style>
 
     <!--Alert Dialog theme-->
