@@ -80,7 +80,6 @@ public class SneezeRepository {
         monthlyUserSneezeItems = new ArrayList<>();
         weeklyUserSneezeItems = new ArrayList<>();
         todayUserSneezeItem = new SneezeItem();
-
     }
 
     public void updateRecords() {
