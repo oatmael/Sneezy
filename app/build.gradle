@@ -64,6 +64,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     //graphing api
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+    implementation 'org.jetbrains:annotations:15.0'
 
 /*    //noinspection GradleCompatible
     implementation 'com.android.support:support-v4:28.0.0'*/
@@ -78,4 +79,7 @@ dependencies {
     //google maps api
     implementation 'com.google.maps.android:android-maps-utils:2.0.3'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
+    //json
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
 }

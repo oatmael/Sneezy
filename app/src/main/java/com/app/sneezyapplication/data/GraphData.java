@@ -76,10 +76,10 @@ public class GraphData {
             //adds at index 0 for chronological order
             //displays only first 3 chars of date string
             if (labelFormat == "dayOfWeek") {
-                data.add(0, new ValueDataEntry(new SimpleDateFormat("EE", Locale.ENGLISH).format(c.getTime()), sneezes));
+                data.add(0, new ValueDataEntry(new SimpleDateFormat("EE", Locale.US).format(c.getTime()), sneezes));
             }
             else if (labelFormat == "dayOfMonth"){
-                data.add(0, new ValueDataEntry(new SimpleDateFormat("dd", Locale.ENGLISH).format(c.getTime()), sneezes));
+                data.add(0, new ValueDataEntry(new SimpleDateFormat("dd", Locale.US).format(c.getTime()), sneezes));
             }
             //take one from calender date to check previous day
             c.add(Calendar.DATE, -1);
