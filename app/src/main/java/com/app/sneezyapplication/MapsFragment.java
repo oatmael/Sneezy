@@ -381,7 +381,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }*/
 
 //        ArrayList<SneezeItem>
-        siList = repo.getSneezeItems(startCalAsDate, currentCalAsDate, scope, false);
+        siList = repo.getSneezeItems(startCalAsDate, currentCalAsDate, scope);
 //        siList = repo.getAllSneezeItems();//**TEMPORARY**
         RealmList<SneezeData> sdList;
         Location location;

@@ -5,6 +5,7 @@ import com.app.sneezyapplication.MainActivity;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -164,15 +165,15 @@ public class SneezeRepository {
         }
     }
 
-    public RealmResults getSneezeItems(Date date, Scope scope, boolean outlierCull){
+    public RealmResults getSneezeItems(Date date, Scope scope){
         // Did you know? Java date.getYear returns an offset of the year - 1900. Why? We may never know.
-        return getSneezeItems(date.getDate(), date.getMonth() + 1, date.getYear() + 1900, scope, outlierCull);
+        return getSneezeItems(date.getDate(), date.getMonth() + 1, date.getYear() + 1900, scope);
     }
-    public RealmResults getSneezeItems(Date date, Date date2, Scope scope, boolean outlierCull){
-        return getSneezeItems(date.getDate(), date.getMonth() + 1, date.getYear() + 1900, date2.getDate(), date2.getMonth() + 1, date2.getYear() + 1900, scope, outlierCull);
+    public RealmResults getSneezeItems(Date date, Date date2, Scope scope){
+        return getSneezeItems(date.getDate(), date.getMonth() + 1, date.getYear() + 1900, date2.getDate(), date2.getMonth() + 1, date2.getYear() + 1900, scope);
     }
 
-    public RealmResults getSneezeItems(int day, int month, int year, Scope scope, boolean outlierCull){
+    public RealmResults getSneezeItems(int day, int month, int year, Scope scope){
         Calendar date = Calendar.getInstance();
         date.set(year, month - 1, day); // months are zero based in calendar? cool thanks I guess
 
@@ -207,7 +208,7 @@ public class SneezeRepository {
         return results;
     }
 
-    public RealmResults<SneezeItem> getSneezeItems(int day, int month, int year, int day2, int month2, int year2, Scope scope, boolean outlierCull){
+    public RealmResults<SneezeItem> getSneezeItems(int day, int month, int year, int day2, int month2, int year2, Scope scope){
         Calendar date = Calendar.getInstance();
         date.set(year, month - 1, day);
 
@@ -262,10 +263,41 @@ public class SneezeRepository {
         return results;
     }
 
-    public float sneezeItemAverge(RealmResults<SneezeItem> sneezeItems){
+    public static float sneezeItemAverge(RealmResults<SneezeItem> sneezeItems){
         float avg = 0;
+        int tally = 0;
+
+        for (SneezeItem s : sneezeItems) {
+            tally += s.getSneezes().size();
+        }
+
+        avg = tally / sneezeItems.size();
 
         return avg;
+    }
+
+    public static List<SneezeItem> outlierCull(RealmResults<SneezeItem> sneezeItems){
+        List<SneezeItem> set = sneezeItems;
+
+        int[] testSet = new int[set.size()];
+        for (int i = 0; i > set.size(); i++){
+            testSet[i] = set.get(i).getSneezes().size();
+        }
+        Arrays.sort(testSet);
+
+        // potential 0 index bugs
+        int median = (int) Math.floor(set.size() / 2);
+        int Q1 = 0 + (int) Math.floor(median / 2);
+        int Q3 = median + (int) Math.floor(median / 2);
+        int IQR = testSet[Q3] - testSet[Q1];
+
+        for (int i = 0; i > set.size(); i++) {
+            if (set.get(i).getSneezes().size() > (IQR * 1.5)){
+                set.remove(i);
+            }
+        }
+
+        return set;
     }
 
     public enum Scope {

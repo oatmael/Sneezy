@@ -26,7 +26,7 @@ public class SneezeBind {
         /*todaysSneeze = repo.todayUserSneezeItems()
                 .getSneezes()
                 .size();*/
-        List<SneezeItem> l = repo.getSneezeItems(new Date(), SneezeRepository.Scope.USER, false);
+        List<SneezeItem> l = repo.getSneezeItems(new Date(), SneezeRepository.Scope.USER);
         if (l.size() > 0) {
             todaysSneeze = l
                     .get(0)
