@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (it.isSuccess()) {
                     Toast.makeText(LoginActivity.this,
                             "Logged in with Google. "
-                            + "ID: " +  MainActivity.app.currentUser().getId()
+                            //+ "ID: " +  MainActivity.app.currentUser().getId()
                             , Toast.LENGTH_LONG).show();
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(i);
