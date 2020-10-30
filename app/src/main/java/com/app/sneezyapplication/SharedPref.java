@@ -59,7 +59,7 @@ public class SharedPref {
         String[] mapPreferences= new String[3]; //0:TimeRange || 1:UserScope || 2:Presentation
         mapPreferences[0] = sneezyPreferences.getString(MAP_TIME_RANGE_KEY, "MONTH");
         mapPreferences[1] = sneezyPreferences.getString(MAP_USER_SCOPE_KEY, "ALL");
-        mapPreferences[2] = sneezyPreferences.getString(MAP_PRESENTATION_KEY, "MARKER");
+        mapPreferences[2] = sneezyPreferences.getString(MAP_PRESENTATION_KEY, "HEATMAP");
         return mapPreferences;
     }
 }

@@ -42,8 +42,6 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,6 +58,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final String CLASS_TAG = "MapsFragment";
     private static final LatLng DEFAULT_LOCATION = new LatLng(-30, 133);
+    private static final int MAX_ZOOM = 12;
+    private static final int POINT_SIZE = 65;
+
     FusedLocationProviderClient fusedLocationClient;
     SneezeRepository repo;
     LatLng userCoords;
@@ -147,6 +148,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         LinearLayout mapMask = getView().findViewById(R.id.map_mask);
         mapMask.setOnClickListener(v -> closeMenu());
+//        FloatingActionButton
     }//onViewCreated END
 
 
@@ -223,7 +225,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onMapReady(GoogleMap gMap) {
         googleMap = gMap;
         //limit zoom to not show houses and their numbers (<17 to not show houses)
-        googleMap.setMaxZoomPreference(14);
+        googleMap.setMaxZoomPreference(MAX_ZOOM);
 
         checkNightMode();
         //check if location services are turned on
@@ -317,7 +319,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         try {
             //Create a heat map tile provider and overlay
             mProvider = new HeatmapTileProvider.Builder().data(sneezeLocations).build();
-            mProvider.setRadius(50);
+            mProvider.setRadius(POINT_SIZE);
             mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
         } catch (NullPointerException ex) {
             ex.printStackTrace();
@@ -451,7 +453,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 if (location != null) {
                     userCoords = new LatLng(location.getLatitude(), location.getLongitude());
 //                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(userCoords));
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(14).build();
+                    CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(MAX_ZOOM).build();
                     googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
                 //TODO else: Request location update https://developer.android.com/training/location/receive-location-updates
@@ -486,7 +488,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
                             if (location != null) {
                                 userCoords = new LatLng(location.getLatitude(), location.getLongitude());
-                                CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(14).build();
+                                CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(MAX_ZOOM).build();
                                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                             }//IF END
                         });//FusedLocationListener END
@@ -523,10 +525,23 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 //        Toast.makeText(getContext(), "Menu open",Toast.LENGTH_SHORT).show();
         //Radio group onChange listeners
         //User scope
+        RadioButton markerRadioBtn = getView().findViewById(R.id.radio_marker);
+//        check userscope
+        switch (selectedUserScope){
+            case ALL:
+                //enable marker button
+                markerRadioBtn.setEnabled(false);
+                markerRadioBtn.setVisibility(View.INVISIBLE);
+                break;
+            case USER:
+                //enable marker button
+                markerRadioBtn.setEnabled(true);
+                markerRadioBtn.setVisibility(View.VISIBLE);
+                break;
+        }
         RadioGroup radioGUserScope = getView().findViewById(R.id.radioGUserScope);
 //        radioGUserScope.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
         radioGUserScope.setOnCheckedChangeListener((group, checkedId) -> {
-            RadioButton markerRadioBtn = getView().findViewById(R.id.radio_marker);
             switch (checkedId) {
                 case R.id.radio_all:
                     RadioButton heatmapRadioBtn = getView().findViewById(R.id.radio_heatmap);
