@@ -186,7 +186,7 @@ public class Forecast {
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             byte[] bytes = jsonString.getBytes();
             fileOutputStream.write(bytes);
-            Toast.makeText(context, "ForecastResult Saved",Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "ForecastResult Saved",Toast.LENGTH_LONG).show();
             //close file
             fileOutputStream.close();
             Log.d("ForecastResult","CacheForecastResult: Successfully saved ForecastResult to json file");

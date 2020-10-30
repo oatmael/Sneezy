@@ -83,6 +83,8 @@
     <string name="ver.1.0Text">Initial Release</string>
     <string name="ver.1.1">Version 1.1</string>
     <string name="ver.1.1Text">Various bug fixes\nMap functionality\nPollen index explanations</string>
+    <string name="ver.1.2">Version 1.2</string>
+    <string name="ver.1.2Text">Weekly graphs details\nAdded map menu\n- User only view\n- Week/Month view\n- Markers view</string>
     <!--End Changelog Strings-->
 
     <!--Index Details Popup Strings-->
