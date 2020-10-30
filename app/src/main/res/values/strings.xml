@@ -114,6 +114,7 @@
     <string name="radio_hobart">Hobart</string>
     <string name="radio_perth">Perth</string>
     <string name="btn_save">SAVE</string>
+    <string name="btn_cancel">CANCEL</string>
     <!--    End Select Location PopUp Strings   -->
 
     <string name="forecastBackgroundDescription">Block background is the colour of the foretasted value for the day</string>

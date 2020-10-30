@@ -82,14 +82,29 @@
                 android:textColor="?attr/mainText"
                 android:buttonTint="?attr/mainText"/>
         </RadioGroup>
-
-        <Button
-            android:id="@+id/locationSaveBtn"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_save"
-            android:textColor="?attr/mainText"
-            android:backgroundTint="@color/statelist_normal_button"
-            />
+            android:orientation="horizontal"
+            android:padding="10dp">
+            <Button
+                android:id="@+id/locationCancelBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_cancel"
+                android:textColor="?attr/mainText"
+                android:backgroundTint="@color/statelist_normal_button"
+                android:layout_marginEnd="10dp"/>
+            <Button
+                android:id="@+id/locationSaveBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_save"
+                android:textColor="?attr/mainText"
+                android:backgroundTint="@color/statelist_normal_button"
+                />
+
+        </LinearLayout>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

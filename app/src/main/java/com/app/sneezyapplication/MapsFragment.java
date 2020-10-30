@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -221,8 +222,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap gMap) {
         googleMap = gMap;
-        //limit zoom to not show houses and their numbers
-        googleMap.setMaxZoomPreference(16);
+        //limit zoom to not show houses and their numbers (<17 to not show houses)
+        googleMap.setMaxZoomPreference(14);
 
         checkNightMode();
         //check if location services are turned on
@@ -316,6 +317,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         try {
             //Create a heat map tile provider and overlay
             mProvider = new HeatmapTileProvider.Builder().data(sneezeLocations).build();
+            mProvider.setRadius(50);
             mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
         } catch (NullPointerException ex) {
             ex.printStackTrace();
@@ -379,7 +381,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }*/
 
 //        ArrayList<SneezeItem>
-        siList = repo.getSneezeItems(startCalAsDate, currentCalAsDate, scope, false);
+        siList = repo.getSneezeItems(startCalAsDate, currentCalAsDate, scope);
 //        siList = repo.getAllSneezeItems();//**TEMPORARY**
         RealmList<SneezeData> sdList;
         Location location;
@@ -449,7 +451,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 if (location != null) {
                     userCoords = new LatLng(location.getLatitude(), location.getLongitude());
 //                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(userCoords));
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
+                    CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(14).build();
                     googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
                 //TODO else: Request location update https://developer.android.com/training/location/receive-location-updates
@@ -475,7 +477,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             case "LocationOff":
                 //popup for location services are not turned on
                 Toast.makeText(getContext(), "Location Services Are Off", Toast.LENGTH_LONG).show();
-                //TODO popup to make turn on location services
+                //TODO popup to allow user to turn on location services
                 break;
             case "LocationPermissionGranted":
                     //animate camera to user location
@@ -484,7 +486,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
                             if (location != null) {
                                 userCoords = new LatLng(location.getLatitude(), location.getLongitude());
-                                CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(15).build();
+                                CameraPosition cameraPosition = new CameraPosition.Builder().target(userCoords).zoom(14).build();
                                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                             }//IF END
                         });//FusedLocationListener END
@@ -524,14 +526,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         RadioGroup radioGUserScope = getView().findViewById(R.id.radioGUserScope);
 //        radioGUserScope.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
         radioGUserScope.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton markerRadioBtn = getView().findViewById(R.id.radio_marker);
             switch (checkedId) {
                 case R.id.radio_all:
-//                    Toast.makeText(getContext(),"All selected",Toast.LENGTH_SHORT).show();
+                    RadioButton heatmapRadioBtn = getView().findViewById(R.id.radio_heatmap);
+                    heatmapRadioBtn.setChecked(true);
                     selectedUserScope = UserScope.ALL;
+                    markerRadioBtn.setEnabled(false);
+                    markerRadioBtn.setVisibility(View.INVISIBLE);
                     break;
                 case R.id.radio_user:
-//                    Toast.makeText(getContext(),"User only selected",Toast.LENGTH_SHORT).show();
                     selectedUserScope = UserScope.USER;
+                    markerRadioBtn.setEnabled(true);
+                    markerRadioBtn.setVisibility(View.VISIBLE);
                     break;
             }
             //TODO call enableSaveBtn
