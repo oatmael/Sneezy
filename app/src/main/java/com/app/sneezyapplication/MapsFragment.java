@@ -321,7 +321,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             mProvider = new HeatmapTileProvider.Builder().data(sneezeLocations).build();
             mProvider.setRadius(POINT_SIZE);
             mOverlay = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException | IllegalArgumentException ex) {
             ex.printStackTrace();
             Log.e(CLASS_TAG, "SneezeLocations was empty" + ex);
         }
