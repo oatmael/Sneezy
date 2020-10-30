@@ -5,9 +5,11 @@ import com.app.sneezyapplication.MainActivity;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import io.realm.RealmList;
@@ -79,7 +81,6 @@ public class SneezeRepository {
         monthlyUserSneezeItems = new ArrayList<>();
         weeklyUserSneezeItems = new ArrayList<>();
         todayUserSneezeItem = new SneezeItem();
-
     }
 
     public void updateRecords() {
@@ -163,6 +164,146 @@ public class SneezeRepository {
         }
     }
 
+    public RealmResults getSneezeItems(Date date, Scope scope){
+        // Did you know? Java date.getYear returns an offset of the year - 1900. Why? We may never know.
+        return getSneezeItems(date.getDate(), date.getMonth() + 1, date.getYear() + 1900, scope);
+    }
+    public RealmResults getSneezeItems(Date date, Date date2, Scope scope){
+        return getSneezeItems(date.getDate(), date.getMonth() + 1, date.getYear() + 1900, date2.getDate(), date2.getMonth() + 1, date2.getYear() + 1900, scope);
+    }
+
+    public RealmResults getSneezeItems(int day, int month, int year, Scope scope){
+        Calendar date = Calendar.getInstance();
+        date.set(year, month - 1, day); // months are zero based in calendar? cool thanks I guess
+
+        SimpleDateFormat df = new SimpleDateFormat("EEE MMM dd yyyy", Locale.US);
+
+        RealmResults<SneezeItem> results = null;
+
+        switch (scope){
+            case USER:
+                results = MainActivity.realm.where(SneezeItem.class)
+                        .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+                        .and()
+                        .equalTo(SneezeItem.Fields.DATE, df.format(date.getTime()))
+                        .findAll();
+                break;
+            case NOT_USER:
+                results = MainActivity.realm.where(SneezeItem.class)
+                        .notEqualTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+                        .and()
+                        .equalTo(SneezeItem.Fields.DATE, df.format(date.getTime()))
+                        .findAll();
+                break;
+            case COMBINED:
+                results = MainActivity.realm.where(SneezeItem.class)
+                        .equalTo(SneezeItem.Fields.DATE, df.format(date.getTime()))
+                        .findAll();
+                break;
+            default:
+                break;
+        }
+
+        return results;
+    }
+
+    public RealmResults<SneezeItem> getSneezeItems(int day, int month, int year, int day2, int month2, int year2, Scope scope){
+        Calendar date = Calendar.getInstance();
+        date.set(year, month - 1, day);
+
+        Calendar date2 = Calendar.getInstance();
+        date2.set(year2, month2 - 1, day2);
+
+        SimpleDateFormat df = new SimpleDateFormat("EEE MMM dd yyyy", Locale.US);
+
+        RealmResults<SneezeItem> results = null;
+
+        // We do something awful
+        // Generate all dates between range in a list
+        // .in(list[])
+        // yikes
+
+        List<String> dateRange = new ArrayList<>();
+
+        date2.add(Calendar.DATE, 1);
+        while (date.compareTo(date2) != 0) {
+            dateRange.add(df.format(date.getTime()));
+            date.add(Calendar.DATE, 1);
+        }
+
+        String[] dateRangeStr = new String[dateRange.size()];
+        dateRangeStr = dateRange.toArray(dateRangeStr);
+
+        switch (scope){
+            case USER:
+                results = MainActivity.realm.where(SneezeItem.class)
+                        .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+                        .and()
+                        .in(SneezeItem.Fields.DATE, dateRangeStr)
+                        .findAll();
+
+                break;
+            case NOT_USER:
+                results = MainActivity.realm.where(SneezeItem.class)
+                        .notEqualTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+                        .and()
+                        .in(SneezeItem.Fields.DATE, dateRangeStr)
+                        .findAll();
+                break;
+            case COMBINED:
+                results = MainActivity.realm.where(SneezeItem.class)
+                        .in(SneezeItem.Fields.DATE, dateRangeStr)
+                        .findAll();
+                break;
+            default:
+                break;
+        }
+
+        return results;
+    }
+
+    public static float sneezeItemAverge(RealmResults<SneezeItem> sneezeItems){
+        float avg = 0;
+        int tally = 0;
+
+        for (SneezeItem s : sneezeItems) {
+            tally += s.getSneezes().size();
+        }
+
+        avg = tally / sneezeItems.size();
+
+        return avg;
+    }
+
+    public static List<SneezeItem> outlierCull(RealmResults<SneezeItem> sneezeItems){
+        List<SneezeItem> set = sneezeItems;
+
+        int[] testSet = new int[set.size()];
+        for (int i = 0; i > set.size(); i++){
+            testSet[i] = set.get(i).getSneezes().size();
+        }
+        Arrays.sort(testSet);
+
+        // potential 0 index bugs
+        int median = (int) Math.floor(set.size() / 2);
+        int Q1 = 0 + (int) Math.floor(median / 2);
+        int Q3 = median + (int) Math.floor(median / 2);
+        int IQR = testSet[Q3] - testSet[Q1];
+
+        for (int i = 0; i > set.size(); i++) {
+            if (set.get(i).getSneezes().size() > (IQR * 1.5)){
+                set.remove(i);
+            }
+        }
+
+        return set;
+    }
+
+    public enum Scope {
+        USER,
+        NOT_USER,
+        COMBINED
+    }
 
     public void addListener(ListChangeListener listener) {
         listeners.add(listener);
@@ -170,6 +311,7 @@ public class SneezeRepository {
     public interface ListChangeListener {
         void onListChange();
     }
+
 
 
 }

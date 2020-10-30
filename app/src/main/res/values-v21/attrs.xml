@@ -12,6 +12,12 @@
         <attr name="toolbarColor" format="color"/>
         <attr name="changeLocText" format="color"/>
         <attr name="navViewTextColour" format="color"/>
+        <attr name="toggleButtonBackgroundOn" format="color"/>
+        <attr name="toggleButtonBackgroundOff" format="color"/>
+        <attr name="toggleButtonBackgroundDisabled" format="color"/>
+        <attr name="toggleButtonTextOn" format="color"/>
+        <attr name="toggleButtonTextOff" format="color"/>
+        <attr name="toggleButtonTextDisabled" format="color"/>
 
 
     </declare-styleable>
