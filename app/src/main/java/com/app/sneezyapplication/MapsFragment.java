@@ -58,7 +58,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private static final String CLASS_TAG = "MapsFragment";
     private static final LatLng DEFAULT_LOCATION = new LatLng(-30, 133);
-    private static final int MAX_ZOOM = 12;
+    private static final int MAX_ZOOM = 14;
     private static final int POINT_SIZE = 65;
 
     FusedLocationProviderClient fusedLocationClient;
