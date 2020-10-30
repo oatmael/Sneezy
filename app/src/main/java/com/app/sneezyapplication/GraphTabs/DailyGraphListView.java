@@ -58,8 +58,6 @@ public class DailyGraphListView extends ArrayAdapter<Date>{
         String dayOfWeek = new SimpleDateFormat("EEEE", Locale.US).format(c.getTime());
         txtTitle.setText(dayOfWeek);
 
-
-
         AnyChartView anyChartView = rowView.findViewById(R.id.any_chart_view);
         //anyChartView.setProgressBar(rowView.findViewById(R.id.progress_bar));
 
@@ -132,5 +130,17 @@ public class DailyGraphListView extends ArrayAdapter<Date>{
 
 
         return rowView;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+
+        return getCount();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return position;
     }
 }

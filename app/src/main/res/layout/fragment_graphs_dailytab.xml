@@ -24,11 +24,16 @@
                     android:indeterminate="true" />
         </com.anychart.AnyChartView>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="?attr/colorAccent" />
+
         <ListView
             android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:divider="@color/material_blue_grey_800"
+            android:divider="?attr/colorAccent"
             android:dividerHeight="1dp" />
 
 </LinearLayout>
