@@ -11,8 +11,6 @@ import androidx.annotation.NonNull;
 
 import com.app.sneezyapplication.data.GraphData;
 import com.app.sneezyapplication.forecast.Forecast;
-import com.app.sneezyapplication.forecast.ForecastObj;
-import com.app.sneezyapplication.forecast.ForecastResult;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.app.ActivityCompat;
@@ -81,9 +79,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static SharedPref sharedPref;
 
-    public static ForecastObj forecastObj;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -94,16 +89,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             setTheme(R.style.AppTheme);
         }
-
-        //set up forecastObj
-        //TODO
-        int locationPref = sharedPref.loadLocationPreference();
-        if (locationPref != -1) {
-            forecastObj = new ForecastObj(locationPref);
-        } else {
-            forecastObj = new ForecastObj();
-        }
-        new getForecastAsync().execute(forecastObj.getUrl());
 
         super.onCreate(savedInstanceState);
 
@@ -172,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onStop() {
-        sharedPref.saveLocationPreference(forecastObj.getSelectedCityNo());
         super.onStop();
         realm.close();
     }
@@ -497,64 +481,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
     }//onRequestPermission End
-
-    public static ForecastObj getForecastObj() {
-        return forecastObj;
-    }// getForecastObj End
-
-    public static void setForecastObj(ForecastObj forecastObj) {
-        MainActivity.forecastObj = forecastObj;
-    }// setForecastObj End
-
-    static class getForecastAsync extends AsyncTask<String, String, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Log.d("ForecastObj", "Retrieving forecast");
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            Log.d("ForecastObj", "/getForecastAsync --> onPostExecute The connection result: " + result);
-            HomeFragment.upDatePollenForecastViewOnPostExecute(forecastObj);
-
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String result;
-            final String TAG = "doInBackground";
-
-            try {
-                String url = strings[0];
-                //parse the page html to the document
-                Document pageHtml = Jsoup.connect(url).get();
-                //Check document is not empty
-                if (pageHtml != null) {
-                    Elements listElement = pageHtml.select("ul.pollen_graph");
-                    String forecasts = "" + (listElement.select("li").text()).toUpperCase();
-                    result = "successful\n Values:" + forecasts;//**
-                    //split the pollen forecast values into array (potential values: Low, Moderate, High, Very High, Extreme)
-                    forecasts = forecasts.replace("VERY HIGH", "VERY_HIGH");
-                    String delim = "\\W+";
-                    String[] days = forecasts.split(delim);
-                    ArrayList<String> daysList = new ArrayList<>();
-                    Collections.addAll(daysList, days);
-                    forecastObj.setForecastList(daysList);//update daysList in forecastObj
-                } else {
-                    result = "could not retrieve page from site\nUrl: " + url;
-                }
-            }//end of try
-            catch (Exception ex) {
-                ex.printStackTrace();
-//                Log.e(TAG,"An Exception was thrown\n" +ex);
-                Log.e("ForecastObj", "An Exception was thrown\n" + ex);
-                result = "An Exception was thrown\n" + ex;
-            }//end of catch
-            return result;//returns result to onPostExecute
-        }//end of doInBackground
-    }// getForecastAsync End
 
 }//MainActivity End
 

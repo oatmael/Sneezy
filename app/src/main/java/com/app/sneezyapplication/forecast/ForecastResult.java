@@ -29,7 +29,7 @@ public class ForecastResult {
     private ArrayList<String> forecastList = new ArrayList<>();//stores the forecast result for each day
 //    private ArrayList<Integer> forecastValueNums;//stores the forecast value index for each day (e.g. low = 0, extreme = 4)
     private int selectedCityNo;//stores index number of the location to be used
-    private Calendar updateDate;
+    private final Calendar updateDate;
     private Calendar yesterdayDate;
     private String yesterday;
     private String updateConclusion;
@@ -126,10 +126,7 @@ public class ForecastResult {
         Calendar currentTime = Calendar.getInstance(tz);
         float difInMillis = currentTime.getTimeInMillis() - updateDate.getTimeInMillis();
         float difInHrs = difInMillis/ hrInMillis;
-        if (difInHrs < 2 && this.forecastList.size() == 4){
-            return true;
-        }
-        return false;
+        return difInHrs < 2 && this.forecastList.size() == 4;
     }
     //returns the age of the yesterday forecast in days (up to 4)
     public int getYesterdayAge(){
@@ -152,13 +149,10 @@ public class ForecastResult {
     //Checks if yesterday value is old enough to be used
     public boolean yesterdayIsValid(){
         //if same year & current day -1 OR year -1 & maximum day = yesterday
-        if(updateDate.get(Calendar.DAY_OF_YEAR)-1 == yesterdayDate.get(Calendar.DAY_OF_YEAR)
+        return updateDate.get(Calendar.DAY_OF_YEAR) - 1 == yesterdayDate.get(Calendar.DAY_OF_YEAR)
                 && updateDate.get(Calendar.YEAR) == yesterdayDate.get(Calendar.YEAR)
                 || yesterdayDate.getMaximum(Calendar.DAY_OF_YEAR) == yesterdayDate.get(Calendar.DAY_OF_YEAR)
-                && updateDate.get(Calendar.YEAR) == yesterdayDate.get(Calendar.YEAR)-1) {
-            return true;
-        }
-        return false;
+                && updateDate.get(Calendar.YEAR) == yesterdayDate.get(Calendar.YEAR) - 1;
     }
 
     public String getUpdateConclusion() {
@@ -172,6 +166,6 @@ public class ForecastResult {
     public String getForecastDay(int i) {
         return forecastList.get(i);
     }
-}//ForecastObj END
+}//forecastResult END
 
 

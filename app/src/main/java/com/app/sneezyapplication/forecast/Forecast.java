@@ -134,7 +134,7 @@ public class Forecast {
     }//updateForecast END
     //initialise a new forecast when one has not previously been cashed
 
-    private void makeNewForecast(){
+    public void makeNewForecast(){
         new GetForecastAsync((forecastList, updateDate, result) -> {
             if(result.equals("SUCCESS")){
                 forecastResult.setUpdateDateInMillis(updateDate);
@@ -154,7 +154,15 @@ public class Forecast {
         return this.forecastResult;
     }
 
+    public void setForecastResult(ForecastResult forecastResult){
+        this.forecastResult = forecastResult;
+    }
     public void saveForecastResult(@NotNull ForecastResult forecastResult, @NotNull Context context){
+        //SAVE TO SHARED PREFS
+        SharedPref sharedPref = new SharedPref(context);
+        sharedPref.saveLocationPreference(forecastResult.getSelectedCityNo());
+
+        //SAVE TO CACHE
         //parse to json object
         String fileName = context.getCacheDir().getPath() +"forecastResultCache.json";
         try{
@@ -186,7 +194,7 @@ public class Forecast {
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             byte[] bytes = jsonString.getBytes();
             fileOutputStream.write(bytes);
-            Toast.makeText(context, "ForecastResult Saved",Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "ForecastResult Saved",Toast.LENGTH_SHORT).show();
             //close file
             fileOutputStream.close();
             Log.d("ForecastResult","CacheForecastResult: Successfully saved ForecastResult to json file");
@@ -229,7 +237,7 @@ public class Forecast {
                 else {
                     fr.setYesterday(yesterday);
                 }
-                Toast.makeText(context, "ForecastResult Loaded",Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "ForecastResult Loaded",Toast.LENGTH_SHORT).show();
                 return fr;
             }
         }//Try END
@@ -246,6 +254,44 @@ public class Forecast {
             Log.e(TAG, "Exception was thrown while loading cached forecastResult");
         }
         return null;
+    }
+
+    public Boolean makeNewForecastNonAsync(){
+        String result;
+        final String TAG = "getForecastNonAsync";
+
+        try {
+            String url = forecastResult.getUrl();
+            //parse the page html to the document
+            Document pageHtml = Jsoup.connect(url).timeout(15*1000).get();
+            //Check document is not empty before getting values
+            if (pageHtml != null) {
+                Elements listElement = pageHtml.select("ul.pollen_graph");
+                String forecasts = "" + (listElement.select("li").text()).toUpperCase();
+                result = "successful\n Values:" + forecasts;//**
+                //split the pollen forecast values into array (potential values: Low, Moderate, High, Very High, Extreme)
+                forecasts = forecasts.replace("VERY HIGH", "VERY_HIGH");
+                String delim = "\\W+";
+                String[] days = forecasts.split(delim);
+
+                ArrayList<String> forecastList = new ArrayList<>();
+                Collections.addAll(forecastList, days);
+                long updateDate = Calendar.getInstance().getTimeInMillis();
+                result = "SUCCESS";
+            }
+            else {
+                result = "FAIL";
+            }
+        }//end of try
+        catch (SocketTimeoutException ex) {
+            result = "TIMEOUT";
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+            Log.e("ForecastResult", "An Exception was thrown while fetching the forecast from the web:\n" + ex);
+            result = "FAIL";
+        }//end of catch
+        return true;
     }
 }//Forecast Class END
 
@@ -321,13 +367,10 @@ class GetForecastAsync extends AsyncTask<String, String, String> {
         }
         catch (Exception ex) {
             ex.printStackTrace();
-            Log.e("ForecastObj", "An Exception was thrown while fetching the forecast from the web:\n" + ex);
+            Log.e("ForecastResult", "An Exception was thrown while fetching the forecast from the web:\n" + ex);
             result = "FAIL";
         }//end of catch
         return result;//returns result to onPostExecute
     }//end of doInBackground
 
 }// GetForecastAsync Class END
-
-
-
