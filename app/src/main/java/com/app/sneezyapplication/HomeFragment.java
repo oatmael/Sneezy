@@ -139,7 +139,7 @@ public class HomeFragment extends Fragment {
             mBinding.setSneeze(mSneeze);
 
             // Sneeze repo testing
-            List<SneezeItem> test = repo.getSneezeItems(27, 8, 2020, 18, 9, 2020, SneezeRepository.Scope.COMBINED, false);
+            List<SneezeItem> test = repo.getSneezeItems(27, 8, 2020, 18, 9, 2020, SneezeRepository.Scope.COMBINED);
             //List<SneezeItem> test2 = repo.getSneezeItems(27, 8, 2020, 18, 9, 2020, SneezeRepository.Scope.COMBINED, true);
             Log.i("test", String.valueOf(test.size()));
             //Log.i("test", test2.toString());

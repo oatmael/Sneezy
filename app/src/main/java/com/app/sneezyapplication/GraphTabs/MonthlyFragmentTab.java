@@ -133,7 +133,9 @@ public class MonthlyFragmentTab extends Fragment {
                 .format("{%Value}{groupsSeparator: }");
 
         cartesian.animation(true);
-        //cartesian.title("DailySneezes");
+
+        //Distance between columns
+        cartesian.barGroupsPadding(0.2);
 
         cartesian.yScale()
                 .minimum(0d)

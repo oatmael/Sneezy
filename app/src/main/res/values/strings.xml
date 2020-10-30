@@ -33,7 +33,6 @@
     <string name="stitch_client_app_id">sneezyapp-vfmmi</string>
 
     <string name="google_web_client_id">1045273968584-ko38ka6og4qp6ithoo3fcnmbvg2aueph.apps.googleusercontent.com</string>
-<!--    <string name="google_web_client_id">1045273968584-dpvp9sbm06vm244bs0f9sukgvoa7tslq.apps.googleusercontent.com</string>-->
     <string name="gcp_api_key">AIzaSyA2sd7VDUwn66-HuLcV5ej4LbSGHreTBMo</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -80,8 +79,10 @@
 
     <!--ChangeLog Strings-->
     <string name="changeLogTitle">Change Log</string>
-    <string name="ver.xxx">Version 1.0</string>
-    <string name="ver.xxxText">Initial Release</string>
+    <string name="ver.1.0">Version 1.0</string>
+    <string name="ver.1.0Text">Initial Release</string>
+    <string name="ver.1.1">Version 1.1</string>
+    <string name="ver.1.1Text">Various bug fixes\nMap functionality\nPollen index explanations</string>
     <!--End Changelog Strings-->
 
     <!--Index Details Popup Strings-->

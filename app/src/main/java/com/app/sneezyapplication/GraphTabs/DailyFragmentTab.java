@@ -12,6 +12,10 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -23,10 +27,12 @@ import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
+import com.app.sneezyapplication.GraphsFragment;
 import com.app.sneezyapplication.MainActivity;
 import com.app.sneezyapplication.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Date;
 
@@ -39,6 +45,10 @@ import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
 
 public class DailyFragmentTab extends Fragment {
+
+    ListView list;
+
+
 
     @Nullable
     @Override
@@ -54,6 +64,7 @@ public class DailyFragmentTab extends Fragment {
         Cartesian cartesian = AnyChart.column();
 
         List<DataEntry> data = graphData.getWeeklyUserData();
+
 
         //dummy data
 //        data.add(new ValueDataEntry("Sat", 4));
@@ -86,8 +97,8 @@ public class DailyFragmentTab extends Fragment {
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
         cartesian.interactivity().hoverMode(HoverMode.BY_X);
 
-        cartesian.xAxis(0).title("Your Week");
-        cartesian.yAxis(0).title("Sneezes");
+        //cartesian.xAxis(0).title("Your Week");
+        //cartesian.yAxis(0).title("Sneezes");
 
         anyChartView.setChart(cartesian);
 
@@ -126,6 +137,33 @@ public class DailyFragmentTab extends Fragment {
         c1.recycle();
         c2.recycle();
 
+        //List View -----------------------------------------
+        DailyGraphListView listAdapter = new
+                DailyGraphListView(getActivity(), GetListViewDays());
+        list=view.findViewById(R.id.list);
+        list.setAdapter(listAdapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                //Toast.makeText(getActivity(), "You Clicked at " + listViewDays[+position], Toast.LENGTH_SHORT).show();
+            }
+
+        });
         return view;
+    }
+
+    private Date[] GetListViewDays(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        //Date array for list view
+        Date[] listViewDays = new Date[7];
+
+        for (int i = 0; i < 7; i++) {
+            listViewDays[i] = c.getTime();
+            c.add(Calendar.DATE, -1);
+        }
+
+        return listViewDays;
     }
 }

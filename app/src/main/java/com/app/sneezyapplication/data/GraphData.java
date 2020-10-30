@@ -28,9 +28,14 @@ public class GraphData {
         return monthlyUserData;
     }
 
+    public ListViewItem getListViewGraphData(Date _date){
+        return getListViewGraphableData(repo.getSneezeItems(_date, SneezeRepository.Scope.USER));
+
+    }
+
     private void updateWeeklyUserData(){
         //gets graphable data with arguments for 7 days and todays date, this will get the last week of sneezes for the graph
-        weeklyUserData = getDailyGraphableData(repo.getAllUserSneezeItems(), 7, new Date(), "dayOfWeek");
+        weeklyUserData = getDailyGraphableData(repo.getWeeklyUserSneezeItems(), 7, new Date(), "dayOfWeek");
     }
 
     private void updateMonthlyUserData(Calendar month){
@@ -39,10 +44,9 @@ public class GraphData {
         c.set(Calendar.DAY_OF_MONTH, 0);
         int daysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
         c.add(Calendar.DATE, daysInMonth );
+        //TODO: getAllUserSneezeItems can be changed to use the new getSneezeItems method which would improve performance
         monthlyUserData = getDailyGraphableData(repo.getAllUserSneezeItems(), daysInMonth, c.getTime(), "dayOfMonth");
     }
-
-
 
     public GraphData(){
         weeklyUserData = new ArrayList<>();
@@ -88,10 +92,87 @@ public class GraphData {
         return data;
     }
 
+    private ListViewItem getListViewGraphableData(List<SneezeItem> _sneezeList) {
+
+        int totalSneezes = 0;
+        Date date;
+        int sneezes = 0;
+        List<SneezeItem> sneezeList = _sneezeList;
+        List<DataEntry> resultList;
+        resultList = get24HourFormat();
+        //gets selected calender date to work back though the days
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+
+        for (SneezeItem s : sneezeList) {
+            int prevHour = 0;
+
+            for (SneezeData d : s.getSneezes()) {
+                date = d.dateAsAndroidDate();
+                int hour = date.getHours();
+                if (hour == prevHour)
+                    sneezes++;
+                else
+                    sneezes = 1;
+                String label = getListViewLabelFormat(hour);
+                resultList.set(hour, new ValueDataEntry(label, sneezes));
+                prevHour = hour;
+                totalSneezes++;
+            }
+            //sneezes = 0;
+        }
+        ListViewItem l = new ListViewItem();
+        l.setDataList(resultList);
+        l.setDailyTotal(totalSneezes);
+        return l;
+    }
+
     private Boolean compareDate(String d1, String d2){
         if (d1.substring(0,10).equals(d2.substring(0,10))){
             return true;
         }else
             return false;
+    }
+
+    private String getListViewLabelFormat(int hour){
+        if (hour == 0)
+            return "am";
+        else if (hour >= 1 && hour <=12)
+            return ""+hour;
+        else if (hour >= 13 && hour <=23)
+            return " " + (hour - 12) + " ";
+        else if (hour == 24)
+            return "pm";
+        return "null";
+    }
+    private List<DataEntry> get24HourFormat(){
+        List<DataEntry> data = new ArrayList<>();
+        data.add(new ValueDataEntry("am", 0));
+        data.add(new ValueDataEntry("1", 0));
+        data.add(new ValueDataEntry("2", 0));
+        data.add(new ValueDataEntry("3", 0));
+        data.add(new ValueDataEntry("4", 0));
+        data.add(new ValueDataEntry("5", 0));
+        data.add(new ValueDataEntry("6", 0));
+        data.add(new ValueDataEntry("7", 0));
+        data.add(new ValueDataEntry("8", 0));
+        data.add(new ValueDataEntry("9", 0));
+        data.add(new ValueDataEntry("10", 0));
+        data.add(new ValueDataEntry("11", 0));
+        data.add(new ValueDataEntry("12", 0));
+        data.add(new ValueDataEntry(" 1 ", 0));
+        data.add(new ValueDataEntry(" 2 ", 0));
+        data.add(new ValueDataEntry(" 3 ", 0));
+        data.add(new ValueDataEntry(" 4 ", 0));
+        data.add(new ValueDataEntry(" 5 ", 0));
+        data.add(new ValueDataEntry(" 6 ", 0));
+        data.add(new ValueDataEntry(" 7 ", 0));
+        data.add(new ValueDataEntry(" 8 ", 0));
+        data.add(new ValueDataEntry(" 9 ", 0));
+        data.add(new ValueDataEntry(" 10 ", 0));
+        data.add(new ValueDataEntry(" 11 ", 0));
+        data.add(new ValueDataEntry("pm", 0));
+
+        return data;
     }
 }
