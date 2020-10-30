@@ -186,7 +186,7 @@ public class Forecast {
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             byte[] bytes = jsonString.getBytes();
             fileOutputStream.write(bytes);
-            Toast.makeText(context, "ForecastResult Saved",Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "ForecastResult Saved",Toast.LENGTH_LONG).show();
             //close file
             fileOutputStream.close();
             Log.d("ForecastResult","CacheForecastResult: Successfully saved ForecastResult to json file");
@@ -194,12 +194,12 @@ public class Forecast {
         catch(FileNotFoundException ex){
             ex.printStackTrace();
             Log.e("ForecastObjJSON","File could not be found");
-            Toast.makeText(context, "FILE NOT FOUND EXCEPTION", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "FILE NOT FOUND EXCEPTION", Toast.LENGTH_LONG).show();
         }
         catch (IOException ex) {
             ex.printStackTrace();
             Log.e("ForecastObjJSON","IO Exception was raised");
-            Toast.makeText(context, "IO EXCEPTION", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "IO EXCEPTION", Toast.LENGTH_LONG).show();
         }
     }//saveForecastObj END
 
@@ -229,7 +229,7 @@ public class Forecast {
                 else {
                     fr.setYesterday(yesterday);
                 }
-                Toast.makeText(context, "ForecastResult Loaded",Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "ForecastResult Loaded",Toast.LENGTH_LONG).show();
                 return fr;
             }
         }//Try END
