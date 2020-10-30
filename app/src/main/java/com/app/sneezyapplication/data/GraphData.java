@@ -29,7 +29,7 @@ public class GraphData {
     }
 
     public ListViewItem getListViewGraphData(Date _date){
-        return getListViewGraphableData(repo.getSneezeItems(_date, SneezeRepository.Scope.USER, false));
+        return getListViewGraphableData(repo.getSneezeItems(_date, SneezeRepository.Scope.USER));
 
     }
 
