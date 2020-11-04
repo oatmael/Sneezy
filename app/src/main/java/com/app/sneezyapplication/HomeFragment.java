@@ -309,9 +309,6 @@ public class HomeFragment extends Fragment {
             TextView pollenForecastDateTxt = view.findViewById(R.id.txtForecastUpdateDate);
             pollenForecastDateTxt.setText("Updated: "+ forecastResult.getUpdateDateAsString());
             final int numDays = 4;
-            final String[] weekDays = new String[]{"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
-            //declare and get views to edit
-            //check forecast has been initialized
             ConstraintLayout constraintLayout = view.findViewById(R.id.homeConstraintLayout);
 
             //background colour variables
@@ -319,10 +316,9 @@ public class HomeFragment extends Fragment {
             final ArrayList<Integer> indexValueNums = forecastResult.getIndexValues();
 
             //day name variables
-            int counter = 0;
-            Calendar calendar = Calendar.getInstance();
-            int currentDayNo = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-            String dayOfWeek;
+            SimpleDateFormat dayStr = new SimpleDateFormat("EEE");
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(forecastResult.getUpdateDateInMillis());
 
             //loop through forecast textViews/Background and set the corresponding colour/day
             for (int i = 0; i < numDays; i++) {
@@ -336,7 +332,7 @@ public class HomeFragment extends Fragment {
                     colorValue = ResourcesCompat.getColor(resources, R.color.black,null);
                     Log.e("ForecastResult", "An Exception was thrown\nColor Not found\n" + ex);
                 }
-                //get and edit background value on UI
+                //get background element and set value on UI
                 try {
                     String imgName = "forecastImage" + (i + 1);
                     int imgID = resources.getIdentifier(imgName, "id", packageName);
@@ -352,18 +348,13 @@ public class HomeFragment extends Fragment {
                 catch (Exception ex) {
                     Log.e("ForecastResult", "An Exception was thrown\nDay Img cant be found\n" + ex);
                 }
-                //get Current day from weekDays array
-                if (currentDayNo + counter > 6) {
-                    currentDayNo = 0;
-                    counter = 0;
-                }
-                dayOfWeek = weekDays[currentDayNo + counter];
+
                 //get and edit text View
                 String txtName = "forecastTextBlock" + (i + 1);
                 int txtID = resources.getIdentifier(txtName, "id", packageName);
                 TextView dayNameTxt = constraintLayout.findViewById(txtID);
-                dayNameTxt.setText(dayOfWeek);
-                counter++;
+                dayNameTxt.setText(dayStr.format(c.getTime()).toUpperCase());
+                c.add(Calendar.DATE, 1);
             }//for END
         }//if ForecastResult Fetched END
     }//upDatePollenForecastView END
