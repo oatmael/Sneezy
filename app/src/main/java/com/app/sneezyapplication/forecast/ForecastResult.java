@@ -106,9 +106,13 @@ public class ForecastResult {
         return yesterdayDate.getTimeInMillis();
     }
 
-    public void setYesterdayDate(long yesterdayDateInMillis) {
+    public void setYesterdayDateInMillis(long yesterdayDateInMillis) {
         this. yesterdayDate = Calendar.getInstance(TimeZone.getDefault());
         this.yesterdayDate.setTimeInMillis(yesterdayDateInMillis);
+    }
+    public String getYesterdayDateAsString(){
+        SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM hh:mm a");
+        return simpleDate.format(yesterdayDate.getTime());
     }
 
     public String getUpdateDateAsString(){

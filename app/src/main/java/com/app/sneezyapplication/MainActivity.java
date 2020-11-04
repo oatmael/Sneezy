@@ -2,7 +2,6 @@ package com.app.sneezyapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,7 +9,6 @@ import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 
 import com.app.sneezyapplication.data.GraphData;
-import com.app.sneezyapplication.forecast.Forecast;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.app.ActivityCompat;
@@ -25,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -49,13 +46,6 @@ import io.realm.mongodb.User;
 import io.realm.mongodb.sync.SyncConfiguration;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SettingsFragment.RestartListener {
     //TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES
@@ -133,10 +123,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.e("location", e.getLocalizedMessage());
             });
         }
-        Forecast forecastTest = new Forecast(getApplicationContext());
-//        forecastTest.saveForecastResult(forecastTest.getForecastResult(), getApplicationContext());
-//        forecastTest.loadForecastResult();
-//        Toast.makeText(getApplicationContext(), "Tested",Toast.LENGTH_LONG).show();
     }
 
 

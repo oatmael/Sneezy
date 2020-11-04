@@ -1,6 +1,5 @@
 package com.app.sneezyapplication;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -25,11 +24,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.app.sneezyapplication.binding.MultiBind;
@@ -38,15 +35,9 @@ import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeData;
 import com.app.sneezyapplication.data.SneezeRepository;
 import com.app.sneezyapplication.databinding.FragmentHomeBinding;
-import com.app.sneezyapplication.forecast.Forecast;
+import com.app.sneezyapplication.forecast.ForecastResultHandler;
 import com.app.sneezyapplication.forecast.ForecastResult;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,24 +51,21 @@ import io.realm.RealmQuery;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.app.sneezyapplication.MainActivity.repo;
 
-public class HomeFragment extends Fragment implements Runnable {
-
-    private Forecast forecast;
-    ForecastResult forecastResult;
+public class HomeFragment extends Fragment {
     Integer todaysSneezes;
 
     private SneezeBind mSneeze;
     private MultiBind mMulti;
 
-
-    private static String packageName;
-    private static Resources resources;
-    private static View viewForUpdateView;
-    private static Activity activity;
+    //Forecast Variables
+    private ForecastResultHandler forecastResultHandler;
+    private ForecastResult forecastResult;
+    private OnForecastUpdateCompleteListener mForecastListener;
+    static final String F_TAG ="Forecast";
 
     @Nullable
     @Override
@@ -162,33 +150,18 @@ public class HomeFragment extends Fragment implements Runnable {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //initialise static variables for updating view
-        packageName = getActivity().getBaseContext().getPackageName();
-        viewForUpdateView = getView();
-        resources = getResources();
-        activity = getActivity();
-        //update forecast location text field and day/colour values for forecast
-        Button setLocationBtn = getView().findViewById(R.id.changeLocation);
+        OnForecastUpdateCompleteListener mForecastUpdateCompleteListener = new ForecastUpdateListener();
+        this.registerOnUpdateCompleteListener(mForecastUpdateCompleteListener);
+        this.setupForecast();
 
-
-
-        setLocationBtn.setOnClickListener(v -> setLocationPopup());
-        LinearLayout indexLayout = getView().findViewById(R.id.indexLayout);
-        indexLayout.setOnClickListener(v -> openIndexPopup());
-
-        forecast = new Forecast(getContext());
-        forecastResult = forecast.getForecastResult();
-        upDatePollenForecastView(viewForUpdateView,resources,packageName, forecastResult);
-
-//        Thread forecastThread = new Thread();
-//        forecastThread.start();
-        run();
+        getView().findViewById(R.id.changeLocation).setOnClickListener(v -> openSetLocationPopup());
+        getView().findViewById(R.id.indexLayout).setOnClickListener(v -> openIndexPopup());
     }//onViewCreated
 
     @Override
     public void onResume() {
         super.onResume();
-        upDatePollenForecastView(viewForUpdateView, resources, packageName, forecastResult);
+        setupForecast();
     }
 
     private void handleSneeze() {
@@ -246,67 +219,48 @@ public class HomeFragment extends Fragment implements Runnable {
     }
 
 
-    private void setLocationPopup() {
-        final String TAG = "setLocationPopup";
-        Log.i(TAG, "launched set location popup");
-
+    private void openSetLocationPopup() {
+        upDatePollenForecastView();
+        final String TAG = "Forecast - setLocationPopup";
+        Log.d(TAG, "launched set location popup");
         int cityNo = forecastResult.getSelectedCityNo();
         final AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-
         final View popupView = getLayoutInflater().inflate(R.layout.popup_set_location, null);
-
         //check the radiobutton which corresponds to the city that has been set in forecastResult.selectedCity
         final RadioGroup radioGroupCities = popupView.findViewById(R.id.radioGCities);
         ((RadioButton) radioGroupCities.getChildAt(cityNo)).setChecked(true);
-
         //show the dialog
         mBuilder.setView(popupView);
         final AlertDialog dialog = mBuilder.create();
         dialog.show();
-
+        AtomicBoolean updateRequired = new AtomicBoolean(false);
         //save button will set the value selectedCityNo to access the city name and url
         Button saveBtn = popupView.findViewById(R.id.locationSaveBtn);
         Button cancelBtn = popupView.findViewById(R.id.locationCancelBtn);
         //save onclick
         saveBtn.setOnClickListener(v -> {
+            upDatePollenForecastView();
             //get the selected radio button to save it to the selectedLocationNo
             int selectedCityId = radioGroupCities.getCheckedRadioButtonId();
             RadioButton selectedCityRadio = popupView.findViewById(selectedCityId);
             String selectedCity = selectedCityRadio.getText().toString().replace("_radio", "");
             //get the index of the city that was selected and save it to the forecastResult
-//            if (forecastResult.getCityIndex(selectedCity) != -1 && cityNo != forecastResult.getCityIndex(selectedCity)) {
-            if (forecastResult.getCityIndex(selectedCity) != -1 ) {
-                forecastResult.setSelectedCityNo(forecastResult.getCityIndex(selectedCity));
-                Log.d("ForecastResult", "Location successfully set to " + forecastResult.getCityName(forecastResult.getSelectedCityNo()));
-                //todo save updated result to cache and shared prefs via forecast
-                //update forecastResult in Forecast class
-                forecast.setForecastResult(this.forecastResult);
-                forecast.makeNewForecast();
-                //TODO make loading animation to while result is fetched
-                try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //update pollen forecast from source
-                forecastResult = forecast.getForecastResult();
-                //update home frag view
-                upDatePollenForecastView(viewForUpdateView, resources,packageName,forecastResult);
+            if (forecastResult.getCityIndex(selectedCity) != -1 && cityNo != forecastResult.getCityIndex(selectedCity)) {
+                makeNewForecast(forecastResult.getCityIndex(selectedCity));
+                Log.d(TAG, "Location successfully set to " + forecastResult.getCityName(forecastResult.getSelectedCityNo()));
             }
-//            else if(forecastResult.getCityIndex(selectedCity) != -1 && cityNo == forecastResult.getCityIndex(selectedCity)){
-//                Log.i("forecastResult", "Same city was selected, no update will be made");
-//            }
+            else if(forecastResult.getCityIndex(selectedCity) != -1 && cityNo == forecastResult.getCityIndex(selectedCity)){
+                Log.i("forecastResult", "Same city was selected, no update will be made");
+            }
             else {
-                Log.e("ForecastResult", "Developer Error: selectedCity value does not exist");
+                Log.e(TAG, "Developer Error: selectedCity value does not exist");
             }
             dialog.dismiss();
-
+//            updateRequired.set(true);
         });//save onClickListener END
         cancelBtn.setOnClickListener(v ->{
             dialog.dismiss();
         });
-        //close onclick
-
     }// setLocationPopup END
 
     private void openIndexPopup(){
@@ -316,7 +270,6 @@ public class HomeFragment extends Fragment implements Runnable {
         mBuilder.setView(popupView);
         final AlertDialog dialog = mBuilder.create();
         //set drawable for imageButton based on theme
-//        SharedPref sharedPref = MainActivity.sharedPref;
         Drawable img;
         if(MainActivity.sharedPref.loadNightModeState()){
             img = ResourcesCompat.getDrawable(getResources(), R.drawable.weatherzone_logo_full_dark, null);
@@ -330,50 +283,40 @@ public class HomeFragment extends Fragment implements Runnable {
         dialog.show();
         //Button to close dialog
         Button closeBtn = popupView.findViewById(R.id.btn_index_popup_close);
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });//closeBtn onClick END
+        closeBtn.setOnClickListener(v -> dialog.dismiss());//closeBtn onClick END
         //open www.weatherzone.com
-        weatherzoneLinkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "https://www.weatherzone.com.au";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
+        weatherzoneLinkBtn.setOnClickListener(v -> {
+            String url = "https://www.weatherzone.com.au";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
         });//weatherzoneLinkBtn onClick END
     }//openIndexPopup END
 
-    //    private static boolean locationFetched = false;
-    public static void upDatePollenForecastView(View view, Resources resources, String packageName, ForecastResult forecastResult) {
-        //if location has been fetched
-        //TODO load cached values - cached values will be already instantiated in the ForecastResult form the forecast Forecast class
-        //update view
+
+    public void upDatePollenForecastView() {
+
+        forecastResult = forecastResultHandler.getForecastResult();
+        String packageName = getActivity().getBaseContext().getPackageName();
+        View view = getView();
+        Resources resources = getResources();
+        // if location has been fetched
         if(forecastResult.getIndexValues().size() == 4){
             //update location textview
             TextView pollenLocationTxt = view.findViewById(R.id.pollenCountLocationTxt);
             pollenLocationTxt.setText(forecastResult.getCityName(forecastResult.getSelectedCityNo()) + ", " + forecastResult.getStateName(forecastResult.getSelectedCityNo()));
-
+            //update date textView
+            TextView pollenForecastDateTxt = view.findViewById(R.id.txtForecastUpdateDate);
+            pollenForecastDateTxt.setText("Updated: "+ forecastResult.getUpdateDateAsString());
             final int numDays = 4;
             final String[] weekDays = new String[]{"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
             //declare and get views to edit
             //check forecast has been initialized
             ConstraintLayout constraintLayout = view.findViewById(R.id.homeConstraintLayout);
-            TextView dayNameTxt;
-            ImageView dayImgView;
-            String txtName;
-            String imgName;
-            int txtID;
-            int imgID;
+
             //background colour variables
             final String[] coloursNames = new String[]{"lowColour", "moderateColour", "highColour", "vHighColour", "extremeColour"};
             final ArrayList<Integer> indexValueNums = forecastResult.getIndexValues();
-            int colorID;
-            int colorValue;
 
             //day name variables
             int counter = 0;
@@ -383,21 +326,21 @@ public class HomeFragment extends Fragment implements Runnable {
 
             //loop through forecast textViews/Background and set the corresponding colour/day
             for (int i = 0; i < numDays; i++) {
-
-                //get background colour for forecast
+                int colorValue;
+                //get background colour value for forecast
                 try {
-                    colorID = resources.getIdentifier(coloursNames[indexValueNums.get(i)], "color", packageName);
+                    int colorID = resources.getIdentifier(coloursNames[indexValueNums.get(i)], "color", packageName);
                     colorValue = ResourcesCompat.getColor(resources, colorID,null);
 //                    String hexColor = String.format("#%06X", (0xFFFFFF &colorValue));
                 } catch (Exception ex) {
                     colorValue = ResourcesCompat.getColor(resources, R.color.black,null);
                     Log.e("ForecastResult", "An Exception was thrown\nColor Not found\n" + ex);
                 }
-                //get and edit background
+                //get and edit background value on UI
                 try {
-                    imgName = "forecastImage" + (i + 1);
-                    imgID = resources.getIdentifier(imgName, "id", packageName);
-                    dayImgView = constraintLayout.findViewById(imgID);
+                    String imgName = "forecastImage" + (i + 1);
+                    int imgID = resources.getIdentifier(imgName, "id", packageName);
+                    ImageView dayImgView = constraintLayout.findViewById(imgID);
                     int[][] states = new int[][] {
                             new int[] {} // enabled
                     };
@@ -416,21 +359,82 @@ public class HomeFragment extends Fragment implements Runnable {
                 }
                 dayOfWeek = weekDays[currentDayNo + counter];
                 //get and edit text View
-                txtName = "forecastTextBlock" + (i + 1);
-                txtID = resources.getIdentifier(txtName, "id", packageName);
-                dayNameTxt = constraintLayout.findViewById(txtID);
+                String txtName = "forecastTextBlock" + (i + 1);
+                int txtID = resources.getIdentifier(txtName, "id", packageName);
+                TextView dayNameTxt = constraintLayout.findViewById(txtID);
                 dayNameTxt.setText(dayOfWeek);
                 counter++;
             }//for END
         }//if ForecastResult Fetched END
     }//upDatePollenForecastView END
 
-    //Thread interface method to fetch forecast from web
-    @Override
-    public void run() {
-        Toast.makeText(getContext(), "Run method",Toast.LENGTH_LONG).show();
-        forecast.makeNewForecastNonAsync();
-        Toast.makeText(getContext(), "Run method end", Toast.LENGTH_LONG).show();
+
+    // sets the event listener passed on runtime
+    public void registerOnUpdateCompleteListener(OnForecastUpdateCompleteListener mForecastListener){
+        this.mForecastListener = mForecastListener;
     }
+
+    //Async ForecastResultHandler Tasks
+    //initialises forecast instance
+    public void setupForecast(){
+        new Thread(() -> {
+            forecastResultHandler = new ForecastResultHandler(getContext());
+            forecastResult = forecastResultHandler.getForecastResult();
+
+            if (mForecastListener != null) {
+                Log.d(F_TAG, "SetupForecast Task complete invoking callback method");
+                mForecastListener.onForecastUpdateComplete();
+            }
+            else {
+                Log.e(F_TAG, "mForecastListener is null");
+            }
+        }).start();
+    }
+
+    //called when force updating a forecast
+    public void updateForecast(){
+        new Thread(() -> {
+            //only true if the location has been changed as seen on makeNewForecast()
+            forecastResultHandler.fetchForecastFromWeb(false);
+
+            if (mForecastListener != null) {
+                Log.e(F_TAG, "UpdateForecast Task complete invoking callback method");
+                // invoke the callback method
+                mForecastListener.onForecastUpdateComplete();
+            }
+            else {
+                Log.e(F_TAG, "mForecastListener is null");
+            }
+        }).start();
+    }
+
+    //called when location is changed
+    public void makeNewForecast(int locationIndex){
+        new Thread(() -> {
+            forecastResultHandler.changeLocation(locationIndex);
+            forecastResultHandler.fetchForecastFromWeb(true);
+
+            if (mForecastListener != null) {
+                Log.e(F_TAG, "Task complete calling callback method");
+                // invoke the callback method
+                getActivity().runOnUiThread(() -> mForecastListener.onForecastUpdateComplete());
+            }
+            else {
+                Log.e(F_TAG, "mForecastListener is null");
+            }
+        }).start();
+    }
+
+    class ForecastUpdateListener implements OnForecastUpdateCompleteListener{
+        @Override
+        public void onForecastUpdateComplete() {
+            Log.d(F_TAG,"onUpdateComplete invoked");
+            upDatePollenForecastView();
+        }
+    }//ForecastHandler end
 }//HomeFragment END
 
+
+interface OnForecastUpdateCompleteListener{
+    void onForecastUpdateComplete();
+}

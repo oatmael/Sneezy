@@ -31,10 +31,6 @@ public class SharedPref {
 
 
     public void saveLocationPreference(int locationIndex){
-        //TODO before calling* unless can be called from popup save btn
-        //check IF locationIndex != forecastObj.getSelectedCityNo()
-        //-IF FALSE update locationIndex
-        //-ELSE do nothing
         SharedPreferences.Editor editor = sneezyPreferences.edit();
         editor.putInt(LOCATION_INDEX_KEY, locationIndex);
         editor.commit();
