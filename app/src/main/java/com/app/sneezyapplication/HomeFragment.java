@@ -156,6 +156,7 @@ public class HomeFragment extends Fragment {
 
         getView().findViewById(R.id.changeLocation).setOnClickListener(v -> openSetLocationPopup());
         getView().findViewById(R.id.indexLayout).setOnClickListener(v -> openIndexPopup());
+        getView().findViewById(R.id.btnRefreshForecast).setOnClickListener(v -> updateForecast());
     }//onViewCreated
 
     @Override

@@ -394,17 +394,32 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtForecastUpdateDate"
-                    app:layout_constraintTop_toBottomOf="@id/forecastLinearLayout"
-                    app:layout_constraintStart_toStartOf="@id/forecastLinearLayout"
-                    android:layout_marginStart="20dp"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="12sp"
-                    android:textColor="?attr/mainText">
-                </TextView>
+                    app:layout_constraintTop_toBottomOf="@id/forecastLinearLayout"
+                    app:layout_constraintStart_toStartOf="@id/forecastLinearLayout"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/txtForecastUpdateDate"
+                        android:layout_marginStart="20dp"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:textColor="?attr/mainText">
+
+                    </TextView>
+                    <ImageButton
+                        android:id="@+id/btnRefreshForecast"
+                        android:layout_width="20sp"
+                        android:layout_height="20sp"
+                        android:background="@drawable/ic_refresh"
+                        android:backgroundTint="?attr/mainText"
+                        android:layout_marginTop="2sp"
+                        />
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
