@@ -21,5 +21,5 @@ public class YearlyFragmentTab extends Fragment {
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         return view;
-    }
+}
 }
