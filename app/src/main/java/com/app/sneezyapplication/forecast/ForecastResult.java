@@ -29,7 +29,7 @@ public class ForecastResult {
     private ArrayList<String> forecastList = new ArrayList<>();//stores the forecast result for each day
 //    private ArrayList<Integer> forecastValueNums;//stores the forecast value index for each day (e.g. low = 0, extreme = 4)
     private int selectedCityNo;//stores index number of the location to be used
-    private Calendar updateDate;
+    private final Calendar updateDate;
     private Calendar yesterdayDate;
     private String yesterday;
     private String updateConclusion;
@@ -39,7 +39,7 @@ public class ForecastResult {
     }
 
     public ForecastResult(int selectedCityNo){
-        this(selectedCityNo, Calendar.getInstance().getTimeInMillis());
+        this(selectedCityNo, System.currentTimeMillis());
     }
 
     public ForecastResult(int selectedCityNo, long updateTime){
@@ -106,9 +106,13 @@ public class ForecastResult {
         return yesterdayDate.getTimeInMillis();
     }
 
-    public void setYesterdayDate(long yesterdayDateInMillis) {
+    public void setYesterdayDateInMillis(long yesterdayDateInMillis) {
         this. yesterdayDate = Calendar.getInstance(TimeZone.getDefault());
         this.yesterdayDate.setTimeInMillis(yesterdayDateInMillis);
+    }
+    public String getYesterdayDateAsString(){
+        SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM hh:mm a");
+        return simpleDate.format(yesterdayDate.getTime());
     }
 
     public String getUpdateDateAsString(){
@@ -121,18 +125,14 @@ public class ForecastResult {
     }
 
     public boolean isUpToDate(){
-        final long hrInMillis = 7200000;
-        TimeZone tz = TimeZone.getDefault();
-        Calendar currentTime = Calendar.getInstance(tz);
-        float difInMillis = currentTime.getTimeInMillis() - updateDate.getTimeInMillis();
-        float difInHrs = difInMillis/ hrInMillis;
-        if (difInHrs < 2 && this.forecastList.size() == 4){
-            return true;
-        }
-        return false;
+//        final long hrInMillis = 7200000; //2hrs
+//        final long hrInMillis = 3600000; //1hr
+        final long mInMillis30 = 1800000; //30min
+        float difInMillis = System.currentTimeMillis() - updateDate.getTimeInMillis();
+        return difInMillis < mInMillis30 && this.forecastList.size() == 4;
     }
     //returns the age of the yesterday forecast in days (up to 4)
-    public int getYesterdayAge(){
+    public int getYesterdayAgeInDays(){
         int age = 0;
         int currentDayOfYear= Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -152,13 +152,10 @@ public class ForecastResult {
     //Checks if yesterday value is old enough to be used
     public boolean yesterdayIsValid(){
         //if same year & current day -1 OR year -1 & maximum day = yesterday
-        if(updateDate.get(Calendar.DAY_OF_YEAR)-1 == yesterdayDate.get(Calendar.DAY_OF_YEAR)
+        return updateDate.get(Calendar.DAY_OF_YEAR) - 1 == yesterdayDate.get(Calendar.DAY_OF_YEAR)
                 && updateDate.get(Calendar.YEAR) == yesterdayDate.get(Calendar.YEAR)
                 || yesterdayDate.getMaximum(Calendar.DAY_OF_YEAR) == yesterdayDate.get(Calendar.DAY_OF_YEAR)
-                && updateDate.get(Calendar.YEAR) == yesterdayDate.get(Calendar.YEAR)-1) {
-            return true;
-        }
-        return false;
+                && updateDate.get(Calendar.YEAR) == yesterdayDate.get(Calendar.YEAR) - 1;
     }
 
     public String getUpdateConclusion() {
@@ -172,6 +169,6 @@ public class ForecastResult {
     public String getForecastDay(int i) {
         return forecastList.get(i);
     }
-}//ForecastObj END
+}//forecastResult END
 
 
