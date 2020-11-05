@@ -2,7 +2,6 @@ package com.app.sneezyapplication.forecast;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.app.sneezyapplication.SharedPref;
 
@@ -29,7 +28,7 @@ import org.json.simple.JSONObject;
 public class ForecastResultHandler {
     private final String TAG = "Forecast";
     private ForecastResult forecastResult;
-    private ForecastResult cachedResult;//only used if connection issues or is still up to date
+    private final ForecastResult cachedResult;//only used if connection issues or is still up to date
     Context context;
 
     //On creation sets up the RorecastResult form avilable options
@@ -48,7 +47,7 @@ public class ForecastResultHandler {
                 forecastResult = new ForecastResult(locationIndex, updateDate);
                 forecastResult.setForecastList(cachedResult.getForecastList());
                 //update yesterday value based on age of forecast
-                int forecastAge = cachedResult.getYesterdayAge();
+                int forecastAge = cachedResult.getYesterdayAgeInDays();
                 //get date for yesterday
                 Calendar c = Calendar.getInstance();
                 c.add(Calendar.DAY_OF_YEAR, -1);
@@ -70,7 +69,7 @@ public class ForecastResultHandler {
                     forecastResult.setYesterdayDateInMillis(c.getTimeInMillis());
                 } else {
                     forecastResult.setYesterday(forecastResult.getForecastDay(0));
-                    forecastResult.setYesterdayDateInMillis(Calendar.getInstance().getTimeInMillis());
+                    forecastResult.setYesterdayDateInMillis(System.currentTimeMillis());
                 }
             } else {
                 //make blank obj with shared prefs location
@@ -79,11 +78,11 @@ public class ForecastResultHandler {
             //check if up to date
             if (!forecastResult.isUpToDate()) {
                 fetchForecastFromWeb(false);
-//                updateForecast();
                 if (forecastResult.getUpdateConclusion().equals("SUCCESS")) {
                     saveForecastResult(forecastResult, context);
                 } else {
                     forecastResult = cachedResult;
+                    Log.e(TAG, "Tried to update forecastResult but failed - Conclusion: "+forecastResult.getUpdateConclusion());
                     //Todo notify user of connection error
                 }
             }
@@ -154,11 +153,11 @@ public class ForecastResultHandler {
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
             Log.e("ForecastObjJSON", "File could not be found");
-            Toast.makeText(context, "FILE NOT FOUND EXCEPTION", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "FILE NOT FOUND EXCEPTION", Toast.LENGTH_LONG).show();
         } catch (IOException ex) {
             ex.printStackTrace();
             Log.e("ForecastObjJSON", "IO Exception was raised");
-            Toast.makeText(context, "IO EXCEPTION", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "IO EXCEPTION", Toast.LENGTH_LONG).show();
         }
     }//saveForecastObj END
 
@@ -202,7 +201,7 @@ public class ForecastResultHandler {
             Log.e(TAG, "Exception was thrown while loading cached forecastResult");
         }
         return null;
-    }
+    }//loadForecastResult END
 
     private void handleFetchForecastResponse(String result, ArrayList<String> forecastList, Long updateDate, boolean makeNewForecast) {
         if (result.equals("SUCCESS")) {
@@ -239,7 +238,7 @@ public class ForecastResultHandler {
                 String delim = "\\W+";
                 String[] days = forecasts.split(delim);
                 Collections.addAll(forecastList, days);
-                updateDate = Calendar.getInstance().getTimeInMillis();
+                updateDate = System.currentTimeMillis();
                 result = "SUCCESS";
                 Log.d(TAG, "Connection result: " + result + " Values: " + forecastList.toString());
             } else {

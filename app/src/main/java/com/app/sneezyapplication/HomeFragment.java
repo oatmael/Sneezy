@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment {
     private ForecastResultHandler forecastResultHandler;
     private ForecastResult forecastResult;
     private OnForecastUpdateCompleteListener mForecastListener;
-    static final String F_TAG ="Forecast";
+    static final String F_TAG ="Forecast Home Frag";
 
     @Nullable
     @Override
@@ -374,7 +374,7 @@ public class HomeFragment extends Fragment {
 
             if (mForecastListener != null) {
                 Log.d(F_TAG, "SetupForecast Task complete invoking callback method");
-                mForecastListener.onForecastUpdateComplete();
+                getActivity().runOnUiThread(() -> mForecastListener.onForecastUpdateComplete());
             }
             else {
                 Log.e(F_TAG, "mForecastListener is null");
@@ -391,7 +391,7 @@ public class HomeFragment extends Fragment {
             if (mForecastListener != null) {
                 Log.e(F_TAG, "UpdateForecast Task complete invoking callback method");
                 // invoke the callback method
-                mForecastListener.onForecastUpdateComplete();
+                getActivity().runOnUiThread(() -> mForecastListener.onForecastUpdateComplete());
             }
             else {
                 Log.e(F_TAG, "mForecastListener is null");

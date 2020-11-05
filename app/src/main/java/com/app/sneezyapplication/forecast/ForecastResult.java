@@ -39,7 +39,7 @@ public class ForecastResult {
     }
 
     public ForecastResult(int selectedCityNo){
-        this(selectedCityNo, Calendar.getInstance().getTimeInMillis());
+        this(selectedCityNo, System.currentTimeMillis());
     }
 
     public ForecastResult(int selectedCityNo, long updateTime){
@@ -125,15 +125,14 @@ public class ForecastResult {
     }
 
     public boolean isUpToDate(){
-        final long hrInMillis = 7200000;
-        TimeZone tz = TimeZone.getDefault();
-        Calendar currentTime = Calendar.getInstance(tz);
-        float difInMillis = currentTime.getTimeInMillis() - updateDate.getTimeInMillis();
-        float difInHrs = difInMillis/ hrInMillis;
-        return difInHrs < 2 && this.forecastList.size() == 4;
+//        final long hrInMillis = 7200000; //2hrs
+//        final long hrInMillis = 3600000; //1hr
+        final long mInMillis30 = 1800000; //30min
+        float difInMillis = System.currentTimeMillis() - updateDate.getTimeInMillis();
+        return difInMillis < mInMillis30 && this.forecastList.size() == 4;
     }
     //returns the age of the yesterday forecast in days (up to 4)
-    public int getYesterdayAge(){
+    public int getYesterdayAgeInDays(){
         int age = 0;
         int currentDayOfYear= Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
