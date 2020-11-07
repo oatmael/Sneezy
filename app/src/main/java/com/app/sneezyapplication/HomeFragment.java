@@ -16,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,9 +62,10 @@ public class HomeFragment extends Fragment {
     private SneezeBind mSneeze;
     private MultiBind mMulti;
 
+    SwipeRefreshLayout mRefreshLayout;
     //Forecast Variables
-    private ForecastResultHandler forecastResultHandler;
-    private ForecastResult forecastResult;
+    private ForecastResultHandler mForecastResultHandler;
+    private ForecastResult mForecastResult;
     private OnForecastUpdateCompleteListener mForecastListener;
     static final String F_TAG ="Forecast Home Frag";
 
@@ -153,7 +155,8 @@ public class HomeFragment extends Fragment {
         OnForecastUpdateCompleteListener mForecastUpdateCompleteListener = new ForecastUpdateListener();
         this.registerOnUpdateCompleteListener(mForecastUpdateCompleteListener);
         this.setupForecast();
-
+        mRefreshLayout = getView().findViewById(R.id.swipeRefreshLayout);
+        mRefreshLayout.setOnRefreshListener(this::refreshHome);
         getView().findViewById(R.id.changeLocation).setOnClickListener(v -> openSetLocationPopup());
         getView().findViewById(R.id.indexLayout).setOnClickListener(v -> openIndexPopup());
         getView().findViewById(R.id.btnRefreshForecast).setOnClickListener(v -> updateForecast());
@@ -219,12 +222,17 @@ public class HomeFragment extends Fragment {
         return lat + "," + lng;
     }
 
+    private void refreshHome(){
+        updateForecast();
+        mRefreshLayout.setRefreshing(false);//must call setRefreshing(false) at end of the method
+    };
+
 
     private void openSetLocationPopup() {
         upDatePollenForecastView();
         final String TAG = "Forecast - setLocationPopup";
         Log.d(TAG, "launched set location popup");
-        int cityNo = forecastResult.getSelectedCityNo();
+        int cityNo = mForecastResult.getSelectedCityNo();
         final AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
         final View popupView = getLayoutInflater().inflate(R.layout.popup_set_location, null);
         //check the radiobutton which corresponds to the city that has been set in forecastResult.selectedCity
@@ -246,11 +254,11 @@ public class HomeFragment extends Fragment {
             RadioButton selectedCityRadio = popupView.findViewById(selectedCityId);
             String selectedCity = selectedCityRadio.getText().toString().replace("_radio", "");
             //get the index of the city that was selected and save it to the forecastResult
-            if (forecastResult.getCityIndex(selectedCity) != -1 && cityNo != forecastResult.getCityIndex(selectedCity)) {
-                makeNewForecast(forecastResult.getCityIndex(selectedCity));
-                Log.d(TAG, "Location successfully set to " + forecastResult.getCityName(forecastResult.getSelectedCityNo()));
+            if (mForecastResult.getCityIndex(selectedCity) != -1 && cityNo != mForecastResult.getCityIndex(selectedCity)) {
+                makeNewForecast(mForecastResult.getCityIndex(selectedCity));
+                Log.d(TAG, "Location successfully set to " + mForecastResult.getCityName(mForecastResult.getSelectedCityNo()));
             }
-            else if(forecastResult.getCityIndex(selectedCity) != -1 && cityNo == forecastResult.getCityIndex(selectedCity)){
+            else if(mForecastResult.getCityIndex(selectedCity) != -1 && cityNo == mForecastResult.getCityIndex(selectedCity)){
                 Log.i("forecastResult", "Same city was selected, no update will be made");
             }
             else {
@@ -294,31 +302,30 @@ public class HomeFragment extends Fragment {
         });//weatherzoneLinkBtn onClick END
     }//openIndexPopup END
 
-
     public void upDatePollenForecastView() {
-        forecastResult = forecastResultHandler.getForecastResult();
+        mForecastResult = mForecastResultHandler.getForecastResult();
         String packageName = getActivity().getBaseContext().getPackageName();
         View view = getView();
         Resources resources = getResources();
         // if location has been fetched
-        if(forecastResult.getIndexValues().size() == 4){
+        if(mForecastResult.getIndexValues().size() == 4){
             //update location textview
             TextView pollenLocationTxt = view.findViewById(R.id.pollenCountLocationTxt);
-            pollenLocationTxt.setText(forecastResult.getCityName(forecastResult.getSelectedCityNo()) + ", " + forecastResult.getStateName(forecastResult.getSelectedCityNo()));
+            pollenLocationTxt.setText(mForecastResult.getCityName(mForecastResult.getSelectedCityNo()) + ", " + mForecastResult.getStateName(mForecastResult.getSelectedCityNo()));
             //update date textView
             TextView pollenForecastDateTxt = view.findViewById(R.id.txtForecastUpdateDate);
-            pollenForecastDateTxt.setText("Updated: "+ forecastResult.getUpdateDateAsString());
+            pollenForecastDateTxt.setText("Updated: "+ mForecastResult.getUpdateDateAsString());
             final int numDays = 4;
             ConstraintLayout constraintLayout = view.findViewById(R.id.homeConstraintLayout);
 
             //background colour variables
             final String[] coloursNames = new String[]{"lowColour", "moderateColour", "highColour", "vHighColour", "extremeColour"};
-            final ArrayList<Integer> indexValueNums = forecastResult.getIndexValues();
+            final ArrayList<Integer> indexValueNums = mForecastResult.getIndexValues();
 
             //day name variables
             SimpleDateFormat dayStr = new SimpleDateFormat("EEE", Locale.US);
             Calendar c = Calendar.getInstance();
-            c.setTimeInMillis(forecastResult.getUpdateDateInMillis());
+            c.setTimeInMillis(mForecastResult.getUpdateDateInMillis());
 
             //loop through forecast textViews/Background and set the corresponding colour/day
             for (int i = 0; i < numDays; i++) {
@@ -369,8 +376,8 @@ public class HomeFragment extends Fragment {
     //initialises forecast instance
     public void setupForecast(){
         new Thread(() -> {
-            forecastResultHandler = new ForecastResultHandler(getContext());
-            forecastResult = forecastResultHandler.getForecastResult();
+            mForecastResultHandler = new ForecastResultHandler(getContext());
+            mForecastResult = mForecastResultHandler.getForecastResult();
 
             if (mForecastListener != null) {
                 Log.d(F_TAG, "SetupForecast Task complete invoking callback method");
@@ -386,7 +393,7 @@ public class HomeFragment extends Fragment {
     public void updateForecast(){
         new Thread(() -> {
             //only true if the location has been changed as seen on makeNewForecast()
-            forecastResultHandler.fetchForecastFromWeb(false);
+            mForecastResultHandler.fetchForecastFromWeb(false);
 
             if (mForecastListener != null) {
                 Log.d(F_TAG, "UpdateForecast Task complete invoking callback method");
@@ -402,8 +409,8 @@ public class HomeFragment extends Fragment {
     //called when location is changed
     public void makeNewForecast(int locationIndex){
         new Thread(() -> {
-            forecastResultHandler.changeLocation(locationIndex);
-            forecastResultHandler.fetchForecastFromWeb(true);
+            mForecastResultHandler.changeLocation(locationIndex);
+            mForecastResultHandler.fetchForecastFromWeb(true);
 
             if (mForecastListener != null) {
                 Log.d(F_TAG, "Task complete calling callback method");
