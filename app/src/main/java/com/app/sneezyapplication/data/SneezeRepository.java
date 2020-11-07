@@ -15,6 +15,7 @@ import java.util.Random;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
+import static com.app.sneezyapplication.MainActivity.realm;
 import static com.app.sneezyapplication.MainActivity.repo;
 
 public class SneezeRepository {
@@ -260,6 +261,17 @@ public class SneezeRepository {
         }
 
         return results;
+    }
+
+    public void removeSneezes(int amount) {
+        RealmResults<SneezeItem> currentSneezes = getSneezeItems(new Date(), Scope.USER);
+
+        for (int i = 0; i < amount; i++){
+            if (currentSneezes.get(0).getSneezes().size() <= 0) break;
+            realm.executeTransaction(r -> {
+                currentSneezes.get(0).getSneezes().deleteLastFromRealm();
+            });
+        }
     }
 
     public static float sneezeItemAverge(RealmResults<SneezeItem> sneezeItems){
