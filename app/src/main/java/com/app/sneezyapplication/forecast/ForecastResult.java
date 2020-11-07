@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -111,12 +112,12 @@ public class ForecastResult {
         this.yesterdayDate.setTimeInMillis(yesterdayDateInMillis);
     }
     public String getYesterdayDateAsString(){
-        SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM hh:mm a");
+        SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM hh:mm a", Locale.US);
         return simpleDate.format(yesterdayDate.getTime());
     }
 
     public String getUpdateDateAsString(){
-        SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM hh:mm a");
+        SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM hh:mm a", Locale.US);
         return simpleDate.format(updateDate.getTime());
     }
 

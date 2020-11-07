@@ -296,7 +296,6 @@ public class HomeFragment extends Fragment {
 
 
     public void upDatePollenForecastView() {
-
         forecastResult = forecastResultHandler.getForecastResult();
         String packageName = getActivity().getBaseContext().getPackageName();
         View view = getView();
@@ -317,7 +316,7 @@ public class HomeFragment extends Fragment {
             final ArrayList<Integer> indexValueNums = forecastResult.getIndexValues();
 
             //day name variables
-            SimpleDateFormat dayStr = new SimpleDateFormat("EEE");
+            SimpleDateFormat dayStr = new SimpleDateFormat("EEE", Locale.US);
             Calendar c = Calendar.getInstance();
             c.setTimeInMillis(forecastResult.getUpdateDateInMillis());
 
@@ -390,7 +389,7 @@ public class HomeFragment extends Fragment {
             forecastResultHandler.fetchForecastFromWeb(false);
 
             if (mForecastListener != null) {
-                Log.e(F_TAG, "UpdateForecast Task complete invoking callback method");
+                Log.d(F_TAG, "UpdateForecast Task complete invoking callback method");
                 // invoke the callback method
                 getActivity().runOnUiThread(() -> mForecastListener.onForecastUpdateComplete());
             }
@@ -407,7 +406,7 @@ public class HomeFragment extends Fragment {
             forecastResultHandler.fetchForecastFromWeb(true);
 
             if (mForecastListener != null) {
-                Log.e(F_TAG, "Task complete calling callback method");
+                Log.d(F_TAG, "Task complete calling callback method");
                 // invoke the callback method
                 getActivity().runOnUiThread(() -> mForecastListener.onForecastUpdateComplete());
             }

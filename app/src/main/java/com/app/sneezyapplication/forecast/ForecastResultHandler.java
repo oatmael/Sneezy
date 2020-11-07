@@ -93,7 +93,7 @@ public class ForecastResultHandler {
             fetchForecastFromWeb(false);
         } else {
             forecastResult = new ForecastResult();
-            fetchForecastFromWeb(false);
+            fetchForecastFromWeb(true);
         }
     }//Forecast constructor END
 
@@ -205,18 +205,18 @@ public class ForecastResultHandler {
 
     private void handleFetchForecastResponse(String result, ArrayList<String> forecastList, Long updateDate, boolean makeNewForecast) {
         if (result.equals("SUCCESS")) {
+            this.forecastResult.setUpdateDateInMillis(updateDate);
+            this.forecastResult.setForecastList(forecastList);
             if (makeNewForecast) {
                 this.forecastResult.setYesterdayDateInMillis(updateDate);
                 this.forecastResult.setYesterday(forecastList.get(0));
             }
-            this.forecastResult.setUpdateDateInMillis(updateDate);
-            this.forecastResult.setForecastList(forecastList);
             saveForecastResult(this.forecastResult, this.context);
         } else {
-            Log.e("handleForecastResponce", "Not Successful. Result: " + result);
+            Log.e("handleForecastResponse", "Not Successful. Result: " + result);
         }
         this.forecastResult.setUpdateConclusion(result);
-    }//handleNewForecastResponce END
+    }//handleNewForecastResponse END
 
     public void fetchForecastFromWeb(boolean makeNewForecast) {
         String result;
@@ -248,7 +248,7 @@ public class ForecastResultHandler {
         }//end of try
         catch (SocketTimeoutException ex) {
             ex.printStackTrace();
-            Log.e(TAG, "Connection timmed out:\n" + ex);
+            Log.e(TAG, "Connection timed out:\n" + ex);
             result = "TIMEOUT";
         } catch (Exception ex) {
             ex.printStackTrace();
