@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +64,7 @@ public class HomeFragment extends Fragment {
     private SneezeBind mSneeze;
     private MultiBind mMulti;
 
-    SwipeRefreshLayout mRefreshLayout;
+    private SwipeRefreshLayout mRefreshLayout;
     //Forecast Variables
     private ForecastResultHandler mForecastResultHandler;
     private ForecastResult mForecastResult;
@@ -157,6 +159,7 @@ public class HomeFragment extends Fragment {
         this.setupForecast();
         mRefreshLayout = getView().findViewById(R.id.swipeRefreshLayout);
         mRefreshLayout.setOnRefreshListener(this::refreshHome);
+        styleRefreshLayout();
         getView().findViewById(R.id.changeLocation).setOnClickListener(v -> openSetLocationPopup());
         getView().findViewById(R.id.indexLayout).setOnClickListener(v -> openIndexPopup());
         getView().findViewById(R.id.btnRefreshForecast).setOnClickListener(v -> updateForecast());
@@ -225,7 +228,7 @@ public class HomeFragment extends Fragment {
     private void refreshHome(){
         updateForecast();
         mRefreshLayout.setRefreshing(false);//must call setRefreshing(false) at end of the method
-    };
+    }
 
 
     private void openSetLocationPopup() {
@@ -366,6 +369,22 @@ public class HomeFragment extends Fragment {
         }//if ForecastResult Fetched END
     }//upDatePollenForecastView END
 
+    private void styleRefreshLayout(){
+        TypedValue bgValue = new TypedValue();
+        TypedValue fgValue = new TypedValue();
+        int bgColor;
+        int fgColor;
+        if (getContext().getTheme().resolveAttribute(R.attr.sectionColor, bgValue, true)  && getContext().getTheme().resolveAttribute(R.attr.mainText, fgValue, true) ){
+            fgColor = fgValue.data;
+            bgColor = bgValue.data;
+        }
+        else{
+            bgColor = Color.WHITE;
+            fgColor = Color.BLACK;
+        }
+        mRefreshLayout.setProgressBackgroundColorSchemeColor(bgColor);
+        mRefreshLayout.setColorSchemeColors(fgColor);
+    }
 
     // sets the event listener passed on runtime
     public void registerOnUpdateCompleteListener(OnForecastUpdateCompleteListener mForecastListener){
