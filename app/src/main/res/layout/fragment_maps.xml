@@ -11,8 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/lowColour">
+        android:layout_height="match_parent">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/map_view"
@@ -227,7 +226,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- MAPS MENU END -->
 
-        <!--        TODO enable when backend is setup -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_menu"
             android:layout_width="wrap_content"
