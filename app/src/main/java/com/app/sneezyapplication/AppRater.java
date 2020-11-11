@@ -2,11 +2,13 @@ package com.app.sneezyapplication;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
@@ -50,6 +52,7 @@ public class AppRater {
                 showRatePopup(mContext, editor);
             }
         }
+
         editor.commit();
     }
 
@@ -64,7 +67,13 @@ public class AppRater {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME));
+/*                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME));*/
+                rateApp(mContext);
+ /*               mContext.startActivity(intent);*/
+                if (editor != null) {
+                    editor.putBoolean("dontshowagain", true);
+                    editor.commit();
+                }
                 dialog.dismiss();
             }
         });
@@ -101,7 +110,44 @@ public class AppRater {
             dialog.getWindow().setBackgroundDrawableResource(R.color.lightBackground);
         }
     }
+
+
+
+
+
+    public static void rateApp(Context mContext)
+    {
+        try
+        {
+            Intent rateIntent = rateIntentForUrl("market://details");
+            mContext.startActivity(rateIntent);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            Intent rateIntent = rateIntentForUrl("https://play.google.com/store/apps/details");
+            mContext.startActivity(rateIntent);
+        }
     }
+
+    private static Intent rateIntentForUrl(String url)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("%s?id=%s", url, "com.app.sneezyapplication")));
+        int flags = Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
+        if (Build.VERSION.SDK_INT >= 21)
+        {
+            flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
+        }
+        else
+        {
+            //noinspection deprecation
+            flags |= Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET;
+        }
+        intent.addFlags(flags);
+        return intent;
+    }
+}
+
+
 
 
 
