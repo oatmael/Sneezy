@@ -267,7 +267,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         switch (selectedPresentation) {
             case MARKER:
 //                addPoints();
-                addClusterMarkers();
+//                addClusterMarkers();
+                addPoints();
                 break;
             case HEATMAP:
                 addHeatMap();
@@ -347,8 +348,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }//selectedUserScope switch END
 
         //get staring and current calendars
-        Calendar currentCal = Calendar.getInstance();
         Calendar startCal = Calendar.getInstance();
+        Calendar currentCal = Calendar.getInstance();
         switch (selectedDateRange) {
             case WEEK:
                 startCal.add(Calendar.DATE, -7);
