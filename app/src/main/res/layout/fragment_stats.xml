@@ -1,15 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="?attr/backgroundMainColor">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Coming Soon!"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"
-        android:textColor="?attr/mainText"
-        />
+    <data>
+        <variable
+            name="stats"
+            type="com.app.sneezyapplication.binding.StatsBind" />
+    </data>
 
-</RelativeLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@{stats.getTotalSneezes()}"
+            android:textColor="?attr/mainText"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:text="@{stats.getAverageSneezes()}"
+            android:textColor="?attr/mainText"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="50dp"
+            android:text="@{stats.getMostSneezeDay()}"
+            android:textColor="?attr/mainText"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="70dp"
+            android:text="@{stats.getDayBreakdown()}"
+            android:textColor="?attr/mainText"
+            android:textSize="18sp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="260dp"
+            android:text="@{stats.getNonUserAverageSneezes()}"
+            android:textColor="?attr/mainText"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="280dp"
+            android:text="@{stats.getNonUserMostSneezeDay()}"
+            android:textColor="?attr/mainText"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="300dp"
+            android:text="@{stats.getNonUserDayBreakdown()}"
+            android:textColor="?attr/mainText"
+            android:textSize="18sp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -274,7 +274,7 @@ public class SneezeRepository {
         }
     }
 
-    public static float sneezeItemAverge(RealmResults<SneezeItem> sneezeItems){
+    public static float sneezeItemAverage(RealmResults<SneezeItem> sneezeItems, boolean fillEmpty){
         float avg = 0;
         int tally = 0;
 
@@ -282,9 +282,38 @@ public class SneezeRepository {
             tally += s.getSneezes().size();
         }
 
-        avg = tally / sneezeItems.size();
+        int diff = 0;
+        if (fillEmpty){
+            Calendar c1 = Calendar.getInstance();
+            Date d1 = sneezeItems.get(0).getSneezes().get(0).dateAsAndroidDate();
+            c1.set(d1.getYear(), d1.getMonth() - 1, d1.getDate());
+            Calendar c2 = Calendar.getInstance();
+            Date d2 = new Date();
+            c2.set(d2.getYear(), d2.getMonth() - 1, d2.getDate());
+
+            diff = (int)((c2.getTime().getTime() - c1.getTime().getTime()) / (1000 * 60 * 60 * 24)) - sneezeItems.size();
+        }
+
+        avg = tally / (sneezeItems.size() + diff);
 
         return avg;
+    }
+
+    public static int[] sneezeItemDays(RealmResults<SneezeItem> sneezeItems){
+        // starting at monday
+        int[] days = {0,0,0,0,0,0,0};
+
+        for (SneezeItem s : sneezeItems){
+            if      (s.getDate().contains("Mon")) { days[0] += s.getSneezes().size(); }
+            else if (s.getDate().contains("Tue")) { days[1] += s.getSneezes().size(); }
+            else if (s.getDate().contains("Wed")) { days[2] += s.getSneezes().size(); }
+            else if (s.getDate().contains("Thu")) { days[3] += s.getSneezes().size(); }
+            else if (s.getDate().contains("Fri")) { days[4] += s.getSneezes().size(); }
+            else if (s.getDate().contains("Sat")) { days[5] += s.getSneezes().size(); }
+            else if (s.getDate().contains("Sun")) { days[6] += s.getSneezes().size(); }
+        }
+
+        return days;
     }
 
     public static List<SneezeItem> outlierCull(RealmResults<SneezeItem> sneezeItems){
