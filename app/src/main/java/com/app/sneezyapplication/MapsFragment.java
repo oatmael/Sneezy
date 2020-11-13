@@ -39,8 +39,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,6 +68,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     FusedLocationProviderClient fusedLocationClient;
     SneezeRepository repo;
     LatLng userCoords;
+    private ClusterManager<mapClusterItem> clusterManager;
 
     private enum eLocationPermission {GRANTED, DENIED, OFF}
 
@@ -120,6 +126,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         userCoords = DEFAULT_LOCATION;
+        this.repo = new SneezeRepository();
         this.repo = MainActivity.repo;
         // *** MapView requires that the Bundle you pass contain _ONLY_ MapView SDK objects or sub-Bundles. ***
         Bundle mapViewBundle = null;
@@ -260,7 +267,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //add heat map or markers with new settings
         switch (selectedPresentation) {
             case MARKER:
-                addPoints();
+//                addPoints();
+                addClusterMarkers();
                 break;
             case HEATMAP:
                 addHeatMap();
@@ -272,32 +280,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         HeatmapTileProvider mProvider;
         TileOverlay mOverlay;
 
-        /*
-        //DUMMY DATA
-        try {
-            InputStream is = getContext().getAssets().open("au-towns-sample.csv");
-
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-
-            String csvString = new String(buffer, StandardCharsets.UTF_8);
-            String[] lines = csvString.split("\\r?\\n");
-
-            for(int i = 0; i < lines.length; i++) {
-                String[] coords = lines[i].split(",");
-                sneezeLocations.add(new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1])));
-            }
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Log.e("DummyData", "File not found\n"+ e);
-        }
-        catch (Exception e){
-            Log.e("DummyData", "Exception was thrown\n"+e);
-        }
-        */
         //getLatLong list of coordinates
         List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
 
@@ -312,7 +294,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }//addHeatMap END
 
-    //add overlay of sneeze locations in
+    private void addClusterMarkers() {
+        setupClusterManager();
+        addClusterPoints();
+    }
+
+    //add non-cluster markers of sneeze locations
     private void addPoints() {
         List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
 
@@ -323,10 +310,28 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }//addPoints
 
+
     //gets data from the repo and returns LatLong list
+    private boolean isLocationOn() {
+        LocationManager lm = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return gps_enabled && network_enabled;
+    }//isLocationEnabled END
+
     private ArrayList<LatLng> getLatLongList() {
         ArrayList<LatLng> latLongList = new ArrayList<>();
-        List<SneezeItem> siList;
+//        List<SneezeItem> siList;
 
         SneezeRepository.Scope scope = SneezeRepository.Scope.COMBINED;
         switch (selectedUserScope) {
@@ -355,12 +360,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         Date startCalAsDate = startCal.getTime();
         Date currentCalAsDate = currentCal.getTime();
 
-        siList = repo.getSneezeItems(startCalAsDate, currentCalAsDate, scope);
-        RealmList<SneezeData> sdList;
-        Location location;
-        LatLng coords;
+//        ArrayList<SneezeItem> siList;
+        try{
+            List<SneezeItem> siList = repo.getSneezeItems(startCalAsDate, currentCalAsDate, scope);
 
-        try {
+            RealmList<SneezeData> sdList;
+            Location location;
+            LatLng coords;
+
             for (int i = 0; i < siList.size(); i++) {
                 sdList = siList.get(i).getSneezes();
                 for (int j = 0; j < sdList.size(); j++) {
@@ -381,23 +388,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }//try-catch END
         return latLongList;
     }//getLatLongList END
-
-    private boolean isLocationOn() {
-        LocationManager lm = (LocationManager) getActivity().getSystemService(getContext().LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return gps_enabled && network_enabled;
-    }//isLocationEnabled END
 
     private boolean myLocationPermissionCheck() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -577,53 +567,137 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             myLocationFab.setImageDrawable(fabIcon);
         }
 
-        private ColorStateList getAltFabStateList(){
+    private ColorStateList getAltFabStateList(){
             return ResourcesCompat.getColorStateList(getResources(), R.color.satelist_maps_fab_alt, null);
         }
 
-        //OnMapReadyCallback METHODS
-        @Override
-        public void onResume () {
-            super.onResume();
-            mMapView.onResume();
+    //OnMapReadyCallback METHODS
+    @Override
+    public void onResume () {
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    public void onStart () {
+        super.onStart();
+        mMapView.onStart();
+    }
+
+    @Override
+    public void onStop () {
+        super.onStop();
+        mMapView.onStop();
+    }
+    @Override
+    public void onPause () {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy () {
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory () {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
+
+    //MyLocation METHODS
+    @Override
+    public boolean onMyLocationButtonClick () {
+        return false;
+    }
+    @Override
+    public void onMyLocationClick (@NonNull Location location){
+    }
+
+    private void setupClusterManager(){
+        clusterManager = new ClusterManager<mapClusterItem>(getContext(), googleMap);
+        googleMap.setOnCameraIdleListener(clusterManager);
+        googleMap.setOnMarkerClickListener(clusterManager);
+            addClusterPoints();
+    }
+
+    private void addClusterPoints(){
+        try{
+            List<LatLng> sneezeLocations = new ArrayList<>(getLatLongList());
+            LatLng latLng;
+            double lat;
+            double lng;
+            for(int i=0; i < sneezeLocations.size(); i++){
+                double offset = i /60d;
+                latLng = sneezeLocations.get(i);
+                lat = latLng.latitude + offset;
+                lng = latLng.longitude + offset;
+                mapClusterItem offsetItem = new mapClusterItem(lat, lng, "Tile "+i, "Snippet"+i);
+                clusterManager.addItem(offsetItem);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Log.e(CLASS_TAG, "Could not add cluster points"+ e);
+        }
+    }
+
+    private class mapClusterItem implements ClusterItem{
+        private final LatLng position;
+        private final String title;
+        private final String snippet;
+
+        public mapClusterItem(double lat, double lng, String title, String snippet) {
+            position = new LatLng(lat, lng);
+            this.title = title;
+            this.snippet = snippet;
         }
 
+        @NonNull
         @Override
-        public void onStart () {
-            super.onStart();
-            mMapView.onStart();
+        public LatLng getPosition() {
+            return position;
         }
 
+        @Nullable
         @Override
-        public void onStop () {
-            super.onStop();
-            mMapView.onStop();
-        }
-        @Override
-        public void onPause () {
-            mMapView.onPause();
-            super.onPause();
+        public String getTitle() {
+            return title;
         }
 
+        @Nullable
         @Override
-        public void onDestroy () {
-            mMapView.onDestroy();
-            super.onDestroy();
+        public String getSnippet() {
+            return snippet;
         }
+    }
 
-        @Override
-        public void onLowMemory () {
-            super.onLowMemory();
-            mMapView.onLowMemory();
-        }
+    //DUMMY DATA
+    private ArrayList<LatLng> getDummyLatLongs() {
+        ArrayList<LatLng> sneezeLocations = new ArrayList<>();
+        try {
+            InputStream is = getContext().getAssets().open("au-towns-sample.csv");
 
-        //MyLocation METHODS
-        @Override
-        public boolean onMyLocationButtonClick () {
-            return false;
-        }
-        @Override
-        public void onMyLocationClick (@NonNull Location location){
-        }
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
 
-    }//MapsFragment Class END
+            String csvString = new String(buffer, StandardCharsets.UTF_8);
+            String[] lines = csvString.split("\\r?\\n");
+
+            for (int i = 0; i < lines.length; i++) {
+                String[] coords = lines[i].split(",");
+                sneezeLocations.add(new LatLng(Double.parseDouble(coords[0]), Double.parseDouble(coords[1])));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e(CLASS_TAG, "DummyData: File not found\n" + e);
+        } catch (Exception e) {
+            Log.e(CLASS_TAG, "DummyData: Exception was thrown\n" + e);
+        }
+        return sneezeLocations;
+    }
+}//MapsFragment Class END
