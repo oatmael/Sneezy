@@ -49,6 +49,7 @@ import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 
 import java.util.Calendar;
@@ -56,6 +57,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.app.sneezyapplication.MainActivity.realm;
 import static com.app.sneezyapplication.MainActivity.repo;
 
 public class HomeFragment extends Fragment {
@@ -120,7 +122,17 @@ public class HomeFragment extends Fragment {
                 mBinding.setSneeze(mSneeze);
                 mMulti.getMulti(1);
                 mBinding.setMulti(mMulti);
-            } else {
+            }
+            else if(multiNumber < 0) {
+                int num;
+                num = convertToPositive(multiNumber);
+                removeSneezes(num);
+
+                mBinding.setSneeze(mSneeze);
+                mMulti.getMulti(1);
+                mBinding.setMulti(mMulti);
+            }
+            else {
                 handleSneeze();
                 mBinding.setSneeze(mSneeze);
             }
@@ -169,6 +181,23 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         setupForecast();
+    }
+
+    public int convertToPositive(int number) {
+
+        number = number * -1;
+        return number;
+    }
+
+    public void removeSneezes(int amount) {
+        RealmResults<SneezeItem> currentSneezes = repo.getSneezeItems(new Date(), SneezeRepository.Scope.USER);
+
+        for (int i = 0; i < amount; i++){
+            if (currentSneezes.get(0).getSneezes().size() <= 0) break;
+            realm.executeTransaction(r -> {
+                currentSneezes.get(0).getSneezes().deleteLastFromRealm();
+            });
+        }
     }
 
     private void handleSneeze() {

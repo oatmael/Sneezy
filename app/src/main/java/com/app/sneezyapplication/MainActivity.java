@@ -2,6 +2,7 @@ package com.app.sneezyapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -277,7 +279,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 logoutPopup();
                 break;
             case R.id.nav_rate_us:
-                rateUs();
+
+                rateApp();
                 break;
             case R.id.nav_report_bug:
                 sendEmail();
@@ -311,11 +314,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    /*Simple rate us Method which will direct the user to the Google Market rating page I believe. Used with the sidebar button.*/ /*WILL NOT WORK ON THE A.S EMULATOR as the emulator doesent have the*/
-    /*market place. A real phone is required to test this properly*/
-    public void rateUs() {
-        String APP_RATE_NAME = "com.app.sneezyapplication"; /*TODO ADD ACTUAL GOOGLE MARKET PACKAGE NAME HERE WHEN ACQUIRED*/
-        this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_RATE_NAME)));
+    /*Simple rate us Method which will direct the user to the Google Market rating page I believe. Used with the sidebar button.*/ /*Now works with Emulator. Opens Chrome website.*/
+    public void rateApp()
+    {
+
+        try
+        {
+            Intent rateIntent = rateIntentForUrl("market://details");
+            startActivity(rateIntent);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            Intent rateIntent = rateIntentForUrl("https://play.google.com/store/apps/details");
+            startActivity(rateIntent);
+        }
+    }
+
+    private Intent rateIntentForUrl(String url)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("%s?id=%s", url, "com.app.sneezyapplication")));
+        int flags = Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
+        if (Build.VERSION.SDK_INT >= 21)
+        {
+            flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
+        }
+        else
+        {
+            //noinspection deprecation
+            flags |= Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET;
+        }
+        intent.addFlags(flags);
+        return intent;
     }
 
 
