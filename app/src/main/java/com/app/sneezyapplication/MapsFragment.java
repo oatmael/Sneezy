@@ -126,7 +126,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         userCoords = DEFAULT_LOCATION;
-        this.repo = new SneezeRepository();
         this.repo = MainActivity.repo;
         // *** MapView requires that the Bundle you pass contain _ONLY_ MapView SDK objects or sub-Bundles. ***
         Bundle mapViewBundle = null;
@@ -272,6 +271,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 break;
             case HEATMAP:
                 addHeatMap();
+                if(clusterManager != null){
+                    clusterManager.clearItems();
+                }
                 break;
         }
     }//updateMapOverlay END
@@ -498,6 +500,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     markerRadioBtn.setEnabled(true);
                     markerRadioBtn.setVisibility(View.VISIBLE);
                     break;
+
             }
             //TODO call enableSaveBtn
             updateMapOverlay();
@@ -620,7 +623,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         clusterManager = new ClusterManager<mapClusterItem>(getContext(), googleMap);
         googleMap.setOnCameraIdleListener(clusterManager);
         googleMap.setOnMarkerClickListener(clusterManager);
-            addClusterPoints();
+        addClusterPoints();
+        clusterManager.cluster();
     }
 
     private void addClusterPoints(){
@@ -674,7 +678,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
-    //DUMMY DATA
+    //DUMMY DATA - just return this method in getLatLongList()
     private ArrayList<LatLng> getDummyLatLongs() {
         ArrayList<LatLng> sneezeLocations = new ArrayList<>();
         try {
