@@ -137,8 +137,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         mMapView.getMapAsync(this);
 
-        FloatingActionButton myLocationBtn = getView().findViewById(R.id.fab_my_location);
-        myLocationBtn.setOnClickListener(v -> recenterUser());
+        FloatingActionButton recenterBtn = getView().findViewById(R.id.fab_my_location);
+        recenterBtn.setOnClickListener(v -> recenterUser());
 
         FloatingActionButton menuBtn = getView().findViewById(R.id.fab_menu);
         menuBtn.setOnClickListener(v -> openMenu());
@@ -266,9 +266,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         //add heat map or markers with new settings
         switch (selectedPresentation) {
             case MARKER:
-//                addPoints();
-//                addClusterMarkers();
-                addPoints();
+                addClusterMarkers();
                 break;
             case HEATMAP:
                 addHeatMap();
@@ -334,7 +332,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private ArrayList<LatLng> getLatLongList() {
         ArrayList<LatLng> latLongList = new ArrayList<>();
-//        List<SneezeItem> siList;
 
         SneezeRepository.Scope scope = SneezeRepository.Scope.COMBINED;
         switch (selectedUserScope) {
@@ -359,11 +356,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 break;
         }//selectedDateRange switch END
         //convert calendars to dates
-
         Date startCalAsDate = startCal.getTime();
         Date currentCalAsDate = currentCal.getTime();
 
-//        ArrayList<SneezeItem> siList;
         try{
             List<SneezeItem> siList = repo.getSneezeItems(startCalAsDate, currentCalAsDate, scope);
 
@@ -635,12 +630,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             double lat;
             double lng;
             for(int i=0; i < sneezeLocations.size(); i++){
-                double offset = i /60d;
                 latLng = sneezeLocations.get(i);
-                lat = latLng.latitude + offset;
-                lng = latLng.longitude + offset;
-                mapClusterItem offsetItem = new mapClusterItem(lat, lng, "Tile "+i, "Snippet"+i);
-                clusterManager.addItem(offsetItem);
+                lat = latLng.latitude;
+                lng = latLng.longitude;
+                mapClusterItem clusterItem = new mapClusterItem(lat, lng);
+                clusterManager.addItem(clusterItem);
             }
         }
         catch (Exception e){
@@ -651,13 +645,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private class mapClusterItem implements ClusterItem{
         private final LatLng position;
-        private final String title;
-        private final String snippet;
 
-        public mapClusterItem(double lat, double lng, String title, String snippet) {
+        public mapClusterItem(double lat, double lng) {
             position = new LatLng(lat, lng);
-            this.title = title;
-            this.snippet = snippet;
         }
 
         @NonNull
@@ -669,13 +659,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         @Nullable
         @Override
         public String getTitle() {
-            return title;
+            return null;
         }
 
         @Nullable
         @Override
         public String getSnippet() {
-            return snippet;
+            return null;
         }
     }
 
