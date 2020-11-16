@@ -179,6 +179,8 @@ public class MonthlyFragmentTab extends Fragment {
 
         cartesian.background().fill(colorPrimary);
         column1.color(colorAccent);
+        //sets background during load
+        anyChartView.setBackgroundColor(colorPrimary);
 
         //Recycle the colors
         c1.recycle();

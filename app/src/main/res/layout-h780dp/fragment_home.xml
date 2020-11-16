@@ -458,6 +458,22 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <com.anychart.AnyChartView
+                    android:id="@+id/any_chart_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:background="?attr/backgroundMainColor"
+                    app:layout_constraintTop_toTopOf="@id/homeGraphs"
+                    >
+                    <ProgressBar
+                        android:id="@+id/progress_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:indeterminate="true" />
+
+                </com.anychart.AnyChartView>
 
                 <TextView
                     android:id="@+id/sneezesTodayText"

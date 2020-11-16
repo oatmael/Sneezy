@@ -65,16 +65,6 @@ public class DailyFragmentTab extends Fragment {
 
         List<DataEntry> data = graphData.getWeeklyUserData();
 
-
-        //dummy data
-//        data.add(new ValueDataEntry("Sat", 4));
-//        data.add(new ValueDataEntry("Sun", 3));
-//        data.add(new ValueDataEntry("Mon", 5));
-//        data.add(new ValueDataEntry("Tue", 1));
-//        data.add(new ValueDataEntry("Wed", 2));
-//        data.add(new ValueDataEntry("Thu", 4));
-//        data.add(new ValueDataEntry("Fri", 0));
-
         Column column = cartesian.column(data);
 
         column.tooltip()
@@ -132,6 +122,8 @@ public class DailyFragmentTab extends Fragment {
 
         cartesian.background().fill(colorPrimary);
         column.color(colorAccent);
+        //sets background during load
+        anyChartView.setBackgroundColor(colorPrimary);
 
         // Recycle
         c1.recycle();

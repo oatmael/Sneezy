@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -32,6 +33,15 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 
+import com.anychart.AnyChart;
+import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.charts.Cartesian;
+import com.anychart.core.cartesian.series.Column;
+import com.anychart.enums.Anchor;
+import com.anychart.enums.HoverMode;
+import com.anychart.enums.Position;
+import com.anychart.enums.TooltipPositionMode;
 import com.app.sneezyapplication.binding.MultiBind;
 import com.app.sneezyapplication.binding.SneezeBind;
 import com.app.sneezyapplication.data.SneezeItem;
@@ -57,6 +67,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.app.sneezyapplication.MainActivity.graphData;
 import static com.app.sneezyapplication.MainActivity.realm;
 import static com.app.sneezyapplication.MainActivity.repo;
 
@@ -157,6 +168,8 @@ public class HomeFragment extends Fragment {
             mBinding.setSneeze(mSneeze);
         });
 
+        //creates graph
+        createHomeGraph(view);
         return view;
     }
 
@@ -478,6 +491,79 @@ public class HomeFragment extends Fragment {
             upDatePollenForecastView();
         }
     }//ForecastHandler end
+
+    void createHomeGraph(View view){
+        AnyChartView anyChartView = view.findViewById(R.id.any_chart_view);
+        anyChartView.setProgressBar(view.findViewById(R.id.progress_bar));
+
+        Cartesian cartesian = AnyChart.column();
+
+        List<DataEntry> data = graphData.getWeeklyUserData();
+
+        Column column = cartesian.column(data);
+
+        column.tooltip()
+                .titleFormat("{%X}")
+                .position(Position.CENTER_BOTTOM)
+                .anchor(Anchor.CENTER_BOTTOM)
+                .offsetX(0d)
+                .offsetY(1d)
+                .format("{%Value}{groupsSeparator: }");
+
+        cartesian.animation(true);
+        //cartesian.title("DailySneezes");
+
+        cartesian.yScale()
+                .minimum(0d)
+                .ticks().interval(1);
+
+        cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator: }");
+
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+        cartesian.interactivity().hoverMode(HoverMode.BY_X);
+
+        //cartesian.xAxis(0).title("Your Week");
+        //cartesian.yAxis(0).title("Sneezes");
+
+        anyChartView.setChart(cartesian);
+
+        //Appearance Options
+        TypedArray c1;
+        TypedArray c2;
+
+        if (MainActivity.sharedPref.loadNightModeState()){
+            c1 = getContext().getTheme().obtainStyledAttributes(
+                    R.style.darkTheme,
+                    new int[] { R.attr.colorPrimary });
+            c2 = getContext().getTheme().obtainStyledAttributes(
+                    R.style.darkTheme,
+                    new int[] { R.attr.colorAccent });
+        } else {
+            c1 = getContext().getTheme().obtainStyledAttributes(
+                    R.style.AppTheme,
+                    new int[] { R.attr.colorPrimary });
+            c2 = getContext().getTheme().obtainStyledAttributes(
+                    R.style.AppTheme,
+                    new int[] { R.attr.colorAccent });
+        }
+
+        // Get color hex code (eg, #fff) and format string to match API conventions
+        //ColorPrimary
+        int intColor1 = c1.getColor(0 /* index */, 0 /* defaultVal */);
+        String colorPrimary = "#" +Integer.toHexString(intColor1).substring(2);
+        //ColorAccent
+        int intColor2 = c2.getColor(0 /* index */, 0 /* defaultVal */);
+        String colorAccent = "#" +Integer.toHexString(intColor2).substring(2);
+
+        cartesian.background().fill(colorPrimary);
+        column.color(colorAccent);
+        //sets background during load
+        anyChartView.setBackgroundColor(colorPrimary);
+
+        // Recycle
+        c1.recycle();
+        c2.recycle();
+    }
 }//HomeFragment END
 
 

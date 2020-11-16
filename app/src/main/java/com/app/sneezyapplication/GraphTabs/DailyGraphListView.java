@@ -2,7 +2,9 @@ package com.app.sneezyapplication.GraphTabs;
 
 import android.app.Activity;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,7 +95,7 @@ public class DailyGraphListView extends ArrayAdapter<Date>{
         cartesian.minPointLength(0);
         anyChartView.setChart(cartesian);
 
-        //Appearance Options
+        //Color Options
         TypedArray c1;
         TypedArray c2;
 
@@ -123,6 +125,8 @@ public class DailyGraphListView extends ArrayAdapter<Date>{
 
         cartesian.background().fill(colorPrimary);
         column.color(colorAccent);
+        //sets background during load
+        anyChartView.setBackgroundColor(colorPrimary);
 
         //Recycle the colors
         c1.recycle();
