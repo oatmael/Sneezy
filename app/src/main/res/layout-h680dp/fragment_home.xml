@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -437,67 +438,80 @@
         <!--START OF GRAPHS AREA-->
 
 
-        <FrameLayout
-            android:id="@+id/bottomSection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="0dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/topSectionLayout"
-            app:layout_constraintBottom_toTopOf="@id/buttonSection">
-
-            <ImageView
-                android:id="@+id/bottomSectionImage"
+            <FrameLayout
+                android:id="@+id/bottomSection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/section_homegraph_680dp" />
+                android:orientation="vertical"
+                android:padding="0dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/topSectionLayout"
+                app:layout_constraintBottom_toTopOf="@id/buttonSection">
 
-            <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/homeGraphs"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <com.anychart.AnyChartView
-                    android:id="@+id/any_chart_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:background="?attr/backgroundMainColor"
-                    app:layout_constraintTop_toTopOf="@id/homeGraphs"
-                    >
-                    <ProgressBar
-                        android:id="@+id/progress_bar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:indeterminate="true" />
-
-                </com.anychart.AnyChartView>
-
-                <TextView
-                    android:id="@+id/sneezesTodayText"
+                <ImageView
+                    android:id="@+id/bottomSectionImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="70dp"
-                    android:layout_marginTop="20dp"
-                    android:text="@{String.valueOf(sneeze.getTodaysSneezes())}"
-                    android:textAlignment="center"
-                    android:textColor="?attr/mainText"
-                    android:textSize="20sp"
-                    app:layout_constraintLeft_toLeftOf="@+id/homeGraphs"
-                    app:layout_constraintRight_toRightOf="@id/homeGraphs"
-                    app:layout_constraintTop_toTopOf="@id/homeGraphs"
+                    android:background="@drawable/section_homegraph_680dp" />
 
-                    />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/homeGraphOuter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="5dp"
+                    android:orientation="vertical"
+                    android:layout_gravity="center|top">
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/sneezesTodayText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{String.valueOf(sneeze.getTodaysSneezes())}"
+                        android:textAlignment="center"
+                        android:textColor="?attr/mainText"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toLeftOf="@+id/homeGraphOuter"
+                        app:layout_constraintRight_toRightOf="@id/homeGraphOuter"
+                        app:layout_constraintTop_toTopOf="@id/homeGraphOuter"
+                        />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </FrameLayout>
+
+                <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED BOX-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/homeGraphs"
+                    android:layout_width="340dp"
+                    android:layout_height="265dp"
+                    android:paddingBottom="10dp"
+                    android:layout_gravity="center|bottom"
+                    android:orientation="vertical">
+
+                    <com.anychart.AnyChartView
+                        android:id="@+id/any_chart_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:background="?attr/backgroundMainColor"
+                        app:layout_constraintTop_toTopOf="@id/homeGraphs"
+                        tools:layout_editor_absoluteX="0dp">
+
+                        <ProgressBar
+                            android:id="@+id/progress_bar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:indeterminate="true" />
+
+                    </com.anychart.AnyChartView>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            </FrameLayout>
 
         <!--END OF GRAPHS-->
 

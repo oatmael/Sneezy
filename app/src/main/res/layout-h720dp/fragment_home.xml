@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -465,12 +466,37 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/section_homegraph_720dp" />
 
-            <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED PURPLE BOX-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/homeGraphOuter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="5dp"
+                android:orientation="vertical"
+                android:layout_gravity="center|top">
+
+
+            <TextView
+                android:id="@+id/sneezesTodayText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(sneeze.getTodaysSneezes())}"
+                android:textAlignment="center"
+                android:textColor="?attr/mainText"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="@+id/homeGraphOuter"
+                app:layout_constraintRight_toRightOf="@id/homeGraphOuter"
+                app:layout_constraintTop_toTopOf="@id/homeGraphOuter"
+                />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <!--USE LINEAR LAYOUT BELOW TO ADD YOUR GRAPHS IN, SHOULD STAY WITHIN THE ALLOCATED BOX-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/homeGraphs"
-                android:layout_width="331dp"
-                android:layout_height="234dp"
-                android:layout_gravity="center"
+                android:layout_width="335dp"
+                android:layout_height="280dp"
+                android:paddingBottom="10dp"
+                android:layout_gravity="center|bottom"
                 android:orientation="vertical">
 
                 <com.anychart.AnyChartView
@@ -480,7 +506,8 @@
                     android:layout_marginTop="5dp"
                     android:background="?attr/backgroundMainColor"
                     app:layout_constraintTop_toTopOf="@id/homeGraphs"
-                    >
+                    tools:layout_editor_absoluteX="0dp">
+
                     <ProgressBar
                         android:id="@+id/progress_bar"
                         android:layout_width="wrap_content"
@@ -489,23 +516,6 @@
                         android:indeterminate="true" />
 
                 </com.anychart.AnyChartView>
-
-                <TextView
-                    android:id="@+id/sneezesTodayText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="70dp"
-                    android:layout_marginTop="20dp"
-                    android:text="@{String.valueOf(sneeze.getTodaysSneezes())}"
-                    android:textAlignment="center"
-                    android:textColor="?attr/mainText"
-                    android:textSize="20sp"
-                    app:layout_constraintLeft_toLeftOf="@+id/homeGraphs"
-                    app:layout_constraintRight_toRightOf="@id/homeGraphs"
-                    app:layout_constraintTop_toTopOf="@id/homeGraphs"
-                    />
-
-
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
