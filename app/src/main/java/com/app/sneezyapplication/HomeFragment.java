@@ -83,6 +83,10 @@ public class HomeFragment extends Fragment {
     private ForecastResult mForecastResult;
     private OnForecastUpdateCompleteListener mForecastListener;
     static final String F_TAG ="Forecast Home Frag";
+    //Graph Variables
+    private Cartesian finalGraph;
+    private AnyChartView finalChartView;
+    private Column weeklySneezesColumn;
 
     @Nullable
     @Override
@@ -147,7 +151,8 @@ public class HomeFragment extends Fragment {
                 handleSneeze();
                 mBinding.setSneeze(mSneeze);
             }
-
+            //update graph data
+            weeklySneezesColumn.data(graphData.getWeeklyUserData());
         });
 
         minusButton.setOnClickListener((View v) -> {
@@ -170,6 +175,7 @@ public class HomeFragment extends Fragment {
 
         //creates graph
         createHomeGraph(view);
+
         return view;
     }
 
@@ -188,6 +194,7 @@ public class HomeFragment extends Fragment {
         getView().findViewById(R.id.changeLocation).setOnClickListener(v -> openSetLocationPopup());
         getView().findViewById(R.id.indexLayout).setOnClickListener(v -> openIndexPopup());
         getView().findViewById(R.id.btnRefreshForecast).setOnClickListener(v -> updateForecast());
+
     }//onViewCreated
 
     @Override
@@ -493,16 +500,14 @@ public class HomeFragment extends Fragment {
     }//ForecastHandler end
 
     void createHomeGraph(View view){
-        AnyChartView anyChartView = view.findViewById(R.id.any_chart_view);
-        anyChartView.setProgressBar(view.findViewById(R.id.progress_bar));
+        finalChartView = view.findViewById(R.id.any_chart_view);
+        finalChartView.setProgressBar(view.findViewById(R.id.progress_bar));
 
-        Cartesian cartesian = AnyChart.column();
+        finalGraph = AnyChart.column();
 
-        List<DataEntry> data = graphData.getWeeklyUserData();
+        weeklySneezesColumn = finalGraph.column(graphData.getWeeklyUserData());
 
-        Column column = cartesian.column(data);
-
-        column.tooltip()
+        weeklySneezesColumn.tooltip()
                 .titleFormat("{%X}")
                 .position(Position.CENTER_BOTTOM)
                 .anchor(Anchor.CENTER_BOTTOM)
@@ -510,22 +515,20 @@ public class HomeFragment extends Fragment {
                 .offsetY(1d)
                 .format("{%Value}{groupsSeparator: }");
 
-        cartesian.animation(true);
+        finalGraph.animation(true);
         //cartesian.title("DailySneezes");
 
-        cartesian.yScale()
+        finalGraph.yScale()
                 .minimum(0d)
                 .ticks().interval(1);
 
-        cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator: }");
+        finalGraph.yAxis(0).labels().format("{%Value}{groupsSeparator: }");
 
-        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
-        cartesian.interactivity().hoverMode(HoverMode.BY_X);
+        finalGraph.tooltip().positionMode(TooltipPositionMode.POINT);
+        finalGraph.interactivity().hoverMode(HoverMode.BY_X);
 
         //cartesian.xAxis(0).title("Your Week");
         //cartesian.yAxis(0).title("Sneezes");
-
-        anyChartView.setChart(cartesian);
 
         //Appearance Options
         TypedArray c1;
@@ -534,14 +537,14 @@ public class HomeFragment extends Fragment {
         if (MainActivity.sharedPref.loadNightModeState()){
             c1 = getContext().getTheme().obtainStyledAttributes(
                     R.style.darkTheme,
-                    new int[] { R.attr.colorPrimary });
+                    new int[] { R.attr.sectionColor });
             c2 = getContext().getTheme().obtainStyledAttributes(
                     R.style.darkTheme,
                     new int[] { R.attr.colorAccent });
         } else {
             c1 = getContext().getTheme().obtainStyledAttributes(
                     R.style.AppTheme,
-                    new int[] { R.attr.colorPrimary });
+                    new int[] { R.attr.sectionColor });
             c2 = getContext().getTheme().obtainStyledAttributes(
                     R.style.AppTheme,
                     new int[] { R.attr.colorAccent });
@@ -555,15 +558,16 @@ public class HomeFragment extends Fragment {
         int intColor2 = c2.getColor(0 /* index */, 0 /* defaultVal */);
         String colorAccent = "#" +Integer.toHexString(intColor2).substring(2);
 
-        cartesian.background().fill(colorPrimary);
-        column.color(colorAccent);
+        finalGraph.background().fill(colorPrimary);
+        weeklySneezesColumn.color(colorAccent);
         //sets background during load
-        anyChartView.setBackgroundColor(colorPrimary);
+        finalChartView.setBackgroundColor(colorPrimary);
 
+        finalChartView.setChart(finalGraph);
         // Recycle
         c1.recycle();
         c2.recycle();
-    }
+    }//CreateGraph END
 }//HomeFragment END
 
 
