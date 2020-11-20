@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.app.sneezyapplication.MainActivity.repo;
+import static com.app.sneezyapplication.Application.*;
 
 public class GraphData {
 
@@ -133,6 +133,8 @@ public class GraphData {
         }else
             return false;
     }
+
+
 
     private String getListViewLabelFormat(int hour){
         if (hour == 0)

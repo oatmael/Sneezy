@@ -51,6 +51,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.app.sneezyapplication.Application.*;
+
 import io.realm.RealmList;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
@@ -126,7 +128,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         userCoords = DEFAULT_LOCATION;
-        this.repo = MainActivity.repo;
+        this.repo = Application.repo;
         // *** MapView requires that the Bundle you pass contain _ONLY_ MapView SDK objects or sub-Bundles. ***
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
@@ -150,7 +152,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     public void setupMenu(){
         //load mapPreferences saved from other sessions
-        String[] mapPreferences = MainActivity.sharedPref.loadMapPreferences();
+        String[] mapPreferences = sharedPref.loadMapPreferences();
         //temp values to avoid null object reference (probably a better solution)
         selectedDateRange = DateRange.WEEK;
         selectedUserScope= UserScope.ALL;
@@ -248,7 +250,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private void checkNightMode() {
         try {
-            if (MainActivity.sharedPref.loadNightModeState()) {
+            if (sharedPref.loadNightModeState()) {
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style_dark_mode));
             }
             else {
@@ -536,7 +538,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     private void savePreferences(){
-        MainActivity.sharedPref.saveMapPreferences(selectedDateRange, selectedUserScope, selectedPresentation);
+        sharedPref.saveMapPreferences(selectedDateRange, selectedUserScope, selectedPresentation);
         //TODO disable menu save button
     }
 

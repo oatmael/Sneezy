@@ -3,7 +3,6 @@ package com.app.sneezyapplication;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,43 +34,22 @@ import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.app.sneezyapplication.data.SneezeRepository;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
-import io.realm.Realm;
-import io.realm.mongodb.App;
-import io.realm.mongodb.AppConfiguration;
-import io.realm.mongodb.User;
-import io.realm.mongodb.sync.SyncConfiguration;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import static com.app.sneezyapplication.Application.*;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SettingsFragment.RestartListener {
     //TODO NEED TO ADD AN INTERFACE CLASS TO HANDLE DATA BETWEEN PAGES
     private DrawerLayout drawer;
 
-    public static App app;
-    public static User user;
-    public static Realm realm;
-    public static Location location;
-
     public FusedLocationProviderClient fusedLocationClient;
 
-    public static SneezeRepository repo;
-    public static GraphData graphData;
 
-    private String userID;
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public static SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +63,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         super.onCreate(savedInstanceState);
-
-        Realm.init(this);
-        realm = Realm.getDefaultInstance();
 
         setContentView(R.layout.activity_main);
 
@@ -112,8 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     new HomeFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_home);
         }
-
-        repo = new SneezeRepository();
         graphData = new GraphData();
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -140,15 +113,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        connectToDB();
-        login();
         AppRater.app_launched(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        realm.close();
+        //realm.close();
     }
 
     @Override
@@ -160,44 +131,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
-        realm.close();
+        //realm.close();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        connectToDB();
-        login();
     }
 
-    private void connectToDB() {
-        String appID = getResources().getString(R.string.stitch_client_app_id);
-        if (realm == null)
-            realm = Realm.getDefaultInstance();
 
-        if (app == null)
-            app = new App(new AppConfiguration.Builder(appID).build());
-    }
-
-    private void login() {
-        try {
-            user = app.currentUser();
-        } catch (IllegalStateException e) {
-            Log.e("NoLogin", e.getMessage());
-        }
-
-        if (user != null) {
-            userID = user.getId();
-
-            setupLocalData();
-
-            return;
-        } else {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivityForResult(intent, 111);
-
-        }
-    }
 
     private void logout() {
         if (user != null) {
@@ -206,28 +148,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
         }
         realm.close();
-    }
-
-    private void setupLocalData() {
-        String partitionValue = "partition";
-        SyncConfiguration config = new SyncConfiguration.Builder(user, partitionValue)
-                .waitForInitialRemoteData()
-                .build();
-
-        Realm.getInstanceAsync(config, new Realm.Callback() {
-            @Override
-            @ParametersAreNonnullByDefault
-            public void onSuccess(Realm _realm) {
-                realm = _realm;
-                repo.updateRecords();
-                Log.v("REALM", "Successfully instantiated realm!");
-            }
-
-            @Override
-            public void onError(Throwable exception) {
-                Log.e("REALM", exception.getMessage());
-            }
-        });
     }
 
 

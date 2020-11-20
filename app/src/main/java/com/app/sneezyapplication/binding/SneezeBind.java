@@ -6,7 +6,7 @@ import com.app.sneezyapplication.data.SneezeRepository;
 import java.util.Date;
 import java.util.List;
 
-import static com.app.sneezyapplication.MainActivity.repo;
+import static com.app.sneezyapplication.Application.*;
 
 public class SneezeBind {
 

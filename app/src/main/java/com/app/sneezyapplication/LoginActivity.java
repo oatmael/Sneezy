@@ -9,7 +9,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -17,6 +16,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
+
+import static com.app.sneezyapplication.Application.*;
 
 import io.realm.mongodb.Credentials;
 
@@ -78,11 +79,11 @@ public class LoginActivity extends AppCompatActivity {
 
             Credentials googleCredentials = Credentials.google(idToken);
 
-            MainActivity.app.loginAsync(googleCredentials, it -> {
+            app.loginAsync(googleCredentials, it -> {
                 if (it.isSuccess()) {
                     Toast.makeText(LoginActivity.this,
                             "Logged in with Google. "
-                            //+ "ID: " +  MainActivity.app.currentUser().getId()
+                            // + "ID: " +  app.currentUser().getId()
                             , Toast.LENGTH_LONG).show();
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(i);
@@ -102,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
         Credentials anonCredentials = Credentials.anonymous();
 
         findViewById(R.id.anon_login_button).setOnClickListener(ignored ->
-                MainActivity.app.loginAsync(anonCredentials, it -> {
+                app.loginAsync(anonCredentials, it -> {
                     if (it.isSuccess()){
                         /*Toast.makeText(LoginActivity.this,
                                 "Logged in Anonymously. ID: " +  MainActivity.user.getId(),

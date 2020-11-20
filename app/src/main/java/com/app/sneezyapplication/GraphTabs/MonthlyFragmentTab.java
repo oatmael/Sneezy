@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.content.Context.TELECOM_SERVICE;
-import static com.app.sneezyapplication.MainActivity.graphData;
+import static com.app.sneezyapplication.Application.*;
 
 public class MonthlyFragmentTab extends Fragment {
 
@@ -153,7 +153,7 @@ public class MonthlyFragmentTab extends Fragment {
         TypedArray c1;
         TypedArray c2;
 
-        if (MainActivity.sharedPref.loadNightModeState()){
+        if (sharedPref.loadNightModeState()){
             c1 = getContext().getTheme().obtainStyledAttributes(
                     R.style.darkTheme,
                     new int[] { R.attr.colorPrimary });

@@ -67,9 +67,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.app.sneezyapplication.MainActivity.graphData;
-import static com.app.sneezyapplication.MainActivity.realm;
-import static com.app.sneezyapplication.MainActivity.repo;
+import static com.app.sneezyapplication.Application.*;
 
 public class HomeFragment extends Fragment {
     Integer todaysSneezes;
@@ -121,7 +119,7 @@ public class HomeFragment extends Fragment {
                         .addOnSuccessListener(location -> {
                             if (location != null) {
                                 //Log.e("app", String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()));
-                                MainActivity.location = location;
+                                Application.location = location;
                             }
                         }).addOnFailureListener(e -> {
                     Log.e("location", e.getLocalizedMessage());
@@ -221,9 +219,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void handleSneeze() {
-        RealmQuery<SneezeItem> searchForCurrentDateQuery = MainActivity.realm.where(SneezeItem.class)
+        RealmQuery<SneezeItem> searchForCurrentDateQuery = realm.where(SneezeItem.class)
                 .equalTo(SneezeItem.Fields.DATE, dayFormat.format(new Date()))
-                .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId());
+                .equalTo(SneezeItem.Fields.OWNER_ID, user.getId());
 
         if (searchForCurrentDateQuery.count() != 0) {
             updateCurrentSneeze();
@@ -233,7 +231,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void createNewSneeze() {
-        MainActivity.realm.executeTransaction(r -> {
+        realm.executeTransaction(r -> {
             SneezeData sd = new SneezeData(
                     new Date().toString(),
                     getLocation());
@@ -241,17 +239,17 @@ public class HomeFragment extends Fragment {
             sdl.add(sd);
 
             SneezeItem sneeze = new SneezeItem(
-                    dayFormat.format(new Date()), MainActivity.user.getId(), sdl);
+                    dayFormat.format(new Date()), user.getId(), sdl);
 
-            MainActivity.realm.insert(sneeze);
+            realm.insert(sneeze);
         });
     }
 
     private void updateCurrentSneeze() {
-        MainActivity.realm.executeTransaction(r -> {
-            SneezeItem sneeze = MainActivity.realm.where(SneezeItem.class)
+        realm.executeTransaction(r -> {
+            SneezeItem sneeze = realm.where(SneezeItem.class)
                     .equalTo(SneezeItem.Fields.DATE, dayFormat.format(new Date()))
-                    .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+                    .equalTo(SneezeItem.Fields.OWNER_ID, user.getId())
                     .findFirst();
 
             sneeze.getSneezes().add(
@@ -265,11 +263,11 @@ public class HomeFragment extends Fragment {
     private String getLocation() {
         String lat = "";
         String lng = "";
-        if (MainActivity.location != null) {
-            lat = String.valueOf(MainActivity.location.getLatitude());
-            lng = String.valueOf(MainActivity.location.getLongitude());
+        if (location != null) {
+            lat = String.valueOf(location.getLatitude());
+            lng = String.valueOf(location.getLongitude());
 
-            Log.e("app", MainActivity.location.getLatitude() + "," + MainActivity.location.getLongitude());
+            Log.e("app", location.getLatitude() + "," + location.getLongitude());
         }
         return lat + "," + lng;
     }
@@ -332,7 +330,7 @@ public class HomeFragment extends Fragment {
         final AlertDialog dialog = mBuilder.create();
         //set drawable for imageButton based on theme
         Drawable img;
-        if(MainActivity.sharedPref.loadNightModeState()){
+        if(sharedPref.loadNightModeState()){
             img = ResourcesCompat.getDrawable(getResources(), R.drawable.weatherzone_logo_full_dark, null);
         }
         else{
@@ -534,7 +532,7 @@ public class HomeFragment extends Fragment {
         TypedArray c1;
         TypedArray c2;
 
-        if (MainActivity.sharedPref.loadNightModeState()){
+        if (sharedPref.loadNightModeState()){
             c1 = getContext().getTheme().obtainStyledAttributes(
                     R.style.darkTheme,
                     new int[] { R.attr.sectionColor });
