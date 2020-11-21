@@ -42,11 +42,12 @@ public class Application extends android.app.Application {
         }
 
         repo = new SneezeRepository();
-        repo.connectToDB();
 
         Intent i;
-        if (user != null)
+        if (user != null) {
             i = new Intent(this, MainActivity.class);
+            repo.connectToDB();
+        }
         else
             i = new Intent(this, LoginActivity.class);
 
