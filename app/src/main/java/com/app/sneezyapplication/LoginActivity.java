@@ -85,6 +85,9 @@ public class LoginActivity extends AppCompatActivity {
                             "Logged in with Google. "
                             // + "ID: " +  app.currentUser().getId()
                             , Toast.LENGTH_LONG).show();
+
+                    user = app.currentUser();
+                    repo.connectToDB();
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(i);
                     finish();

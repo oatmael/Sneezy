@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        repo.connectToDB();
 
         sharedPref = new SharedPref(this);
         if (sharedPref.loadNightModeState() == true) {
@@ -148,6 +147,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
         }
         realm.close();
+
+
     }
 
 
@@ -279,8 +280,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 logout();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivityForResult(intent, 111);
+                finishAffinity();
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

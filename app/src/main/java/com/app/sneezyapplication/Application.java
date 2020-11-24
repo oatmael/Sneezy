@@ -45,8 +45,8 @@ public class Application extends android.app.Application {
 
         Intent i;
         if (user != null) {
-            i = new Intent(this, MainActivity.class);
             repo.connectToDB();
+            i = new Intent(this, MainActivity.class);
         }
         else
             i = new Intent(this, LoginActivity.class);
