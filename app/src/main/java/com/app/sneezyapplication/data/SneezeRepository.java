@@ -301,7 +301,7 @@ public class SneezeRepository {
         }
     }
 
-    public static float sneezeItemAverage(RealmResults<SneezeItem> sneezeItems, boolean fillEmpty){
+    public static float sneezeItemAverage(List<SneezeItem> sneezeItems, boolean fillEmpty){
         float avg = 0;
         int tally = 0;
 
@@ -326,7 +326,7 @@ public class SneezeRepository {
         return avg;
     }
 
-    public static int[] sneezeItemDays(RealmResults<SneezeItem> sneezeItems){
+    public static int[] sneezeItemDays(List<SneezeItem> sneezeItems){
         // starting at monday
         int[] days = {0,0,0,0,0,0,0};
 
@@ -343,7 +343,7 @@ public class SneezeRepository {
         return days;
     }
 
-    public static List<SneezeItem> outlierCull(RealmResults<SneezeItem> sneezeItems){
+    public static List<SneezeItem> outlierCull(List<SneezeItem> sneezeItems){
         List<SneezeItem> set = sneezeItems;
 
         int[] testSet = new int[set.size()];
