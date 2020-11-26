@@ -10,11 +10,6 @@ import static org.junit.Assert.assertEquals;
 
 public class MultiBindTest {
 
-//    SneezeData s;
-//    Location l;
-//    Date d;
-//    int i = 1;
-    GraphData graphData;
     MultiBind multiBind;
 
     @Before
@@ -22,44 +17,43 @@ public class MultiBindTest {
         multiBind = new MultiBind();
     }
 
-    @Test
+    @Test//12
     public void MultiBindResetIndicatorTest(){
         multiBind.multiNum = 99;
         assertEquals("1X", multiBind.getMulti(1));
     }
 
-    @Test
+    @Test//13
     public void MultiBindAddWhileNegative(){
         multiBind.multiNum = -5;
         assertEquals("-4X", multiBind.getMulti(2));
     }
 
-    @Test
+    @Test//14
     public void MultiBindAddWhileMinus1(){
         multiBind.multiNum = -1;
         assertEquals("1X", multiBind.getMulti(2));
     }
 
-    @Test
+    @Test//15
     public void MultiBindAddWhilePositive(){
         multiBind.multiNum = 1;
         assertEquals("2X", multiBind.getMulti(2));
     }
 
-
-    @Test
+    @Test//16
     public void MultiBindMinusWhileNegative(){
         multiBind.multiNum = -1;
         assertEquals("-2X", multiBind.getMulti(3));
     }
 
-    @Test
+    @Test//17
     public void MultiBindMinusWhile1(){
         multiBind.multiNum = 1;
         assertEquals("-1X", multiBind.getMulti(3));
     }
 
-    @Test
+    @Test//18
     public void MultiBindMinusWhilePositive(){
         multiBind.multiNum = 12;
         assertEquals("11X", multiBind.getMulti(3));

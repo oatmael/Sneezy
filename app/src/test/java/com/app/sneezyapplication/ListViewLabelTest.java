@@ -15,35 +15,29 @@ import static org.junit.Assert.*;
 
 public class ListViewLabelTest {
 
-//    SneezeData s;
-//    Location l;
-//    Date d;
-//    int i = 1;
     GraphData graphData;
-    MultiBind multiBind;
+
 
     @Before
     public void setup() {
         graphData = new GraphData();
     }
 
-    @Test
+    @Test//1
     public void getListViewLabelFormatTest1(){
         assertEquals("am", graphData.getListViewLabelFormat(0));
     }
-    @Test
+    @Test//2
     public void getListViewLabelFormatTest2(){
         assertEquals("5", graphData.getListViewLabelFormat(5));
     }
-    @Test
+    @Test//3
     public void getListViewLabelFormatTest3(){
         assertEquals(" 5 ", graphData.getListViewLabelFormat(17));
     }
-    @Test
+    @Test//4
     public void getListViewLabelFormatTest4(){
         assertEquals("pm", graphData.getListViewLabelFormat(24));
     }
-
-    // sneezeItemAverage, sneezeItemDays or outlierCull should be good
 
 }
