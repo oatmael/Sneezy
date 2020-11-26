@@ -134,7 +134,7 @@ public class GraphData {
             return false;
     }
 
-    private String getListViewLabelFormat(int hour){
+    public String getListViewLabelFormat(int hour){
         if (hour == 0)
             return "am";
         else if (hour >= 1 && hour <=12)
