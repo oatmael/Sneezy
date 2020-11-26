@@ -4,6 +4,8 @@ import com.app.sneezyapplication.MainActivity;
 import com.app.sneezyapplication.data.SneezeItem;
 import com.app.sneezyapplication.data.SneezeRepository;
 
+import static com.app.sneezyapplication.Application.*;
+
 import java.util.List;
 
 import io.realm.RealmResults;
@@ -15,7 +17,7 @@ public class StatsBind {
 
     public String getTotalSneezes() {
         totalSneezes = 0;
-        List<SneezeItem> items = MainActivity.repo.getAllUserSneezeItems();
+        List<SneezeItem> items = repo.getAllUserSneezeItems();
         for (int i = 0; i < items.size(); i++){
             totalSneezes += items.get(i).getSneezes().size();
         }
@@ -24,14 +26,14 @@ public class StatsBind {
     }
 
     public String getAverageSneezes() {
-        List<SneezeItem> items = MainActivity.repo.getAllUserSneezeItems();
+        List<SneezeItem> items = repo.getAllUserSneezeItems();
         averageSneezes = SneezeRepository.sneezeItemAverage((RealmResults<SneezeItem>) items, true);
 
         return "Average Sneezes per Day: " + averageSneezes;
     }
 
     public String getMostSneezeDay() {
-        List<SneezeItem> items = MainActivity.repo.getAllUserSneezeItems();
+        List<SneezeItem> items = repo.getAllUserSneezeItems();
         int[] sneezeDays = SneezeRepository.sneezeItemDays((RealmResults<SneezeItem>) items);
         String daySneezed = "Monday";
         int largest = 0;
@@ -66,7 +68,7 @@ public class StatsBind {
     }
 
     public String getDayBreakdown() {
-        List<SneezeItem> items = MainActivity.repo.getAllUserSneezeItems();
+        List<SneezeItem> items = repo.getAllUserSneezeItems();
         int[] sneezeDays = SneezeRepository.sneezeItemDays((RealmResults<SneezeItem>) items);
         return "Monday: " + sneezeDays[0] +
                 "\nTuesday: " + sneezeDays[1] +
@@ -79,7 +81,7 @@ public class StatsBind {
 
 
     public String getNonUserAverageSneezes() {
-        List<SneezeItem> items = MainActivity.repo.getAllSneezeItems();
+        List<SneezeItem> items = repo.getAllSneezeItems();
         items = SneezeRepository.outlierCull((RealmResults<SneezeItem>) items);
         averageSneezes = SneezeRepository.sneezeItemAverage((RealmResults<SneezeItem>) items, true);
 
@@ -87,7 +89,7 @@ public class StatsBind {
     }
 
     public String getNonUserMostSneezeDay() {
-        List<SneezeItem> items = MainActivity.repo.getAllSneezeItems();
+        List<SneezeItem> items = repo.getAllSneezeItems();
         int[] sneezeDays = SneezeRepository.sneezeItemDays((RealmResults<SneezeItem>) items);
         String daySneezed = "Monday";
         int largest = 0;
@@ -122,7 +124,7 @@ public class StatsBind {
     }
 
     public String getNonUserDayBreakdown() {
-        List<SneezeItem> items = MainActivity.repo.getAllSneezeItems();
+        List<SneezeItem> items = repo.getAllSneezeItems();
         int[] sneezeDays = SneezeRepository.sneezeItemDays((RealmResults<SneezeItem>) items);
         return "Monday: " + sneezeDays[0] +
                 "\nTuesday: " + sneezeDays[1] +

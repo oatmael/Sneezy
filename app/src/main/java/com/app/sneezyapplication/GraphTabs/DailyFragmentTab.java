@@ -37,8 +37,7 @@ import java.util.List;
 import java.util.Date;
 
 import static android.content.ContentValues.TAG;
-import static com.app.sneezyapplication.MainActivity.graphData;
-import static com.app.sneezyapplication.MainActivity.repo;
+import static com.app.sneezyapplication.Application.*;
 
 import com.app.sneezyapplication.data.GraphData;
 import com.app.sneezyapplication.data.SneezeItem;
@@ -96,7 +95,7 @@ public class DailyFragmentTab extends Fragment {
         TypedArray c1;
         TypedArray c2;
 
-        if (MainActivity.sharedPref.loadNightModeState()){
+        if (sharedPref.loadNightModeState()){
             c1 = getContext().getTheme().obtainStyledAttributes(
                     R.style.darkTheme,
                     new int[] { R.attr.colorPrimary });

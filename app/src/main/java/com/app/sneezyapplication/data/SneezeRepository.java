@@ -1,8 +1,7 @@
 package com.app.sneezyapplication.data;
 
-import com.app.sneezyapplication.MainActivity;
+import android.util.Log;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,11 +11,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.mongodb.sync.SyncConfiguration;
 
-import static com.app.sneezyapplication.MainActivity.realm;
-import static com.app.sneezyapplication.MainActivity.repo;
+import static com.app.sneezyapplication.Application.*;
 
 public class SneezeRepository {
 
@@ -84,6 +86,30 @@ public class SneezeRepository {
         todayUserSneezeItem = new SneezeItem();
     }
 
+    public void connectToDB() {
+        String partitionValue = "partition";
+        SyncConfiguration config = new SyncConfiguration.Builder(user, partitionValue)
+                .allowWritesOnUiThread(true)
+                .allowQueriesOnUiThread(true)
+                .waitForInitialRemoteData()
+                .build();
+
+        Realm.getInstanceAsync(config, new Realm.Callback() {
+            @Override
+            @ParametersAreNonnullByDefault
+            public void onSuccess(Realm _realm) {
+                realm = _realm;
+                repo.updateRecords();
+                Log.v("REALM", "Successfully instantiated realm!");
+            }
+
+            @Override
+            public void onError(Throwable exception) {
+                Log.e("REALM", exception.getMessage());
+            }
+        });
+    }
+
     public void updateRecords() {
         updateAllSneezes();
         updateUserSneezes();
@@ -97,15 +123,15 @@ public class SneezeRepository {
     }
 
     private void updateAllSneezes(){
-        RealmResults<SneezeItem> allSneezes = MainActivity.realm.where(SneezeItem.class)
-                .notEqualTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+        RealmResults<SneezeItem> allSneezes = realm.where(SneezeItem.class)
+                .notEqualTo(SneezeItem.Fields.OWNER_ID, user.getId())
                 .findAll();
         allSneezeItems = allSneezes;
     }
 
     private void updateUserSneezes(){
-        RealmResults<SneezeItem> userSneezes = MainActivity.realm.where(SneezeItem.class)
-                .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+        RealmResults<SneezeItem> userSneezes = realm.where(SneezeItem.class)
+                .equalTo(SneezeItem.Fields.OWNER_ID, user.getId())
                 .findAll();
         allUserSneezeItems = userSneezes;
     }
@@ -183,21 +209,21 @@ public class SneezeRepository {
 
         switch (scope){
             case USER:
-                results = MainActivity.realm.where(SneezeItem.class)
-                        .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+                results = realm.where(SneezeItem.class)
+                        .equalTo(SneezeItem.Fields.OWNER_ID, user.getId())
                         .and()
                         .equalTo(SneezeItem.Fields.DATE, df.format(date.getTime()))
                         .findAll();
                 break;
             case NOT_USER:
-                results = MainActivity.realm.where(SneezeItem.class)
-                        .notEqualTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+                results = realm.where(SneezeItem.class)
+                        .notEqualTo(SneezeItem.Fields.OWNER_ID, user.getId())
                         .and()
                         .equalTo(SneezeItem.Fields.DATE, df.format(date.getTime()))
                         .findAll();
                 break;
             case COMBINED:
-                results = MainActivity.realm.where(SneezeItem.class)
+                results = realm.where(SneezeItem.class)
                         .equalTo(SneezeItem.Fields.DATE, df.format(date.getTime()))
                         .findAll();
                 break;
@@ -237,22 +263,22 @@ public class SneezeRepository {
 
         switch (scope){
             case USER:
-                results = MainActivity.realm.where(SneezeItem.class)
-                        .equalTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+                results = realm.where(SneezeItem.class)
+                        .equalTo(SneezeItem.Fields.OWNER_ID, user.getId())
                         .and()
                         .in(SneezeItem.Fields.DATE, dateRangeStr)
                         .findAll();
 
                 break;
             case NOT_USER:
-                results = MainActivity.realm.where(SneezeItem.class)
-                        .notEqualTo(SneezeItem.Fields.OWNER_ID, MainActivity.user.getId())
+                results = realm.where(SneezeItem.class)
+                        .notEqualTo(SneezeItem.Fields.OWNER_ID, user.getId())
                         .and()
                         .in(SneezeItem.Fields.DATE, dateRangeStr)
                         .findAll();
                 break;
             case COMBINED:
-                results = MainActivity.realm.where(SneezeItem.class)
+                results = realm.where(SneezeItem.class)
                         .in(SneezeItem.Fields.DATE, dateRangeStr)
                         .findAll();
                 break;
@@ -266,6 +292,7 @@ public class SneezeRepository {
     public void removeSneezes(int amount) {
         RealmResults<SneezeItem> currentSneezes = getSneezeItems(new Date(), Scope.USER);
 
+
         for (int i = 0; i < amount; i++){
             if (currentSneezes.get(0).getSneezes().size() <= 0) break;
             realm.executeTransaction(r -> {
@@ -274,7 +301,7 @@ public class SneezeRepository {
         }
     }
 
-    public static float sneezeItemAverage(RealmResults<SneezeItem> sneezeItems, boolean fillEmpty){
+    public static float sneezeItemAverage(List<SneezeItem> sneezeItems, boolean fillEmpty){
         float avg = 0;
         int tally = 0;
 
@@ -299,7 +326,7 @@ public class SneezeRepository {
         return avg;
     }
 
-    public static int[] sneezeItemDays(RealmResults<SneezeItem> sneezeItems){
+    public static int[] sneezeItemDays(List<SneezeItem> sneezeItems){
         // starting at monday
         int[] days = {0,0,0,0,0,0,0};
 
@@ -316,7 +343,7 @@ public class SneezeRepository {
         return days;
     }
 
-    public static List<SneezeItem> outlierCull(RealmResults<SneezeItem> sneezeItems){
+    public static List<SneezeItem> outlierCull(List<SneezeItem> sneezeItems){
         List<SneezeItem> set = sneezeItems;
 
         int[] testSet = new int[set.size()];

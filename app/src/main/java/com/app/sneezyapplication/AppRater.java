@@ -1,7 +1,6 @@
 package com.app.sneezyapplication;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,10 +9,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.view.ContextThemeWrapper;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 
 /*CLASS FOR AN AUTOMATIC RATE US DIALOG POPUP*/

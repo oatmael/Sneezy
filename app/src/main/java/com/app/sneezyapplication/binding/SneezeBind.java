@@ -6,7 +6,7 @@ import com.app.sneezyapplication.data.SneezeRepository;
 import java.util.Date;
 import java.util.List;
 
-import static com.app.sneezyapplication.MainActivity.repo;
+import static com.app.sneezyapplication.Application.*;
 
 public class SneezeBind {
 
@@ -26,14 +26,15 @@ public class SneezeBind {
         /*todaysSneeze = repo.todayUserSneezeItems()
                 .getSneezes()
                 .size();*/
-        List<SneezeItem> l = repo.getSneezeItems(new Date(), SneezeRepository.Scope.USER);
-        if (l.size() > 0) {
-            todaysSneeze = l
-                    .get(0)
-                    .getSneezes()
-                    .size();
+        if (user != null) {
+            List<SneezeItem> l = repo.getSneezeItems(new Date(), SneezeRepository.Scope.USER);
+            if (l.size() > 0) {
+                todaysSneeze = l
+                        .get(0)
+                        .getSneezes()
+                        .size();
+            }
         }
-
 
         if (todaysSneeze == null) {    //Maybe Remove the null check once the google login is working correctly. Null check is already in the getTodaysSneezes method
             todaysSneezeCountText = ("You haven't sneezed today");
